@@ -15,6 +15,31 @@ type TravelResponse struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
+type CopiedFromResponse struct {
+	TravelID       uint   `json:"travel_id"`
+	AuthorNickname string `json:"author_nickname"`
+}
+
+type TravelDetailResponse struct {
+	TravelResponse
+	CopiedFrom *CopiedFromResponse `json:"copied_from"`
+}
+
+func toTravelDetailResponse(detail *TravelDetail) TravelDetailResponse {
+	res := TravelDetailResponse{
+		TravelResponse: toTravelResponse(detail.Travel),
+	}
+
+	if detail.CopiedFrom != nil {
+		res.CopiedFrom = &CopiedFromResponse{
+			TravelID:       detail.CopiedFrom.TravelID,
+			AuthorNickname: detail.CopiedFrom.AuthorNickname,
+		}
+	}
+
+	return res
+}
+
 func toTravelResponse(t *Travel) TravelResponse {
 	return TravelResponse{
 		ID:        t.ID,

@@ -74,7 +74,7 @@ func (u *UseCase) GetTravels(userID uint) ([]*Travel, error) {
 	return travels, nil
 }
 
-func (u *UseCase) GetTravel(userID uint, travelID uint) (*Travel, error) {
+func (u *UseCase) GetTravel(userID uint, travelID uint) (*TravelDetail, error) {
 	travel, err := u.repository.FindByID(travelID)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -87,7 +87,16 @@ func (u *UseCase) GetTravel(userID uint, travelID uint) (*Travel, error) {
 		return nil, user.ErrUserNotAuthorized
 	}
 
-	return travel, nil
+	var copiedFrom *CopySource
+	if travel.CopiedFromTravelID != nil {
+		copiedFrom, err = u.repository.FindCopySource(*travel.CopiedFromTravelID)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	travelDetail := &TravelDetail{Travel: travel, CopiedFrom: copiedFrom}
+	return travelDetail, nil
 }
 
 type UpdateTravelInput struct {

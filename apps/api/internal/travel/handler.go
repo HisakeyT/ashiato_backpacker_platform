@@ -112,7 +112,7 @@ func (h *Handler) GetTravel(c *gin.Context) {
 
 	travelID := uint(travelID64)
 
-	travel, err := h.useCase.GetTravel(userID, travelID)
+	travelDetail, err := h.useCase.GetTravel(userID, travelID)
 	if err != nil {
 		if errors.Is(err, ErrTravelNotFound) {
 			c.JSON(http.StatusNotFound, gin.H{
@@ -135,7 +135,7 @@ func (h *Handler) GetTravel(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, toTravelResponse(travel))
+	c.JSON(http.StatusOK, toTravelDetailResponse(travelDetail))
 }
 
 type UpdateTravelRequest struct {
