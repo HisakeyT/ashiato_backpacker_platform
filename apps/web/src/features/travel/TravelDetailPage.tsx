@@ -4,6 +4,7 @@ import { Link, Box, Button, Chip, Typography } from "@mui/material";
 import { useAuth } from "../../app/providers/useAuth";
 import { useFlash } from "../../app/providers/useFlash";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
+import { PageBreadcrumbs } from "../../components/PageBreadcrumbs";
 import { TravelPlanList } from "../travelPlan/TravelPlanList";
 import { TravelPlanDialog } from "../travelPlan/TravelPlanDialog";
 import { getTravel, deleteTravel } from "./repository";
@@ -80,14 +81,12 @@ export const TravelDetailPage = () => {
 
   return (
     <Box className="TravelDetailPage">
-      <Link
-        component={RouterLink}
-        to="/travels"
-        underline="hover"
-        sx={{ display: "inline-block", mb: 2 }}
-      >
-        ← 旅行一覧へ
-      </Link>
+      <PageBreadcrumbs
+        items={[
+          { label: "旅行一覧", to: "/travels" },
+          { label: travel.title },
+        ]}
+      />
 
       <Box
         className="TravelDetailPage__header"

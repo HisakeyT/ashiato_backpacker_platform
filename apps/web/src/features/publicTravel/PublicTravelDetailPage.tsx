@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { Link as RouterLink, useParams, useNavigate } from "react-router-dom";
-import { Link, Box, Button, Typography, } from "@mui/material";
+import { useParams, useNavigate } from "react-router-dom";
+import { Box, Button, Typography, } from "@mui/material";
 import { useAuth } from "../../app/providers/useAuth.ts";
 import { useFlash } from "../../app/providers/useFlash.ts";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
+import { PageBreadcrumbs } from "../../components/PageBreadcrumbs";
 import { PublicTravelPlanList } from "./PublicTravelPlanList";
 import { getPublicTravel, copyTravel } from "../travel/repository";
 import type { PublicTravel } from "../travel/types";
@@ -73,9 +74,12 @@ export const PublicTravelDetailPage = () => {
 
   return (
     <Box className="PublicTravelDetailPage" sx={{ p: 2 }}>
-      <Link component={RouterLink} to="/public/travels" sx={{ mb: 2 }}>
-        ← みんなの旅行記へ
-      </Link>
+      <PageBreadcrumbs
+        items={[
+          { label: "みんなの旅行記", to: "/public/travels" },
+          { label: travel.title },
+        ]}
+      />
 
       <Typography
         variant="h4"

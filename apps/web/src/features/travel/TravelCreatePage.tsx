@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Box, Typography } from "@mui/material";
 import { useAuth } from "../../app/providers/useAuth.ts";
 import { useFlash } from "../../app/providers/useFlash.ts";
+import { PageBreadcrumbs } from "../../components/PageBreadcrumbs";
 import { createTravel } from "./repository";
 import { TravelForm } from "./TravelForm";
 import type { CreateTravelInput } from "./types";
@@ -30,6 +31,12 @@ export const TravelCreatePage = () => {
 
   return (
     <Box className="TravelCreatePage">
+      <PageBreadcrumbs
+        items={[
+          { label: "旅行一覧", to: "/travels" },
+          { label: "新しい旅行を作る" },
+        ]}
+      />
       <Typography
         variant="h4"
         component="h1"
