@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { Link, useParams, useNavigate } from "react-router-dom";
-import { Box, Button, Typography, } from "@mui/material";
+import { Link as RouterLink, useParams, useNavigate } from "react-router-dom";
+import { Link, Box, Button, Typography, } from "@mui/material";
 import { useAuth } from "../../app/providers/useAuth.ts";
 import { useFlash } from "../../app/providers/useFlash.ts";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
@@ -73,9 +73,9 @@ export const PublicTravelDetailPage = () => {
 
   return (
     <Box className="PublicTravelDetailPage" sx={{ p: 2 }}>
-      <Button component={Link} to="/public/travels" sx={{ mb: 2 }}>
+      <Link component={RouterLink} to="/public/travels" sx={{ mb: 2 }}>
         ← みんなの旅行記へ
-      </Button>
+      </Link>
 
       <Typography
         variant="h4"

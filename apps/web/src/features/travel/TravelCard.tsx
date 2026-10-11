@@ -1,5 +1,5 @@
 import { Card, CardActionArea, CardContent, Chip, Typography } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
 import type { Travel } from "./types";
 
 type Props = {
@@ -10,7 +10,7 @@ export const TravelCard = ({ travel }: Props) => {
   return (
     <Card className="TravelCard" sx={{ height: "100%" }}>
       <CardActionArea
-        component={Link}
+        component={RouterLink}
         to={`/travels/${travel.id}`}
         sx={{ height: "100%" }}
       >

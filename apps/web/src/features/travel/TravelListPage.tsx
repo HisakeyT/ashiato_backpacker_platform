@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
 import { useAuth } from "../../app/providers/useAuth";
 import { getTravels } from "./repository";
 import type { Travel } from "./types";
@@ -40,7 +40,13 @@ export const TravelListPage = () => {
       }}>
         {user?.nickname}の旅行記
       </Typography>
-      <Button component={Link} to="/travels/new" variant="contained" color="primary" sx={{ mb: 2 }}>
+      <Button
+        component={RouterLink}
+        to="/travels/new"
+        variant="contained"
+        color="primary"
+        sx={{ mb: 2 }}
+      >
         新しい旅行を作る
       </Button>
 

@@ -80,9 +80,14 @@ export const TravelDetailPage = () => {
 
   return (
     <Box className="TravelDetailPage">
-      <Button component={RouterLink} to="/travels" sx={{ mb: 2 }}>
+      <Link
+        component={RouterLink}
+        to="/travels"
+        underline="hover"
+        sx={{ display: "inline-block", mb: 2 }}
+      >
         ← 旅行一覧へ
-      </Button>
+      </Link>
 
       <Box
         className="TravelDetailPage__header"
