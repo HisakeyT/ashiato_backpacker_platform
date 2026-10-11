@@ -7,6 +7,7 @@ type Repository interface {
 	Update(travel *Travel) error
 	FindPublicTravels() ([]*PublicTravel, error)
 	FindPublicByID(id uint) (*PublicTravel, error)
+	FindCopySource(sourceTravelID uint) (*CopySource, error)
 	Delete(id uint) error
 	CopyTravel(originalTravel *Travel, newUserID uint) (*Travel, error)
 }

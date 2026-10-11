@@ -80,6 +80,25 @@ func (r *GormRepository) FindPublicByID(id uint) (*PublicTravel, error) {
 	return &publicTravel, nil
 }
 
+func (r *GormRepository) FindCopySource(sourceTravelID uint) (*CopySource, error) {
+	var copySource CopySource
+
+	result := r.db.Model(&Travel{}).
+		Select("travels.id AS travel_id, users.nickname AS author_nickname").
+		Joins("JOIN users ON users.id = travels.user_id").
+		Where("travels.is_public = ? AND travels.id = ?", true, sourceTravelID).
+		Limit(1).
+		Scan(&copySource)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	if result.RowsAffected == 0 {
+		return nil, nil
+	}
+
+	return &copySource, nil
+}
+
 func (r *GormRepository) CopyTravel(originalTravel *Travel, newUserID uint) (*Travel, error) {
 	var createdTravel Travel
 

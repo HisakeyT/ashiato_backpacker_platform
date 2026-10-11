@@ -19,6 +19,16 @@ type Travel struct {
 	UpdatedAt          time.Time
 }
 
+type CopySource struct {
+	TravelID       uint
+	AuthorNickname string
+}
+
+type TravelDetail struct {
+	Travel     *Travel
+	CopiedFrom *CopySource
+}
+
 type PublicTravel struct {
 	Travel
 	AuthorNickname string
