@@ -1,20 +1,19 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Link, useParams } from "react-router-dom";
-import { Box, Button, Chip, Typography } from "@mui/material";
+import { useNavigate, Link as RouterLink, useParams } from "react-router-dom";
+import { Link, Box, Button, Chip, Typography } from "@mui/material";
 import { useAuth } from "../../app/providers/useAuth";
 import { useFlash } from "../../app/providers/useFlash";
 import { ConfirmDialog } from "../../components/ConfirmDialog";
 import { TravelPlanList } from "../travelPlan/TravelPlanList";
 import { TravelPlanDialog } from "../travelPlan/TravelPlanDialog";
 import { getTravel, deleteTravel } from "./repository";
-import type { Travel } from "./types";
+import type { TravelDetail } from "./types";
 
 export const TravelDetailPage = () => {
   const { token } = useAuth();
   const { showFlash } = useFlash();
   const { travelId } = useParams();
-  const [travel, setTravel] = useState<Travel | null>(null);
+  const [travel, setTravel] = useState<TravelDetail | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -81,7 +80,7 @@ export const TravelDetailPage = () => {
 
   return (
     <Box className="TravelDetailPage">
-      <Button component={Link} to="/travels" sx={{ mb: 2 }}>
+      <Button component={RouterLink} to="/travels" sx={{ mb: 2 }}>
         ← 旅行一覧へ
       </Button>
 
@@ -109,7 +108,7 @@ export const TravelDetailPage = () => {
 
         <Box sx={{ display: "flex", gap: 1 }}>
           <Button
-            component={Link}
+            component={RouterLink}
             to={`/travels/${travel.id}/edit`}
             variant="outlined"
             color="primary"
@@ -130,6 +129,18 @@ export const TravelDetailPage = () => {
         label={travel.isPublic ? "公開" : "非公開"}
         color={travel.isPublic ? "primary" : "default"}
       />
+
+      {travel.copiedFrom && (
+        <Typography variant="body2" color="text.secondary" sx={{ mt: 1.5 }}>
+          <Link
+            component={RouterLink}
+            to={`/public/travels/${travel.copiedFrom.travelId}`}
+          >
+            {travel.copiedFrom.authorNickname}さんの旅行
+          </Link>
+          を参考にしました
+        </Typography>
+      )}
 
       <Box
         sx={{

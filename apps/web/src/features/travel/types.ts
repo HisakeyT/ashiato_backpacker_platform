@@ -9,6 +9,15 @@ export type Travel = {
   updatedAt: string;
 }
 
+export type CopiedFrom = {
+  travelId: number;
+  authorNickname: string;
+}
+
+export type TravelDetail = Travel & {
+  copiedFrom: CopiedFrom | null;
+}
+
 export interface PublicTravel extends Omit<Travel, "userId" | "isPublic"> {
   authorNickname: string;
 }
