@@ -34,21 +34,36 @@ export const TravelListPage = () => {
 
   return (
     <Box className="TravelListPage" sx={{ p: 2 }}>
-      <Typography variant="h4" component="h1" gutterBottom sx={{
-        fontSize: { xs: "1.5rem", sm: "2.125rem" },
-        wordBreak: "break-word",
-      }}>
-        {user?.nickname}の旅行記
-      </Typography>
-      <Button
-        component={RouterLink}
-        to="/travels/new"
-        variant="contained"
-        color="primary"
-        sx={{ mb: 2 }}
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: { xs: "column", sm: "row" },
+          alignItems: { xs: "flex-start", sm: "center" },
+          justifyContent: "space-between",
+          gap: 2,
+          mb: 3,
+        }}
       >
-        新しい旅行を作る
-      </Button>
+        <Typography
+          variant="h4"
+          component="h1"
+          sx={{
+            fontSize: { xs: "1.5rem", sm: "2.125rem" },
+            wordBreak: "break-word",
+          }}
+        >
+          {user?.nickname}の旅行記
+        </Typography>
+        <Button
+          component={RouterLink}
+          to="/travels/new"
+          variant="contained"
+          color="primary"
+          sx={{ flexShrink: 0 }}
+        >
+          新しい旅行を作る
+        </Button>
+      </Box>
 
       {travels.length === 0 ? (
         <Typography color="text.secondary">

@@ -73,7 +73,10 @@ export const PublicTravelDetailPage = () => {
   }
 
   return (
-    <Box className="PublicTravelDetailPage" sx={{ p: 2 }}>
+    <Box
+      className="PublicTravelDetailPage"
+      sx={{ p: 2, maxWidth: 960, mx: "auto" }}
+    >
       <PageBreadcrumbs
         items={[
           { label: "みんなの旅行記", to: "/public/travels" },
@@ -81,28 +84,49 @@ export const PublicTravelDetailPage = () => {
         ]}
       />
 
-      <Typography
-        variant="h4"
-        component="h1"
+      <Box
         sx={{
-          fontSize: { xs: "1.5rem", sm: "2.125rem" },
-          wordBreak: "break-word",
-          mb: 1,
+          display: "flex",
+          flexDirection: { xs: "column", sm: "row" },
+          alignItems: { xs: "flex-start", sm: "flex-start" },
+          justifyContent: "space-between",
+          gap: 2,
         }}
       >
-        {travel.title}
-      </Typography>
+        <Box sx={{ minWidth: 0 }}>
+          <Typography
+            variant="h4"
+            component="h1"
+            sx={{
+              fontSize: { xs: "1.5rem", sm: "2.125rem" },
+              wordBreak: "break-word",
+              mb: 1,
+            }}
+          >
+            {travel.title}
+          </Typography>
+          <Typography color="text.secondary" gutterBottom>
+            {travel.startDate} 〜 {travel.endDate}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            by {travel.authorNickname}
+          </Typography>
+        </Box>
 
-      <Typography color="text.secondary" gutterBottom>
-        {travel.startDate} 〜 {travel.endDate}
-      </Typography>
-      <Typography variant="body2" color="text.secondary">
-        by {travel.authorNickname}
-      </Typography>
+        <Button
+          variant="contained"
+          size="large"
+          onClick={handleCopyClick}
+          sx={{ flexShrink: 0 }}
+        >
+          {copyButtonLabel}
+        </Button>
+      </Box>
 
-      <Button variant="contained" size="large" onClick={handleCopyClick}>
-        {copyButtonLabel}
-      </Button>
+      <Typography variant="h5" component="h2" sx={{ mt: 4, mb: 2 }}>
+        旅のプラン
+      </Typography>
+      <PublicTravelPlanList travelId={travel.id} />
 
       <ConfirmDialog
         open={isConfirmOpen}
@@ -115,11 +139,6 @@ export const PublicTravelDetailPage = () => {
         onClose={() => setIsConfirmOpen(false)}
         onConfirm={handleConfirmCopy}
       />
-
-      <Typography variant="h5" component="h2" sx={{ mt: 4, mb: 2 }}>
-        旅のプラン
-      </Typography>
-      <PublicTravelPlanList travelId={travel.id} />
     </Box>
   );
 };
