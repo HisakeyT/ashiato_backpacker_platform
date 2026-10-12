@@ -1,5 +1,6 @@
 import { Box, Typography } from "@mui/material";
 import type { TravelPlan } from "./types";
+import { sortPlans } from "./sortPlans";
 import { TravelPlanCard } from "./TravelPlanCard";
 
 type TravelPlanListProps = {
@@ -8,11 +9,6 @@ type TravelPlanListProps = {
   onDelete: (plan: TravelPlan) => void;
 };
 
-const sortPlans = (plans: TravelPlan[]): TravelPlan[] => {
-  return [...plans].sort((a, b) => {
-    return a.startDate < b.startDate ? -1 : 1;
-  });
-};
 
 export const TravelPlanList = ({ plans, onEdit, onDelete }: TravelPlanListProps) => {
   if (plans.length === 0) {
