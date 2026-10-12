@@ -96,6 +96,11 @@ func (h *PlanHandler) CreateTravelPlan(c *gin.Context) {
 			return
 		}
 
+		if errors.Is(err, ErrInvalidDateRange) {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})
@@ -217,6 +222,11 @@ func (h *PlanHandler) UpdateTravelPlan(c *gin.Context) {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"error": err.Error(),
 			})
+			return
+		}
+
+		if errors.Is(err, ErrInvalidDateRange) {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
 
