@@ -4,6 +4,7 @@ import { FormField } from "../../components/FormField";
 
 export type TravelPlanFormValue = {
   startDate: string;
+  endDate: string; // 空文字 = 未指定(同日)
   place: string;
   content: string;
 };
@@ -32,13 +33,14 @@ export const TravelPlanForm = ({
   onSubmit,
 }: TravelPlanFormProps) => {
   const [startDate, setStartDate] = useState(initialValue?.startDate ?? defaultDate);
+  const [endDate, setEndDate] = useState(initialValue?.endDate ?? "");
   const [place, setPlace] = useState(initialValue?.place ?? "");
   const [content, setContent] = useState(initialValue?.content ?? "");
 
   const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (isSubmitting) return;
-    await onSubmit({ startDate, place, content });
+    await onSubmit({ startDate, endDate, place, content });
   };
 
   return (
@@ -46,15 +48,28 @@ export const TravelPlanForm = ({
       <Stack spacing={3}>
         {error && <Alert severity="error">{error}</Alert>}
 
-        <FormField label="日付" htmlFor="plan-date" required>
+        <FormField label="開始日" htmlFor="plan-start-date" required>
           <TextField
-            id="plan-date"
+            id="plan-start-date"
             type="date"
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
             required
             fullWidth
             slotProps={{ htmlInput: { min: minDate, max: maxDate } }}
+          />
+        </FormField>
+
+        <FormField label="終了日(任意)" htmlFor="plan-end-date">
+          <TextField
+            id="plan-end-date"
+            type="date"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            fullWidth
+            slotProps={{
+              htmlInput: { min: startDate || minDate, max: maxDate },
+            }}
           />
         </FormField>
 

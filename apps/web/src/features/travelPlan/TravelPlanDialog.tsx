@@ -40,10 +40,13 @@ export const TravelPlanDialog = ({
     setIsSubmitting(true);
     setError(null);
     try {
+      const { endDate: formEndDate, ...rest } = value;
+      const periodInput = formEndDate ? { endDate: formEndDate } : {};
+
       if (plan) {
-        await updateTravelPlan(token, travelId, plan.id, value);
+        await updateTravelPlan(token, travelId, plan.id, { ...rest, ...periodInput });
       } else {
-        await createTravelPlan(token, travelId, { ...value, sortOrder: 0 });
+        await createTravelPlan(token, travelId, { ...rest, ...periodInput, sortOrder: 0 });
       }
       onSaved(isEdit ? "updated" : "created");
       onClose();
@@ -66,7 +69,12 @@ export const TravelPlanDialog = ({
       <TravelPlanForm
         initialValue={
           plan
-            ? { startDate: plan.startDate, place: plan.place, content: plan.content }
+            ? {
+              startDate: plan.startDate,
+              endDate: plan.endDate ?? "",
+              place: plan.place,
+              content: plan.content
+            }
             : undefined
         }
         defaultDate={startDate}
