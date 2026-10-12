@@ -7,7 +7,8 @@ import (
 type TravelPlanResponse struct {
 	ID        uint      `json:"id"`
 	TravelID  uint      `json:"travel_id"`
-	StartDate string    `json:"date"`
+	StartDate string    `json:"start_date"`
+	EndDate   *string   `json:"end_date"`
 	Place     string    `json:"place"`
 	Content   string    `json:"content"`
 	SortOrder int       `json:"sort_order"`
@@ -16,10 +17,17 @@ type TravelPlanResponse struct {
 }
 
 func toTravelPlanResponse(p TravelPlan) TravelPlanResponse {
+	var endDate *string
+	if p.EndDate != nil {
+		formattedEndDate := p.EndDate.Format(dateLayout)
+		endDate = &formattedEndDate
+	}
+
 	return TravelPlanResponse{
 		ID:        p.ID,
 		TravelID:  p.TravelID,
 		StartDate: p.StartDate.Format(dateLayout),
+		EndDate:   endDate,
 		Place:     p.Place,
 		Content:   p.Content,
 		SortOrder: p.SortOrder,
