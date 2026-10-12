@@ -1,6 +1,9 @@
 package travel
 
-import "gorm.io/gorm"
+import (
+	"gorm.io/gorm"
+	"time"
+)
 
 type GormRepository struct {
 	db *gorm.DB
@@ -124,9 +127,15 @@ func (r *GormRepository) CopyTravel(originalTravel *Travel, newUserID uint) (*Tr
 
 		copiedPlans := make([]TravelPlan, len(travelPlans))
 		for i, plan := range travelPlans {
+			var endDate *time.Time
+			if plan.EndDate != nil {
+				e := *plan.EndDate
+				endDate = &e
+			}
 			copiedPlans[i] = TravelPlan{
 				TravelID:  createdTravel.ID,
 				StartDate: plan.StartDate,
+				EndDate:   endDate,
 				Place:     plan.Place,
 				Content:   plan.Content,
 				SortOrder: plan.SortOrder,
