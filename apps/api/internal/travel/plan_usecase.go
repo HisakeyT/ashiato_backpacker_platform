@@ -28,7 +28,7 @@ func NewPlanUseCase(
 }
 
 type CreateTravelPlanInput struct {
-	Date      time.Time
+	StartDate time.Time
 	Place     string
 	Content   string
 	SortOrder int
@@ -48,7 +48,7 @@ func (uc *PlanUseCase) CreateTravelPlan(userID, travelID uint, input CreateTrave
 	}
 	travelPlan := &TravelPlan{
 		TravelID:  travelID,
-		Date:      input.Date,
+		StartDate: input.Date,
 		Place:     input.Place,
 		Content:   input.Content,
 		SortOrder: input.SortOrder,
@@ -111,7 +111,7 @@ func (uc *PlanUseCase) DeleteTravelPlan(userID, travelID, travelPlanID uint) err
 }
 
 type UpdateTravelPlanInput struct {
-	Date      *time.Time
+	StartDate *time.Time
 	Place     *string
 	Content   *string
 	SortOrder *int
@@ -153,8 +153,8 @@ func (uc *PlanUseCase) UpdateTravelPlan(userID, travelID, travelPlanID uint, inp
 }
 
 func applyTravelPlanUpdates(travelPlan *TravelPlan, input UpdateTravelPlanInput) {
-	if input.Date != nil {
-		travelPlan.Date = *input.Date
+	if input.StartDate != nil {
+		travelPlan.StartDate = *input.Date
 	}
 
 	if input.Place != nil {

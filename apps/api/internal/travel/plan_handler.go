@@ -23,7 +23,7 @@ func NewPlanHandler(useCase *PlanUseCase) *PlanHandler {
 }
 
 type CreateTravelPlanRequest struct {
-	Date      string `json:"date" binding:"required"`
+	StartDate string `json:"date" binding:"required"`
 	Place     string `json:"place" binding:"required"`
 	Content   string `json:"content" binding:"required"`
 	SortOrder int    `json:"sort_order"`
@@ -48,7 +48,7 @@ func (h *PlanHandler) CreateTravelPlan(c *gin.Context) {
 		return
 	}
 
-	date, err := time.Parse("2006-01-02", req.Date)
+	date, err := time.Parse("2006-01-02", req.StartDate)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "invalid date",
@@ -57,7 +57,7 @@ func (h *PlanHandler) CreateTravelPlan(c *gin.Context) {
 	}
 
 	input := CreateTravelPlanInput{
-		Date:      date,
+		StartDate: date,
 		Place:     req.Place,
 		Content:   req.Content,
 		SortOrder: req.SortOrder,
@@ -94,7 +94,7 @@ func (h *PlanHandler) CreateTravelPlan(c *gin.Context) {
 }
 
 type UpdateTravelPlanRequest struct {
-	Date      *string `json:"date"`
+	StartDate *string `json:"date"`
 	Place     *string `json:"place"`
 	Content   *string `json:"content"`
 	SortOrder *int    `json:"sort_order"`
@@ -145,8 +145,8 @@ func (h *PlanHandler) UpdateTravelPlan(c *gin.Context) {
 	}
 
 	var date *time.Time
-	if updateReq.Date != nil {
-		parsed, err := time.Parse("2006-01-02", *updateReq.Date)
+	if updateReq.StartDate != nil {
+		parsed, err := time.Parse("2006-01-02", *updateReq.StartDate)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"error": "invalid date",
@@ -158,7 +158,7 @@ func (h *PlanHandler) UpdateTravelPlan(c *gin.Context) {
 	}
 
 	updateInput := UpdateTravelPlanInput{
-		Date:      date,
+		StartDate: date,
 		Place:     updateReq.Place,
 		Content:   updateReq.Content,
 		SortOrder: updateReq.SortOrder,

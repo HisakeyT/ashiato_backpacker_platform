@@ -41,7 +41,7 @@ func TestUseCase_UpdateTravelPlan(t *testing.T) {
 				want: &TravelPlan{
 					ID:        travelPlanID,
 					TravelID:  travelID,
-					Date:      newDate,
+					StartDate: newDate,
 					Place:     place,
 					Content:   content,
 					SortOrder: sortOrder,
@@ -55,7 +55,7 @@ func TestUseCase_UpdateTravelPlan(t *testing.T) {
 				want: &TravelPlan{
 					ID:        travelPlanID,
 					TravelID:  travelID,
-					Date:      date,
+					StartDate: date,
 					Place:     newPlace,
 					Content:   content,
 					SortOrder: sortOrder,
@@ -69,7 +69,7 @@ func TestUseCase_UpdateTravelPlan(t *testing.T) {
 				want: &TravelPlan{
 					ID:        travelPlanID,
 					TravelID:  travelID,
-					Date:      date,
+					StartDate: date,
 					Place:     place,
 					Content:   newContent,
 					SortOrder: sortOrder,
@@ -83,7 +83,7 @@ func TestUseCase_UpdateTravelPlan(t *testing.T) {
 				want: &TravelPlan{
 					ID:        travelPlanID,
 					TravelID:  travelID,
-					Date:      date,
+					StartDate: date,
 					Place:     place,
 					Content:   content,
 					SortOrder: newSortOrder,
@@ -98,7 +98,7 @@ func TestUseCase_UpdateTravelPlan(t *testing.T) {
 						return &TravelPlan{
 							ID:        travelPlanID,
 							TravelID:  travelID,
-							Date:      date,
+							StartDate: date,
 							Place:     place,
 							Content:   content,
 							SortOrder: sortOrder,

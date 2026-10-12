@@ -17,7 +17,7 @@ func TestUseCase_CreateTravelPlan(t *testing.T) {
 		travelID := uint(10)
 
 		input := CreateTravelPlanInput{
-			Date:      time.Date(2026, 10, 1, 0, 0, 0, 0, time.UTC),
+			StartDate: time.Date(2026, 10, 1, 0, 0, 0, 0, time.UTC),
 			Place:     "バンコク",
 			Content:   "ワット・ポーを観光",
 			SortOrder: 1,
@@ -56,8 +56,8 @@ func TestUseCase_CreateTravelPlan(t *testing.T) {
 			t.Errorf("TravelID = %d, want %d", travelPlan.TravelID, travelID)
 		}
 
-		if !travelPlan.Date.Equal(input.Date) {
-			t.Errorf("Date = %v, want %v", travelPlan.Date, input.Date)
+		if !travelPlan.StartDate.Equal(input.Date) {
+			t.Errorf("StartDate = %v, want %v", travelPlan.Date, input.Date)
 		}
 
 		if travelPlan.Place != input.Place {
@@ -123,7 +123,7 @@ func TestUseCase_CreateTravelPlan_Invalid(t *testing.T) {
 			)
 
 			input := CreateTravelPlanInput{
-				Date:      time.Date(2026, 10, 1, 0, 0, 0, 0, time.UTC),
+				StartDate: time.Date(2026, 10, 1, 0, 0, 0, 0, time.UTC),
 				Place:     "バンコク",
 				Content:   "観光",
 				SortOrder: 1,

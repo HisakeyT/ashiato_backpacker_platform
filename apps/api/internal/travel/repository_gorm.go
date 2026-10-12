@@ -126,7 +126,7 @@ func (r *GormRepository) CopyTravel(originalTravel *Travel, newUserID uint) (*Tr
 		for i, plan := range travelPlans {
 			copiedPlans[i] = TravelPlan{
 				TravelID:  createdTravel.ID,
-				Date:      plan.Date,
+				StartDate: plan.StartDate,
 				Place:     plan.Place,
 				Content:   plan.Content,
 				SortOrder: plan.SortOrder,

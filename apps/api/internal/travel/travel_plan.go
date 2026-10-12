@@ -13,7 +13,7 @@ var (
 type TravelPlan struct {
 	ID        uint      `gorm:"primaryKey"`
 	TravelID  uint      `gorm:"not null;index"`
-	Date      time.Time `gorm:"not null"`
+	StartDate time.Time `gorm:"not null"`
 	Place     string    `gorm:"not null"`
 	Content   string    `gorm:"not null"`
 	SortOrder int       `gorm:"not null"`
