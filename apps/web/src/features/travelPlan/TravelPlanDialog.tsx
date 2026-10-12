@@ -66,7 +66,7 @@ export const TravelPlanDialog = ({
       <TravelPlanForm
         initialValue={
           plan
-            ? { date: plan.date, place: plan.place, content: plan.content }
+            ? { startDate: plan.startDate, place: plan.place, content: plan.content }
             : undefined
         }
         defaultDate={startDate}

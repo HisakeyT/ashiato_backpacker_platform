@@ -17,7 +17,7 @@ type TravelPlanListProps = {
 
 const sortPlans = (plans: TravelPlan[]): TravelPlan[] => {
   return [...plans].sort((a, b) => {
-    if (a.date !== b.date) return a.date < b.date ? -1 : 1;
+    if (a.startDate !== b.startDate) return a.startDate < b.startDate ? -1 : 1;
     return a.sortOrder - b.sortOrder;
   });
 };
@@ -25,9 +25,9 @@ const sortPlans = (plans: TravelPlan[]): TravelPlan[] => {
 const groupByDate = (plans: TravelPlan[]): [string, TravelPlan[]][] => {
   const map = new Map<string, TravelPlan[]>();
   for (const plan of plans) {
-    const list = map.get(plan.date) ?? [];
+    const list = map.get(plan.startDate) ?? [];
     list.push(plan);
-    map.set(plan.date, list);
+    map.set(plan.startDate, list);
   }
   return [...map.entries()];
 };

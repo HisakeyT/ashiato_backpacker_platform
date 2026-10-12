@@ -1,7 +1,7 @@
 export type TravelPlan = {
   id: number;
   travelId: number;
-  date: string;
+  startDate: string;
   place: string;
   content: string;
   sortOrder: number;
@@ -10,14 +10,14 @@ export type TravelPlan = {
 };
 
 export type CreateTravelPlanInput = {
-  date: string; // YYYY-MM-DD
+  startDate: string; // YYYY-MM-DD
   place: string;
   content: string;
   sortOrder: number;
 }
 
 export type UpdateTravelPlanInput = {
-  date?: string; // YYYY-MM-DD
+  startDate?: string; // YYYY-MM-DD
   place?: string;
   content?: string;
 }

@@ -3,7 +3,7 @@ import { Alert, Box, Button, Stack, TextField } from "@mui/material";
 import { FormField } from "../../components/FormField";
 
 export type TravelPlanFormValue = {
-  date: string;
+  startDate: string;
   place: string;
   content: string;
 };
@@ -31,14 +31,14 @@ export const TravelPlanForm = ({
   onCancel,
   onSubmit,
 }: TravelPlanFormProps) => {
-  const [date, setDate] = useState(initialValue?.date ?? defaultDate);
+  const [startDate, setStartDate] = useState(initialValue?.startDate ?? defaultDate);
   const [place, setPlace] = useState(initialValue?.place ?? "");
   const [content, setContent] = useState(initialValue?.content ?? "");
 
   const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (isSubmitting) return;
-    await onSubmit({ date, place, content });
+    await onSubmit({ startDate, place, content });
   };
 
   return (
@@ -50,8 +50,8 @@ export const TravelPlanForm = ({
           <TextField
             id="plan-date"
             type="date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
             required
             fullWidth
             slotProps={{ htmlInput: { min: minDate, max: maxDate } }}
