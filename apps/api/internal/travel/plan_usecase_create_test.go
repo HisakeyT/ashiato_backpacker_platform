@@ -56,8 +56,8 @@ func TestUseCase_CreateTravelPlan(t *testing.T) {
 			t.Errorf("TravelID = %d, want %d", travelPlan.TravelID, travelID)
 		}
 
-		if !travelPlan.StartDate.Equal(input.Date) {
-			t.Errorf("StartDate = %v, want %v", travelPlan.Date, input.Date)
+		if !travelPlan.StartDate.Equal(input.StartDate) {
+			t.Errorf("StartDate = %v, want %v", travelPlan.StartDate, input.StartDate)
 		}
 
 		if travelPlan.Place != input.Place {

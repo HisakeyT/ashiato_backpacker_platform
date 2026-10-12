@@ -48,7 +48,7 @@ func (uc *PlanUseCase) CreateTravelPlan(userID, travelID uint, input CreateTrave
 	}
 	travelPlan := &TravelPlan{
 		TravelID:  travelID,
-		StartDate: input.Date,
+		StartDate: input.StartDate,
 		Place:     input.Place,
 		Content:   input.Content,
 		SortOrder: input.SortOrder,
@@ -154,7 +154,7 @@ func (uc *PlanUseCase) UpdateTravelPlan(userID, travelID, travelPlanID uint, inp
 
 func applyTravelPlanUpdates(travelPlan *TravelPlan, input UpdateTravelPlanInput) {
 	if input.StartDate != nil {
-		travelPlan.StartDate = *input.Date
+		travelPlan.StartDate = *input.StartDate
 	}
 
 	if input.Place != nil {

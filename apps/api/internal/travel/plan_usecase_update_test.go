@@ -36,7 +36,7 @@ func TestUseCase_UpdateTravelPlan(t *testing.T) {
 			{
 				name: "日付を更新する",
 				updateInput: UpdateTravelPlanInput{
-					Date: &newDate,
+					StartDate: &newDate,
 				},
 				want: &TravelPlan{
 					ID:        travelPlanID,

@@ -19,7 +19,7 @@ func toTravelPlanResponse(p TravelPlan) TravelPlanResponse {
 	return TravelPlanResponse{
 		ID:        p.ID,
 		TravelID:  p.TravelID,
-		StartDate: p.Date.Format(dateLayout),
+		StartDate: p.StartDate.Format(dateLayout),
 		Place:     p.Place,
 		Content:   p.Content,
 		SortOrder: p.SortOrder,
