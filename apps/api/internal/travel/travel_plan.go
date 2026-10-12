@@ -14,9 +14,10 @@ type TravelPlan struct {
 	ID        uint      `gorm:"primaryKey"`
 	TravelID  uint      `gorm:"not null;index"`
 	StartDate time.Time `gorm:"not null"`
-	Place     string    `gorm:"not null"`
-	Content   string    `gorm:"not null"`
-	SortOrder int       `gorm:"not null"`
+	EndDate   *time.Time
+	Place     string `gorm:"not null"`
+	Content   string `gorm:"not null"`
+	SortOrder int    `gorm:"not null"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }

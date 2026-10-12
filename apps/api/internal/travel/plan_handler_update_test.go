@@ -25,7 +25,7 @@ func TestHandler_UpdateTravelPlan(t *testing.T) {
 			name:     "日付を更新できる",
 			travelID: "1",
 			planID:   "1",
-			request:  `{"date":"2026-10-02"}`,
+			request:  `{"start_date":"2026-10-02"}`,
 			repository: &MockPlanRepository{
 				FindByIDFunc: func(id uint) (*TravelPlan, error) {
 					return &TravelPlan{
@@ -137,7 +137,7 @@ func TestHandler_UpdateTravelPlan(t *testing.T) {
 			name:       "日付が不正",
 			travelID:   "1",
 			planID:     "1",
-			request:    `{"date":"2026-99-99"}`,
+			request:    `{"start_date":"2026-99-99"}`,
 			repository: &MockPlanRepository{},
 			wantStatus: http.StatusBadRequest,
 		},

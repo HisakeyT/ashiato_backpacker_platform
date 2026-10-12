@@ -23,10 +23,11 @@ func NewPlanHandler(useCase *PlanUseCase) *PlanHandler {
 }
 
 type CreateTravelPlanRequest struct {
-	StartDate string `json:"date" binding:"required"`
-	Place     string `json:"place" binding:"required"`
-	Content   string `json:"content" binding:"required"`
-	SortOrder int    `json:"sort_order"`
+	StartDate string  `json:"start_date" binding:"required"`
+	EndDate   *string `json:"end_date"`
+	Place     string  `json:"place" binding:"required"`
+	Content   string  `json:"content" binding:"required"`
+	SortOrder int     `json:"sort_order"`
 }
 
 func (h *PlanHandler) CreateTravelPlan(c *gin.Context) {
@@ -48,16 +49,27 @@ func (h *PlanHandler) CreateTravelPlan(c *gin.Context) {
 		return
 	}
 
-	date, err := time.Parse("2006-01-02", req.StartDate)
+	startDate, err := time.Parse("2006-01-02", req.StartDate)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "invalid date",
+			"error": "invalid start_date",
 		})
 		return
 	}
 
+	var endDate *time.Time
+	if req.EndDate != nil && *req.EndDate != "" {
+		parsed, err := time.Parse("2006-01-02", *req.EndDate)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid end_date"})
+			return
+		}
+		endDate = &parsed
+	}
+
 	input := CreateTravelPlanInput{
-		StartDate: date,
+		StartDate: startDate,
+		EndDate:   endDate,
 		Place:     req.Place,
 		Content:   req.Content,
 		SortOrder: req.SortOrder,
@@ -94,7 +106,8 @@ func (h *PlanHandler) CreateTravelPlan(c *gin.Context) {
 }
 
 type UpdateTravelPlanRequest struct {
-	StartDate *string `json:"date"`
+	StartDate *string `json:"start_date"`
+	EndDate   *string `json:"end_date"`
 	Place     *string `json:"place"`
 	Content   *string `json:"content"`
 	SortOrder *int    `json:"sort_order"`
@@ -144,21 +157,34 @@ func (h *PlanHandler) UpdateTravelPlan(c *gin.Context) {
 		return
 	}
 
-	var date *time.Time
+	var startDate *time.Time
 	if updateReq.StartDate != nil {
 		parsed, err := time.Parse("2006-01-02", *updateReq.StartDate)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{
-				"error": "invalid date",
+				"error": "invalid start_date",
 			})
 			return
 		}
 
-		date = &parsed
+		startDate = &parsed
+	}
+
+	var endDate *time.Time
+	if updateReq.EndDate != nil {
+		parsed, err := time.Parse("2006-01-02", *updateReq.EndDate)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": "invalid end_date",
+			})
+			return
+		}
+		endDate = &parsed
 	}
 
 	updateInput := UpdateTravelPlanInput{
-		StartDate: date,
+		StartDate: startDate,
+		EndDate:   endDate,
 		Place:     updateReq.Place,
 		Content:   updateReq.Content,
 		SortOrder: updateReq.SortOrder,

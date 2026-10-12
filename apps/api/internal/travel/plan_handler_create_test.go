@@ -26,7 +26,7 @@ func TestHandler_CreateTravelPlan(t *testing.T) {
 			userID:   1,
 			travelID: "10",
 			body: `{
-				"date": "2026-10-01",
+				"start_date": "2026-10-01",
 				"place": "バンコク",
 				"content": "ワット・ポーを観光",
 				"sort_order": 1
@@ -56,7 +56,7 @@ func TestHandler_CreateTravelPlan(t *testing.T) {
 			userID:   1,
 			travelID: "999",
 			body: `{
-				"date": "2026-10-01",
+				"start_date": "2026-10-01",
 				"place": "バンコク",
 				"content": "ワット・ポーを観光",
 				"sort_order": 1
@@ -79,7 +79,7 @@ func TestHandler_CreateTravelPlan(t *testing.T) {
 			userID:   1,
 			travelID: "10",
 			body: `{
-				"date": "2026-10-01",
+				"start_date": "2026-10-01",
 				"place": "バンコク",
 				"content": "ワット・ポーを観光",
 				"sort_order": 1
@@ -115,7 +115,7 @@ func TestHandler_CreateTravelPlan(t *testing.T) {
 			userID:   1,
 			travelID: "abc",
 			body: `{
-				"date": "2026-10-01",
+			"start_date": "2026-10-01",
 				"place": "バンコク",
 				"content": "ワット・ポーを観光",
 				"sort_order": 1
@@ -126,11 +126,11 @@ func TestHandler_CreateTravelPlan(t *testing.T) {
 			wantStatus: http.StatusBadRequest,
 		},
 		{
-			name:     "dateが不正",
+			name:     "start_dateが不正",
 			userID:   1,
 			travelID: "10",
 			body: `{
-				"date": "2026/10/01",
+				"start_date": "2026/10/01",
 				"place": "バンコク",
 				"content": "ワット・ポーを観光",
 				"sort_order": 1
