@@ -8,6 +8,8 @@ import { PageBreadcrumbs } from "../../components/PageBreadcrumbs";
 import { PublicTravelPlanList } from "./PublicTravelPlanList";
 import { getPublicTravel, copyTravel } from "../travel/repository";
 import type { PublicTravel } from "../travel/types";
+import { getPublicTravelPlans } from "../travelPlan/repository";
+import type { TravelPlan } from "../travelPlan/types";
 
 export const PublicTravelDetailPage = () => {
   const { travelId } = useParams();
@@ -20,6 +22,22 @@ export const PublicTravelDetailPage = () => {
   const [isCopying, setIsCopying] = useState(false);
   const [copyError, setCopyError] = useState<string | null>(null);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [plans, setPlans] = useState<TravelPlan[]>([]);
+  const [plansError, setPlansError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!travelId) return;
+
+    const fetchPlans = async () => {
+      try {
+        setPlans(await getPublicTravelPlans(Number(travelId)));
+      } catch {
+        setPlansError("予定の取得に失敗しました");
+      }
+    };
+
+    fetchPlans();
+  }, [travelId]);
 
   useEffect(() => {
     if (!travelId) return;
@@ -126,7 +144,11 @@ export const PublicTravelDetailPage = () => {
       <Typography variant="h5" component="h2" sx={{ mt: 4, mb: 2 }}>
         旅のプラン
       </Typography>
-      <PublicTravelPlanList travelId={travel.id} />
+      {plansError ? (
+        <Typography color="error">{plansError}</Typography>
+      ) : (
+        <PublicTravelPlanList plans={plans} />
+      )}
 
       <ConfirmDialog
         open={isConfirmOpen}
