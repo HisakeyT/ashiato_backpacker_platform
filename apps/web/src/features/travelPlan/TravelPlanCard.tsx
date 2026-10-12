@@ -1,5 +1,6 @@
 import { Button, Card, CardActions, CardContent, Typography } from "@mui/material";
 import type { TravelPlan } from "./types";
+import { formatPeriod } from "./format";
 
 type TravelPlanCardProps = {
   plan: TravelPlan;
@@ -14,6 +15,11 @@ export const TravelPlanCard = ({ plan, onEdit, onDelete }: TravelPlanCardProps) 
       sx={{ height: "100%", display: "flex", flexDirection: "column" }}
     >
       <CardContent sx={{ flexGrow: 1 }}>
+        {plan.endDate && plan.endDate !== plan.startDate && (
+          <Typography variant="caption" color="text.secondary">
+            {formatPeriod(plan.startDate, plan.endDate)}
+          </Typography>
+        )}
         <Typography variant="h6" gutterBottom>
           {plan.place}
         </Typography>
