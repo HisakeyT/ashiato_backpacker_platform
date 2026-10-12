@@ -55,6 +55,7 @@ func (uc *PlanUseCase) CreateTravelPlan(userID, travelID uint, input CreateTrave
 	travelPlan := &TravelPlan{
 		TravelID:  travelID,
 		StartDate: input.StartDate,
+		EndDate:   input.EndDate,
 		Place:     input.Place,
 		Content:   input.Content,
 		SortOrder: input.SortOrder,
