@@ -8,6 +8,7 @@ import type { TravelPlan } from "./types";
 type TravelPlanDialogProps = {
   open: boolean;
   travelId: number;
+  defaultDate?: string;
   startDate: string;
   endDate: string;
   plan?: TravelPlan | null;
@@ -18,6 +19,7 @@ type TravelPlanDialogProps = {
 export const TravelPlanDialog = ({
   open,
   travelId,
+  defaultDate,
   startDate,
   endDate,
   plan,
@@ -77,7 +79,7 @@ export const TravelPlanDialog = ({
             }
             : undefined
         }
-        defaultDate={startDate}
+        defaultDate={defaultDate ?? startDate}
         minDate={startDate}
         maxDate={endDate}
         submitLabel={isEdit ? "保存する" : "追加する"}

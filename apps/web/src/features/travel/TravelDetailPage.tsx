@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useNavigate, Link as RouterLink, useParams } from "react-router-dom";
 import { Link, Box, Button, Chip, Typography } from "@mui/material";
 import { useAuth } from "../../app/providers/useAuth";
@@ -9,6 +9,8 @@ import { TravelPlanList } from "../travelPlan/TravelPlanList";
 import { TravelPlanDialog } from "../travelPlan/TravelPlanDialog";
 import { getTravel, deleteTravel } from "./repository";
 import type { TravelDetail } from "./types";
+import { getTravelPlans, deleteTravelPlan } from "../travelPlan/repository";
+import type { TravelPlan } from "../travelPlan/types";
 
 export const TravelDetailPage = () => {
   const { token } = useAuth();
@@ -24,6 +26,54 @@ export const TravelDetailPage = () => {
   const [deleteError, setDeleteError] = useState<string | null>(null);
 
   const [isPlanDialogOpen, setIsPlanDialogOpen] = useState(false);
+
+  const [plans, setPlans] = useState<TravelPlan[]>([]);
+  const [plansError, setPlansError] = useState<string | null>(null);
+  const [editingPlan, setEditingPlan] = useState<TravelPlan | null>(null);
+  const [deletingPlan, setDeletingPlan] = useState<TravelPlan | null>(null);
+  const [isDeletingPlan, setIsDeletingPlan] = useState(false);
+  const [deletePlanError, setDeletePlanError] = useState<string | null>(null);
+
+  const fetchPlans = useCallback(async () => {
+    if (!token || !travelId) return;
+    try {
+      setPlans(await getTravelPlans(token, Number(travelId)));
+      setPlansError(null);
+    } catch {
+      setPlansError("予定の取得に失敗しました");
+    }
+  }, [token, travelId]);
+
+  useEffect(() => {
+    fetchPlans();
+  }, [fetchPlans]);
+
+  const handlePlanSaved = (result: "created" | "updated") => {
+    fetchPlans();
+    showFlash(result === "created" ? "プランを追加しました" : "プランを更新しました");
+  };
+
+  const handleCloseDeletePlan = () => {
+    if (isDeletingPlan) return;
+    setDeletePlanError(null);
+    setDeletingPlan(null);
+  };
+
+  const handleConfirmDeletePlan = async () => {
+    if (!token || !travel || !deletingPlan) return;
+    setIsDeletingPlan(true);
+    setDeletePlanError(null);
+    try {
+      await deleteTravelPlan(token, travel.id, deletingPlan.id);
+      setDeletingPlan(null);
+      fetchPlans();
+      showFlash("プランを削除しました");
+    } catch {
+      setDeletePlanError("プランの削除に失敗しました");
+    } finally {
+      setIsDeletingPlan(false);
+    }
+  };
 
   useEffect(() => {
     if (!token || !travelId) return;
@@ -41,15 +91,6 @@ export const TravelDetailPage = () => {
 
     fetchTravel();
   }, [token, travelId]);
-
-  const [reloadKey, setReloadKey] = useState(0);
-
-  const handlePlanSaved = (result: "created" | "updated") => {
-    setReloadKey((k) => k + 1);
-    showFlash(
-      result === "created" ? "プランを追加しました" : "プランを更新しました",
-    );
-  };
 
   const handleOpenDialog = () => {
     setDeleteError(null);
@@ -70,6 +111,7 @@ export const TravelDetailPage = () => {
     }
   };
 
+
   if (isLoading) return <Typography>Loading...</Typography>;
   if (error || !travel) {
     return (
@@ -78,6 +120,14 @@ export const TravelDetailPage = () => {
       </Typography>
     );
   }
+
+  const lastPlanDate = plans
+    .map((p) => p.endDate ?? p.startDate)
+    .reduce((a, b) => (a > b ? a : b), travel.startDate);
+
+  // travel の終了日を超えないように丸める
+  const defaultPlanDate = lastPlanDate > travel.endDate ? travel.endDate : lastPlanDate;
+
 
   return (
     <Box className="TravelDetailPage">
@@ -164,12 +214,12 @@ export const TravelDetailPage = () => {
           プランを追加
         </Button>
       </Box>
-      <TravelPlanList
-        travelId={travel.id}
-        startDate={travel.startDate}
-        endDate={travel.endDate}
-        reloadKey={reloadKey}
-      />
+
+      {plansError ? (
+        <Typography color="error">{plansError}</Typography>
+      ) : (
+        <TravelPlanList plans={plans} onEdit={setEditingPlan} onDelete={setDeletingPlan} />
+      )}
 
       <ConfirmDialog
         open={isDialogOpen}
@@ -187,11 +237,39 @@ export const TravelDetailPage = () => {
       <TravelPlanDialog
         open={isPlanDialogOpen}
         travelId={travel.id}
+        defaultDate={defaultPlanDate}
         startDate={travel.startDate}
         endDate={travel.endDate}
         onClose={() => setIsPlanDialogOpen(false)}
         onSaved={handlePlanSaved}
       />
+
+      {editingPlan && (
+        <TravelPlanDialog
+          open
+          travelId={travel.id}
+          startDate={travel.startDate}
+          endDate={travel.endDate}
+          plan={editingPlan}
+          onClose={() => setEditingPlan(null)}
+          onSaved={handlePlanSaved}
+        />
+      )}
+
+      {deletingPlan && (
+        <ConfirmDialog
+          open
+          heading="プランを削除しますか？"
+          description={`「${deletingPlan.place}」のプランが削除されます。この操作は取り消せません。`}
+          error={deletePlanError}
+          busy={isDeletingPlan}
+          confirmLabel="削除する"
+          busyLabel="削除中..."
+          confirmColor="error"
+          onClose={handleCloseDeletePlan}
+          onConfirm={handleConfirmDeletePlan}
+        />
+      )}
     </Box>
   );
 };
