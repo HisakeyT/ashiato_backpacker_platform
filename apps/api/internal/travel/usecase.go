@@ -28,7 +28,7 @@ type CreateTravelInput struct {
 }
 
 func (u *UseCase) CreateTravel(userID uint, input CreateTravelInput) (*Travel, error) {
-	if err := validateTravelDateRange(input.StartDate, input.EndDate); err != nil {
+	if err := validateDateRange(input.StartDate, input.EndDate); err != nil {
 		return nil, err
 	}
 
@@ -48,7 +48,7 @@ func (u *UseCase) CreateTravel(userID uint, input CreateTravelInput) (*Travel, e
 
 }
 
-func validateTravelDateRange(startDate, endDate time.Time) error {
+func validateDateRange(startDate, endDate time.Time) error {
 	if startDate.After(endDate) {
 		return ErrInvalidDateRange
 	}
@@ -121,7 +121,7 @@ func (u *UseCase) UpdateTravel(userID uint, travelID uint, input UpdateTravelInp
 
 	applyUpdate(travel, input)
 
-	if err := validateTravelDateRange(travel.StartDate, travel.EndDate); err != nil {
+	if err := validateDateRange(travel.StartDate, travel.EndDate); err != nil {
 		return nil, err
 	}
 
