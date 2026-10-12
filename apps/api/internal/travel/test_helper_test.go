@@ -61,7 +61,7 @@ func (m *MockRepository) FindPublicByID(id uint) (*PublicTravel, error) {
 
 func (m *MockRepository) FindCopySource(sourceTravelID uint) (*CopySource, error) {
 	if m.FindCopySourceFunc != nil {
-		m.FindCopySourceFunc(sourceTravelID)
+		return m.FindCopySourceFunc(sourceTravelID)
 	}
 
 	return nil, nil
