@@ -3,6 +3,8 @@ package travel
 import (
 	"testing"
 	"time"
+
+	"github.com/HisakeyT/backpacker-platform/internal/model"
 )
 
 func TestUseCase_CreateTravel(t *testing.T) {
@@ -29,7 +31,7 @@ func TestUseCase_CreateTravel(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			repository := &MockRepository{
-				CreateFunc: func(travel *Travel) error {
+				CreateFunc: func(travel *model.Travel) error {
 					travel.ID = 1
 					return nil
 				},

@@ -24,13 +24,13 @@ func TestUseCase_CreateTravelPlan(t *testing.T) {
 			SortOrder: 1,
 		}
 
-		travelData := &Travel{
+		travelData := &model.Travel{
 			ID:     travelID,
 			UserID: userID,
 		}
 
 		travelRepository := &MockTravelRepository{
-			FindByIDFunc: func(id uint) (*Travel, error) {
+			FindByIDFunc: func(id uint) (*model.Travel, error) {
 				return travelData, nil
 			},
 		}
@@ -80,7 +80,7 @@ func TestUseCase_CreateTravelPlan_Invalid(t *testing.T) {
 		name        string
 		userID      uint
 		travelID    uint
-		travelData  *Travel
+		travelData  *model.Travel
 		findByIDErr error
 		wantErr     error
 	}{
@@ -88,7 +88,7 @@ func TestUseCase_CreateTravelPlan_Invalid(t *testing.T) {
 			name:     "他人の旅行には旅程を追加できない",
 			userID:   1,
 			travelID: 10,
-			travelData: &Travel{
+			travelData: &model.Travel{
 				ID:     10,
 				UserID: 2,
 			},
@@ -106,7 +106,7 @@ func TestUseCase_CreateTravelPlan_Invalid(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			travelRepository := &MockTravelRepository{
-				FindByIDFunc: func(id uint) (*Travel, error) {
+				FindByIDFunc: func(id uint) (*model.Travel, error) {
 					return tt.travelData, tt.findByIDErr
 				},
 			}

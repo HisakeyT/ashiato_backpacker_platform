@@ -6,6 +6,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/HisakeyT/backpacker-platform/internal/model"
 	"github.com/gin-gonic/gin"
 )
 
@@ -20,8 +21,8 @@ func TestHandler_GetPublicTravels(t *testing.T) {
 		{
 			name: "公開Travelを複数取得できる",
 			repository: &MockRepository{
-				FindPublicTravelsFunc: func() ([]*PublicTravel, error) {
-					return []*PublicTravel{
+				FindPublicTravelsFunc: func() ([]*model.PublicTravel, error) {
+					return []*model.PublicTravel{
 						{
 							ID:       1,
 							UserID:   1,
@@ -42,8 +43,8 @@ func TestHandler_GetPublicTravels(t *testing.T) {
 		{
 			name: "公開Travelが0件",
 			repository: &MockRepository{
-				FindPublicTravelsFunc: func() ([]*PublicTravel, error) {
-					return []*PublicTravel{}, nil
+				FindPublicTravelsFunc: func() ([]*model.PublicTravel, error) {
+					return []*model.PublicTravel{}, nil
 				},
 			},
 			wantStatus: http.StatusOK,
@@ -51,7 +52,7 @@ func TestHandler_GetPublicTravels(t *testing.T) {
 		{
 			name: "UseCaseでエラーが発生する",
 			repository: &MockRepository{
-				FindPublicTravelsFunc: func() ([]*PublicTravel, error) {
+				FindPublicTravelsFunc: func() ([]*model.PublicTravel, error) {
 					return nil, errors.New("repository error")
 				},
 			},

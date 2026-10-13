@@ -1,6 +1,9 @@
 package travel
 
-import "time"
+import (
+	"github.com/HisakeyT/backpacker-platform/internal/model"
+	"time"
+)
 
 const dateLayout = "2006-01-02"
 
@@ -25,7 +28,7 @@ type TravelDetailResponse struct {
 	CopiedFrom *CopiedFromResponse `json:"copied_from"`
 }
 
-func toTravelDetailResponse(detail *TravelDetail) TravelDetailResponse {
+func toTravelDetailResponse(detail *model.TravelDetail) TravelDetailResponse {
 	res := TravelDetailResponse{
 		TravelResponse: toTravelResponse(detail.Travel),
 	}
@@ -40,7 +43,7 @@ func toTravelDetailResponse(detail *TravelDetail) TravelDetailResponse {
 	return res
 }
 
-func toTravelResponse(t *Travel) TravelResponse {
+func toTravelResponse(t *model.Travel) TravelResponse {
 	return TravelResponse{
 		ID:        t.ID,
 		UserID:    t.UserID,
@@ -63,7 +66,7 @@ type PublicTravelResponse struct {
 	UpdatedAt      time.Time `json:"updated_at"`
 }
 
-func toPublicTravelResponse(t *PublicTravel) PublicTravelResponse {
+func toPublicTravelResponse(t *model.PublicTravel) PublicTravelResponse {
 	return PublicTravelResponse{
 		ID:             t.ID,
 		Title:          t.Title,

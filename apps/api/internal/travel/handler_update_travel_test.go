@@ -8,6 +8,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/HisakeyT/backpacker-platform/internal/model"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
@@ -29,8 +30,8 @@ func TestHandler_UpdateTravel(t *testing.T) {
 			travelID: "1",
 			request:  `{"title":"新しいタイトル"}`,
 			repository: &MockRepository{
-				FindByIDFunc: func(id uint) (*Travel, error) {
-					return &Travel{
+				FindByIDFunc: func(id uint) (*model.Travel, error) {
+					return &model.Travel{
 						ID:        1,
 						UserID:    1,
 						Title:     "元のタイトル",
@@ -39,7 +40,7 @@ func TestHandler_UpdateTravel(t *testing.T) {
 						IsPublic:  false,
 					}, nil
 				},
-				UpdateFunc: func(travel *Travel) error {
+				UpdateFunc: func(travel *model.Travel) error {
 					return nil
 				},
 			},
@@ -64,8 +65,8 @@ func TestHandler_UpdateTravel(t *testing.T) {
 			travelID: "1",
 			request:  `{"start_date":"2026-99-99"}`,
 			repository: &MockRepository{
-				FindByIDFunc: func(id uint) (*Travel, error) {
-					return &Travel{
+				FindByIDFunc: func(id uint) (*model.Travel, error) {
+					return &model.Travel{
 						ID:     1,
 						UserID: 1,
 					}, nil
@@ -78,8 +79,8 @@ func TestHandler_UpdateTravel(t *testing.T) {
 			travelID: "1",
 			request:  `{"end_date":"2026-99-99"}`,
 			repository: &MockRepository{
-				FindByIDFunc: func(id uint) (*Travel, error) {
-					return &Travel{
+				FindByIDFunc: func(id uint) (*model.Travel, error) {
+					return &model.Travel{
 						ID:     1,
 						UserID: 1,
 					}, nil
@@ -92,7 +93,7 @@ func TestHandler_UpdateTravel(t *testing.T) {
 			travelID: "1",
 			request:  `{"title":"新しいタイトル"}`,
 			repository: &MockRepository{
-				FindByIDFunc: func(id uint) (*Travel, error) {
+				FindByIDFunc: func(id uint) (*model.Travel, error) {
 					return nil, gorm.ErrRecordNotFound
 				},
 			},
@@ -103,8 +104,8 @@ func TestHandler_UpdateTravel(t *testing.T) {
 			travelID: "1",
 			request:  `{"title":"新しいタイトル"}`,
 			repository: &MockRepository{
-				FindByIDFunc: func(id uint) (*Travel, error) {
-					return &Travel{
+				FindByIDFunc: func(id uint) (*model.Travel, error) {
+					return &model.Travel{
 						ID:     1,
 						UserID: 2,
 					}, nil
@@ -117,8 +118,8 @@ func TestHandler_UpdateTravel(t *testing.T) {
 			travelID: "1",
 			request:  `{"start_date":"2026-10-10"}`,
 			repository: &MockRepository{
-				FindByIDFunc: func(id uint) (*Travel, error) {
-					return &Travel{
+				FindByIDFunc: func(id uint) (*model.Travel, error) {
+					return &model.Travel{
 						ID:        1,
 						UserID:    1,
 						StartDate: time.Date(2026, 10, 1, 0, 0, 0, 0, time.UTC),
@@ -133,7 +134,7 @@ func TestHandler_UpdateTravel(t *testing.T) {
 			travelID: "1",
 			request:  `{"title":"新しいタイトル"}`,
 			repository: &MockRepository{
-				FindByIDFunc: func(id uint) (*Travel, error) {
+				FindByIDFunc: func(id uint) (*model.Travel, error) {
 					return nil, databaseError
 				},
 			},

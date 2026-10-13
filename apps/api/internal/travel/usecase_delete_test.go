@@ -5,6 +5,7 @@ import (
 	"gorm.io/gorm"
 	"testing"
 
+	"github.com/HisakeyT/backpacker-platform/internal/model"
 	"github.com/HisakeyT/backpacker-platform/internal/user"
 )
 
@@ -21,8 +22,8 @@ func TestUseCase_DeleteTravel(t *testing.T) {
 			userID:   1,
 			travelID: 10,
 			repository: &MockRepository{
-				FindByIDFunc: func(id uint) (*Travel, error) {
-					return &Travel{
+				FindByIDFunc: func(id uint) (*model.Travel, error) {
+					return &model.Travel{
 						ID:     10,
 						UserID: 1,
 					}, nil
@@ -38,22 +39,22 @@ func TestUseCase_DeleteTravel(t *testing.T) {
 			userID:   1,
 			travelID: 10,
 			repository: &MockRepository{
-				FindByIDFunc: func(id uint) (*Travel, error) {
+				FindByIDFunc: func(id uint) (*model.Travel, error) {
 					return nil, gorm.ErrRecordNotFound
 				},
 				DeleteFunc: func(id uint) error {
 					return nil
 				},
 			},
-			wantErr: ErrTravelNotFound,
+			wantErr: model.ErrTravelNotFound,
 		},
 		{
 			name:     "他ユーザーのTravel",
 			userID:   1,
 			travelID: 10,
 			repository: &MockRepository{
-				FindByIDFunc: func(id uint) (*Travel, error) {
-					return &Travel{
+				FindByIDFunc: func(id uint) (*model.Travel, error) {
+					return &model.Travel{
 						ID:     10,
 						UserID: 2,
 					}, nil
@@ -69,7 +70,7 @@ func TestUseCase_DeleteTravel(t *testing.T) {
 			userID:   1,
 			travelID: 10,
 			repository: &MockRepository{
-				FindByIDFunc: func(id uint) (*Travel, error) {
+				FindByIDFunc: func(id uint) (*model.Travel, error) {
 					return nil, errors.New("database error")
 				},
 				DeleteFunc: func(id uint) error {
@@ -83,8 +84,8 @@ func TestUseCase_DeleteTravel(t *testing.T) {
 			userID:   1,
 			travelID: 10,
 			repository: &MockRepository{
-				FindByIDFunc: func(id uint) (*Travel, error) {
-					return &Travel{
+				FindByIDFunc: func(id uint) (*model.Travel, error) {
+					return &model.Travel{
 						ID:     10,
 						UserID: 1,
 					}, nil

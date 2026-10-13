@@ -15,12 +15,12 @@ func NewGormRepository(db *gorm.DB) *GormRepository {
 	return &GormRepository{db: db}
 }
 
-func (r *GormRepository) Create(travel *Travel) error {
+func (r *GormRepository) Create(travel *model.Travel) error {
 	return r.db.Create(travel).Error
 }
 
-func (r *GormRepository) FindByID(id uint) (*Travel, error) {
-	var travel Travel
+func (r *GormRepository) FindByID(id uint) (*model.Travel, error) {
+	var travel model.Travel
 
 	if err := r.db.First(&travel, id).Error; err != nil {
 		return nil, err
@@ -29,8 +29,8 @@ func (r *GormRepository) FindByID(id uint) (*Travel, error) {
 	return &travel, nil
 }
 
-func (r *GormRepository) FindByUserID(userID uint) ([]*Travel, error) {
-	var travels []*Travel
+func (r *GormRepository) FindByUserID(userID uint) ([]*model.Travel, error) {
+	var travels []*model.Travel
 
 	if err := r.db.Where("user_id = ?", userID).Find(&travels).Error; err != nil {
 		return nil, err
@@ -39,22 +39,22 @@ func (r *GormRepository) FindByUserID(userID uint) ([]*Travel, error) {
 	return travels, nil
 }
 
-func (r *GormRepository) Update(travel *Travel) error {
+func (r *GormRepository) Update(travel *model.Travel) error {
 	return r.db.Save(travel).Error
 }
 
 func (r *GormRepository) Delete(id uint) error {
-	if err := r.db.Delete(&Travel{}, id).Error; err != nil {
+	if err := r.db.Delete(&model.Travel{}, id).Error; err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func (r *GormRepository) FindPublicTravels() ([]*PublicTravel, error) {
-	var PublicTravels []*PublicTravel
+func (r *GormRepository) FindPublicTravels() ([]*model.PublicTravel, error) {
+	var PublicTravels []*model.PublicTravel
 
-	if err := r.db.Model(&Travel{}).
+	if err := r.db.Model(&model.Travel{}).
 		Select("travels.*, users.nickname AS author_nickname").
 		Joins("JOIN users ON users.id = travels.user_id").
 		Where("travels.is_public = ?", true).
@@ -66,10 +66,10 @@ func (r *GormRepository) FindPublicTravels() ([]*PublicTravel, error) {
 	return PublicTravels, nil
 }
 
-func (r *GormRepository) FindPublicByID(id uint) (*PublicTravel, error) {
-	var publicTravel PublicTravel
+func (r *GormRepository) FindPublicByID(id uint) (*model.PublicTravel, error) {
+	var publicTravel model.PublicTravel
 
-	result := r.db.Model(&Travel{}).
+	result := r.db.Model(&model.Travel{}).
 		Select("travels.*, users.nickname AS author_nickname").
 		Joins("JOIN users ON users.id = travels.user_id").
 		Where("travels.is_public = ? AND travels.id = ?", true, id).
@@ -85,10 +85,10 @@ func (r *GormRepository) FindPublicByID(id uint) (*PublicTravel, error) {
 	return &publicTravel, nil
 }
 
-func (r *GormRepository) FindCopySource(sourceTravelID uint) (*CopySource, error) {
-	var copySource CopySource
+func (r *GormRepository) FindCopySource(sourceTravelID uint) (*model.CopySource, error) {
+	var copySource model.CopySource
 
-	result := r.db.Model(&Travel{}).
+	result := r.db.Model(&model.Travel{}).
 		Select("travels.id AS travel_id, users.nickname AS author_nickname").
 		Joins("JOIN users ON users.id = travels.user_id").
 		Where("travels.is_public = ? AND travels.id = ?", true, sourceTravelID).
@@ -104,11 +104,11 @@ func (r *GormRepository) FindCopySource(sourceTravelID uint) (*CopySource, error
 	return &copySource, nil
 }
 
-func (r *GormRepository) CopyTravel(originalTravel *Travel, newUserID uint) (*Travel, error) {
-	var createdTravel Travel
+func (r *GormRepository) CopyTravel(originalTravel *model.Travel, newUserID uint) (*model.Travel, error) {
+	var createdTravel model.Travel
 
 	err := r.db.Transaction(func(tx *gorm.DB) error {
-		createdTravel = Travel{
+		createdTravel = model.Travel{
 			UserID:             newUserID,
 			Title:              originalTravel.Title,
 			StartDate:          originalTravel.StartDate,

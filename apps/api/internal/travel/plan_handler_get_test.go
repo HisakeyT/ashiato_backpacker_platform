@@ -27,8 +27,8 @@ func TestHandler_GetTravelPlans(t *testing.T) {
 			travelID: "10",
 			setupRepository: func() (*MockTravelRepository, *MockPlanRepository) {
 				travelRepository := &MockTravelRepository{
-					FindByIDFunc: func(id uint) (*Travel, error) {
-						return &Travel{
+					FindByIDFunc: func(id uint) (*model.Travel, error) {
+						return &model.Travel{
 							ID:     10,
 							UserID: 1,
 						}, nil
@@ -66,8 +66,8 @@ func TestHandler_GetTravelPlans(t *testing.T) {
 			travelID: "10",
 			setupRepository: func() (*MockTravelRepository, *MockPlanRepository) {
 				travelRepository := &MockTravelRepository{
-					FindByIDFunc: func(id uint) (*Travel, error) {
-						return &Travel{
+					FindByIDFunc: func(id uint) (*model.Travel, error) {
+						return &model.Travel{
 							ID:     10,
 							UserID: 1,
 						}, nil
@@ -90,7 +90,7 @@ func TestHandler_GetTravelPlans(t *testing.T) {
 			travelID: "999",
 			setupRepository: func() (*MockTravelRepository, *MockPlanRepository) {
 				travelRepository := &MockTravelRepository{
-					FindByIDFunc: func(id uint) (*Travel, error) {
+					FindByIDFunc: func(id uint) (*model.Travel, error) {
 						return nil, gorm.ErrRecordNotFound
 					},
 				}
@@ -107,8 +107,8 @@ func TestHandler_GetTravelPlans(t *testing.T) {
 			travelID: "10",
 			setupRepository: func() (*MockTravelRepository, *MockPlanRepository) {
 				travelRepository := &MockTravelRepository{
-					FindByIDFunc: func(id uint) (*Travel, error) {
-						return &Travel{
+					FindByIDFunc: func(id uint) (*model.Travel, error) {
+						return &model.Travel{
 							ID:     10,
 							UserID: 999,
 						}, nil

@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/HisakeyT/backpacker-platform/internal/model"
 	"github.com/HisakeyT/backpacker-platform/internal/response"
 	"github.com/HisakeyT/backpacker-platform/internal/user"
 	"github.com/gin-gonic/gin"
@@ -114,7 +115,7 @@ func (h *Handler) GetTravel(c *gin.Context) {
 
 	travelDetail, err := h.useCase.GetTravel(userID, travelID)
 	if err != nil {
-		if errors.Is(err, ErrTravelNotFound) {
+		if errors.Is(err, model.ErrTravelNotFound) {
 			c.JSON(http.StatusNotFound, gin.H{
 				"error": err.Error(),
 			})
@@ -193,7 +194,7 @@ func (h *Handler) UpdateTravel(c *gin.Context) {
 
 	travel, err := h.useCase.UpdateTravel(userID, travelID, input)
 	if err != nil {
-		if errors.Is(err, ErrTravelNotFound) {
+		if errors.Is(err, model.ErrTravelNotFound) {
 			c.JSON(http.StatusNotFound, gin.H{
 				"error": err.Error(),
 			})
@@ -253,7 +254,7 @@ func (h *Handler) DeleteTravel(c *gin.Context) {
 	travelID := uint(travelID64)
 
 	if err := h.useCase.DeleteTravel(userID, travelID); err != nil {
-		if errors.Is(err, ErrTravelNotFound) {
+		if errors.Is(err, model.ErrTravelNotFound) {
 			c.JSON(http.StatusNotFound, gin.H{
 				"error": err.Error(),
 			})
@@ -303,7 +304,7 @@ func (h *Handler) GetPublicTravel(c *gin.Context) {
 
 	travel, err := h.useCase.GetPublicTravel(travelID)
 	if err != nil {
-		if errors.Is(err, ErrTravelNotFound) {
+		if errors.Is(err, model.ErrTravelNotFound) {
 			c.JSON(http.StatusNotFound, gin.H{
 				"error": err.Error(),
 			})
@@ -332,7 +333,7 @@ func (h *Handler) CopyTravel(c *gin.Context) {
 
 	travel, err := h.useCase.CopyTravel(userID, uint(travelID64))
 	if err != nil {
-		if errors.Is(err, ErrTravelNotFound) {
+		if errors.Is(err, model.ErrTravelNotFound) {
 			c.JSON(http.StatusNotFound, gin.H{
 				"error": err.Error(),
 			})

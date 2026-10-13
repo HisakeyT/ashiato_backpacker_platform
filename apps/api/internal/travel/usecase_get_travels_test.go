@@ -3,6 +3,8 @@ package travel
 import (
 	"errors"
 	"testing"
+
+	"github.com/HisakeyT/backpacker-platform/internal/model"
 )
 
 func TestUseCase_GetTravels(t *testing.T) {
@@ -10,13 +12,13 @@ func TestUseCase_GetTravels(t *testing.T) {
 
 	tests := []struct {
 		name            string
-		repository      []*Travel
+		repository      []*model.Travel
 		repositoryError error
 		wantLen         int
 	}{
 		{
 			name: "自分の旅行を複数件取得できる",
-			repository: []*Travel{
+			repository: []*model.Travel{
 				{
 					ID:     1,
 					UserID: userID,
@@ -32,7 +34,7 @@ func TestUseCase_GetTravels(t *testing.T) {
 		},
 		{
 			name:       "自分の旅行が0件でも正常に値を返す",
-			repository: []*Travel{},
+			repository: []*model.Travel{},
 			wantLen:    0,
 		},
 		{
@@ -44,7 +46,7 @@ func TestUseCase_GetTravels(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			repository := &MockRepository{
-				FindByUserIDFunc: func(userID uint) ([]*Travel, error) {
+				FindByUserIDFunc: func(userID uint) ([]*model.Travel, error) {
 					return tt.repository, tt.repositoryError
 				},
 			}

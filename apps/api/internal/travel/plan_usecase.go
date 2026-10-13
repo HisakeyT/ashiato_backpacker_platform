@@ -10,7 +10,7 @@ import (
 )
 
 type TravelRepository interface {
-	FindByID(id uint) (*Travel, error)
+	FindByID(id uint) (*model.Travel, error)
 }
 
 type PlanUseCase struct {
@@ -41,7 +41,7 @@ func (uc *PlanUseCase) CreateTravelPlan(userID, travelID uint, input CreateTrave
 	travelData, err := uc.travelRepository.FindByID(travelID)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, ErrTravelNotFound
+			return nil, model.ErrTravelNotFound
 		}
 		return nil, err
 	}
@@ -84,7 +84,7 @@ func (uc *PlanUseCase) UpdateTravelPlan(userID, travelID, travelPlanID uint, inp
 	travelData, err := uc.travelRepository.FindByID(travelID)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, ErrTravelNotFound
+			return nil, model.ErrTravelNotFound
 		}
 		return nil, err
 	}
@@ -134,7 +134,7 @@ func (uc *PlanUseCase) GetTravelPlans(userID, travelID uint) ([]model.TravelPlan
 	travelData, err := uc.travelRepository.FindByID(travelID)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, ErrTravelNotFound
+			return nil, model.ErrTravelNotFound
 		}
 		return nil, err
 	}
@@ -155,7 +155,7 @@ func (uc *PlanUseCase) DeleteTravelPlan(userID, travelID, travelPlanID uint) err
 	travelData, err := uc.travelRepository.FindByID(travelID)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return ErrTravelNotFound
+			return model.ErrTravelNotFound
 		}
 		return err
 	}
@@ -210,13 +210,13 @@ func (uc *PlanUseCase) GetPulicTravelPlan(travelID uint) ([]model.TravelPlan, er
 	travelData, err := uc.travelRepository.FindByID(travelID)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, ErrTravelNotFound
+			return nil, model.ErrTravelNotFound
 		}
 		return nil, err
 	}
 
 	if !travelData.IsPublic {
-		return nil, ErrTravelNotFound
+		return nil, model.ErrTravelNotFound
 	}
 
 	travelPlans, err := uc.travelPlanRepository.FindByTravelID(travelID)

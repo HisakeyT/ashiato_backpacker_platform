@@ -4,6 +4,7 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/HisakeyT/backpacker-platform/internal/model"
 	"gorm.io/gorm"
 )
 
@@ -21,11 +22,11 @@ func TestUseCase_CopyTravel(t *testing.T) {
 			userID:   2,
 			travelID: 10,
 			repository: &MockRepository{
-				FindByIDFunc: func(id uint) (*Travel, error) {
-					return &Travel{ID: 10, UserID: 1, IsPublic: true}, nil
+				FindByIDFunc: func(id uint) (*model.Travel, error) {
+					return &model.Travel{ID: 10, UserID: 1, IsPublic: true}, nil
 				},
-				CopyTravelFunc: func(src *Travel, newOwnerID uint) (*Travel, error) {
-					return &Travel{ID: 20, UserID: newOwnerID, CopiedFromTravelID: &src.ID}, nil
+				CopyTravelFunc: func(src *model.Travel, newOwnerID uint) (*model.Travel, error) {
+					return &model.Travel{ID: 20, UserID: newOwnerID, CopiedFromTravelID: &src.ID}, nil
 				},
 			},
 			wantID: 20,
@@ -35,11 +36,11 @@ func TestUseCase_CopyTravel(t *testing.T) {
 			userID:   1,
 			travelID: 10,
 			repository: &MockRepository{
-				FindByIDFunc: func(id uint) (*Travel, error) {
-					return &Travel{ID: 10, UserID: 1, IsPublic: false}, nil
+				FindByIDFunc: func(id uint) (*model.Travel, error) {
+					return &model.Travel{ID: 10, UserID: 1, IsPublic: false}, nil
 				},
-				CopyTravelFunc: func(src *Travel, newOwnerID uint) (*Travel, error) {
-					return &Travel{ID: 21, UserID: newOwnerID}, nil
+				CopyTravelFunc: func(src *model.Travel, newOwnerID uint) (*model.Travel, error) {
+					return &model.Travel{ID: 21, UserID: newOwnerID}, nil
 				},
 			},
 			wantID: 21,
@@ -49,22 +50,22 @@ func TestUseCase_CopyTravel(t *testing.T) {
 			userID:   2,
 			travelID: 10,
 			repository: &MockRepository{
-				FindByIDFunc: func(id uint) (*Travel, error) {
-					return &Travel{ID: 10, UserID: 1, IsPublic: false}, nil
+				FindByIDFunc: func(id uint) (*model.Travel, error) {
+					return &model.Travel{ID: 10, UserID: 1, IsPublic: false}, nil
 				},
 			},
-			wantErr: ErrTravelNotFound,
+			wantErr: model.ErrTravelNotFound,
 		},
 		{
 			name:     "存在しない旅行はNotFound",
 			userID:   2,
 			travelID: 99,
 			repository: &MockRepository{
-				FindByIDFunc: func(id uint) (*Travel, error) {
+				FindByIDFunc: func(id uint) (*model.Travel, error) {
 					return nil, gorm.ErrRecordNotFound
 				},
 			},
-			wantErr: ErrTravelNotFound,
+			wantErr: model.ErrTravelNotFound,
 		},
 	}
 

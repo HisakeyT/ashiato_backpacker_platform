@@ -7,6 +7,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/HisakeyT/backpacker-platform/internal/model"
 	"github.com/gin-gonic/gin"
 )
 
@@ -25,8 +26,8 @@ func TestHandler_DeleteTravel(t *testing.T) {
 			travelID: "1",
 			userID:   1,
 			repository: &MockRepository{
-				FindByIDFunc: func(id uint) (*Travel, error) {
-					return &Travel{
+				FindByIDFunc: func(id uint) (*model.Travel, error) {
+					return &model.Travel{
 						ID:     1,
 						UserID: 1,
 					}, nil
@@ -42,7 +43,7 @@ func TestHandler_DeleteTravel(t *testing.T) {
 			travelID: "999",
 			userID:   1,
 			repository: &MockRepository{
-				FindByIDFunc: func(id uint) (*Travel, error) {
+				FindByIDFunc: func(id uint) (*model.Travel, error) {
 					return nil, gorm.ErrRecordNotFound
 				},
 			},
@@ -53,8 +54,8 @@ func TestHandler_DeleteTravel(t *testing.T) {
 			travelID: "1",
 			userID:   1,
 			repository: &MockRepository{
-				FindByIDFunc: func(id uint) (*Travel, error) {
-					return &Travel{
+				FindByIDFunc: func(id uint) (*model.Travel, error) {
+					return &model.Travel{
 						ID:     1,
 						UserID: 2,
 					}, nil
@@ -67,7 +68,7 @@ func TestHandler_DeleteTravel(t *testing.T) {
 			travelID: "1",
 			userID:   1,
 			repository: &MockRepository{
-				FindByIDFunc: func(id uint) (*Travel, error) {
+				FindByIDFunc: func(id uint) (*model.Travel, error) {
 					return nil, errors.New("database error")
 				},
 			},
@@ -78,8 +79,8 @@ func TestHandler_DeleteTravel(t *testing.T) {
 			travelID: "1",
 			userID:   1,
 			repository: &MockRepository{
-				FindByIDFunc: func(id uint) (*Travel, error) {
-					return &Travel{
+				FindByIDFunc: func(id uint) (*model.Travel, error) {
+					return &model.Travel{
 						ID:     1,
 						UserID: 1,
 					}, nil

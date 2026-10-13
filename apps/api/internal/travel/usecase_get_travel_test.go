@@ -6,6 +6,7 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/HisakeyT/backpacker-platform/internal/model"
 	"github.com/HisakeyT/backpacker-platform/internal/user"
 )
 
@@ -16,51 +17,51 @@ func TestUseCase_GetTravel(t *testing.T) {
 	tests := []struct {
 		name                string
 		travelID            uint
-		repository          *Travel
+		repository          *model.Travel
 		repositoryError     error
-		copySource          *CopySource
+		copySource          *model.CopySource
 		copySourceError     error
 		wantCopySourceCalls int
-		want                *TravelDetail
+		want                *model.TravelDetail
 		wantErr             error
 	}{
 		{
 			name:     "自分の旅行を取得できる",
 			travelID: 1,
-			repository: &Travel{
+			repository: &model.Travel{
 				ID:     1,
 				UserID: userID,
 				Title:  "旅行1",
 			},
-			want: &TravelDetail{
-				Travel: &Travel{ID: 1, UserID: userID, Title: "旅行1"},
+			want: &model.TravelDetail{
+				Travel: &model.Travel{ID: 1, UserID: userID, Title: "旅行1"},
 			},
 		},
 		{
 			name:     "コピー元があれば CopiedFrom に入る",
 			travelID: 3,
-			repository: &Travel{
+			repository: &model.Travel{
 				ID:                 3,
 				UserID:             userID,
 				Title:              "コピーした旅行",
 				CopiedFromTravelID: &sourceID,
 			},
-			copySource:          &CopySource{TravelID: sourceID, AuthorNickname: "たろう"},
+			copySource:          &model.CopySource{TravelID: sourceID, AuthorNickname: "たろう"},
 			wantCopySourceCalls: 1,
-			want: &TravelDetail{
-				Travel: &Travel{
+			want: &model.TravelDetail{
+				Travel: &model.Travel{
 					ID:                 3,
 					UserID:             userID,
 					Title:              "コピーした旅行",
 					CopiedFromTravelID: &sourceID,
 				},
-				CopiedFrom: &CopySource{TravelID: sourceID, AuthorNickname: "たろう"},
+				CopiedFrom: &model.CopySource{TravelID: sourceID, AuthorNickname: "たろう"},
 			},
 		},
 		{
 			name:     "コピー元が非公開なら CopiedFrom は nil",
 			travelID: 3,
-			repository: &Travel{
+			repository: &model.Travel{
 				ID:                 3,
 				UserID:             userID,
 				Title:              "コピーした旅行",
@@ -68,8 +69,8 @@ func TestUseCase_GetTravel(t *testing.T) {
 			},
 			copySource:          nil,
 			wantCopySourceCalls: 1,
-			want: &TravelDetail{
-				Travel: &Travel{
+			want: &model.TravelDetail{
+				Travel: &model.Travel{
 					ID:                 3,
 					UserID:             userID,
 					Title:              "コピーした旅行",
@@ -81,12 +82,12 @@ func TestUseCase_GetTravel(t *testing.T) {
 			name:            "旅行が存在しない",
 			travelID:        999,
 			repositoryError: gorm.ErrRecordNotFound,
-			wantErr:         ErrTravelNotFound,
+			wantErr:         model.ErrTravelNotFound,
 		},
 		{
 			name:     "他人の旅行を取得しようとした",
 			travelID: 2,
-			repository: &Travel{
+			repository: &model.Travel{
 				ID:     2,
 				UserID: 2,
 				Title:  "他人の旅行",
@@ -102,7 +103,7 @@ func TestUseCase_GetTravel(t *testing.T) {
 		{
 			name:     "FindCopySourceでエラーが発生した場合、エラーを返す",
 			travelID: 3,
-			repository: &Travel{
+			repository: &model.Travel{
 				ID:                 3,
 				UserID:             userID,
 				CopiedFromTravelID: &sourceID,
@@ -117,10 +118,10 @@ func TestUseCase_GetTravel(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			copySourceCalls := 0
 			repository := &MockRepository{
-				FindByIDFunc: func(id uint) (*Travel, error) {
+				FindByIDFunc: func(id uint) (*model.Travel, error) {
 					return tt.repository, tt.repositoryError
 				},
-				FindCopySourceFunc: func(id uint) (*CopySource, error) {
+				FindCopySourceFunc: func(id uint) (*model.CopySource, error) {
 					copySourceCalls++
 					if id != sourceID {
 						t.Errorf("FindCopySource called with %d, want %d", id, sourceID)

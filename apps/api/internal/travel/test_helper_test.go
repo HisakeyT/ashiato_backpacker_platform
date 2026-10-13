@@ -1,25 +1,29 @@
 package travel
 
+import (
+	"github.com/HisakeyT/backpacker-platform/internal/model"
+)
+
 type MockRepository struct {
-	CreateFunc            func(travel *Travel) error
-	FindByIDFunc          func(id uint) (*Travel, error)
-	FindByUserIDFunc      func(userID uint) ([]*Travel, error)
-	UpdateFunc            func(travel *Travel) error
-	FindPublicTravelsFunc func() ([]*PublicTravel, error)
-	FindPublicByIDFunc    func(id uint) (*PublicTravel, error)
-	FindCopySourceFunc    func(sourceTravelID uint) (*CopySource, error)
+	CreateFunc            func(travel *model.Travel) error
+	FindByIDFunc          func(id uint) (*model.Travel, error)
+	FindByUserIDFunc      func(userID uint) ([]*model.Travel, error)
+	UpdateFunc            func(travel *model.Travel) error
+	FindPublicTravelsFunc func() ([]*model.PublicTravel, error)
+	FindPublicByIDFunc    func(id uint) (*model.PublicTravel, error)
+	FindCopySourceFunc    func(sourceTravelID uint) (*model.CopySource, error)
 	DeleteFunc            func(id uint) error
-	CopyTravelFunc        func(originalTravel *Travel, newUserID uint) (*Travel, error)
+	CopyTravelFunc        func(originalTravel *model.Travel, newUserID uint) (*model.Travel, error)
 }
 
-func (m *MockRepository) Create(travel *Travel) error {
+func (m *MockRepository) Create(travel *model.Travel) error {
 	if m.CreateFunc != nil {
 		return m.CreateFunc(travel)
 	}
 	return nil
 }
 
-func (m *MockRepository) FindByID(id uint) (*Travel, error) {
+func (m *MockRepository) FindByID(id uint) (*model.Travel, error) {
 	if m.FindByIDFunc != nil {
 		return m.FindByIDFunc(id)
 	}
@@ -27,7 +31,7 @@ func (m *MockRepository) FindByID(id uint) (*Travel, error) {
 	return nil, nil
 }
 
-func (m *MockRepository) FindByUserID(userID uint) ([]*Travel, error) {
+func (m *MockRepository) FindByUserID(userID uint) ([]*model.Travel, error) {
 	if m.FindByUserIDFunc != nil {
 		return m.FindByUserIDFunc(userID)
 	}
@@ -35,7 +39,7 @@ func (m *MockRepository) FindByUserID(userID uint) ([]*Travel, error) {
 	return nil, nil
 }
 
-func (m *MockRepository) Update(travel *Travel) error {
+func (m *MockRepository) Update(travel *model.Travel) error {
 	if m.UpdateFunc != nil {
 		return m.UpdateFunc(travel)
 	}
@@ -43,7 +47,7 @@ func (m *MockRepository) Update(travel *Travel) error {
 	return nil
 }
 
-func (m *MockRepository) FindPublicTravels() ([]*PublicTravel, error) {
+func (m *MockRepository) FindPublicTravels() ([]*model.PublicTravel, error) {
 	if m.FindPublicTravelsFunc != nil {
 		return m.FindPublicTravelsFunc()
 	}
@@ -51,7 +55,7 @@ func (m *MockRepository) FindPublicTravels() ([]*PublicTravel, error) {
 	return nil, nil
 }
 
-func (m *MockRepository) FindPublicByID(id uint) (*PublicTravel, error) {
+func (m *MockRepository) FindPublicByID(id uint) (*model.PublicTravel, error) {
 	if m.FindPublicByIDFunc != nil {
 		return m.FindPublicByIDFunc(id)
 	}
@@ -59,7 +63,7 @@ func (m *MockRepository) FindPublicByID(id uint) (*PublicTravel, error) {
 	return nil, nil
 }
 
-func (m *MockRepository) FindCopySource(sourceTravelID uint) (*CopySource, error) {
+func (m *MockRepository) FindCopySource(sourceTravelID uint) (*model.CopySource, error) {
 	if m.FindCopySourceFunc != nil {
 		return m.FindCopySourceFunc(sourceTravelID)
 	}
@@ -74,7 +78,7 @@ func (m *MockRepository) Delete(id uint) error {
 	return nil
 }
 
-func (m *MockRepository) CopyTravel(originalTravel *Travel, newUserID uint) (*Travel, error) {
+func (m *MockRepository) CopyTravel(originalTravel *model.Travel, newUserID uint) (*model.Travel, error) {
 	if m.CopyTravelFunc != nil {
 		return m.CopyTravelFunc(originalTravel, newUserID)
 	}

@@ -52,10 +52,10 @@ func (m *MockPlanRepository) FindByTravelID(travelID uint) ([]model.TravelPlan, 
 }
 
 type MockTravelRepository struct {
-	FindByIDFunc func(id uint) (*Travel, error)
+	FindByIDFunc func(id uint) (*model.Travel, error)
 }
 
-func (m *MockTravelRepository) FindByID(id uint) (*Travel, error) {
+func (m *MockTravelRepository) FindByID(id uint) (*model.Travel, error) {
 	if m.FindByIDFunc != nil {
 		return m.FindByIDFunc(id)
 	}

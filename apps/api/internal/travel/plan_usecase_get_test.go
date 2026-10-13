@@ -52,13 +52,13 @@ func TestUseCase_GetTravelPlans(t *testing.T) {
 		for _, tt := range tests {
 			t.Run(tt.name, func(t *testing.T) {
 				// Arrange
-				travelData := &Travel{
+				travelData := &model.Travel{
 					ID:     travelID,
 					UserID: userID,
 				}
 
 				travelRepository := &MockTravelRepository{
-					FindByIDFunc: func(id uint) (*Travel, error) {
+					FindByIDFunc: func(id uint) (*model.Travel, error) {
 						return travelData, nil
 					},
 				}
@@ -96,18 +96,18 @@ func TestUseCase_GetTravelPlans(t *testing.T) {
 	t.Run("異常系", func(t *testing.T) {
 		tests := []struct {
 			name          string
-			travelData    *Travel
+			travelData    *model.Travel
 			findByIDError error
 			expectedError error
 		}{
 			{
 				name:          "Travelが存在しない",
 				findByIDError: gorm.ErrRecordNotFound,
-				expectedError: ErrTravelNotFound,
+				expectedError: model.ErrTravelNotFound,
 			},
 			{
 				name: "自分のTravelではない",
-				travelData: &Travel{
+				travelData: &model.Travel{
 					ID:     travelID,
 					UserID: 999,
 				},
@@ -119,7 +119,7 @@ func TestUseCase_GetTravelPlans(t *testing.T) {
 			t.Run(tt.name, func(t *testing.T) {
 				// Arrange
 				travelRepository := &MockTravelRepository{
-					FindByIDFunc: func(id uint) (*Travel, error) {
+					FindByIDFunc: func(id uint) (*model.Travel, error) {
 						return tt.travelData, tt.findByIDError
 					},
 				}

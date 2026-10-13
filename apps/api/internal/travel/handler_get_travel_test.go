@@ -6,6 +6,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/HisakeyT/backpacker-platform/internal/model"
 	"github.com/gin-gonic/gin"
 )
 
@@ -20,8 +21,8 @@ func TestHandler_GetTravel(t *testing.T) {
 		{
 			name: "自分の旅行を複数件取得できる",
 			repository: &MockRepository{
-				FindByUserIDFunc: func(userID uint) ([]*Travel, error) {
-					return []*Travel{
+				FindByUserIDFunc: func(userID uint) ([]*model.Travel, error) {
+					return []*model.Travel{
 						{
 							ID:     1,
 							UserID: userID,
@@ -40,8 +41,8 @@ func TestHandler_GetTravel(t *testing.T) {
 		{
 			name: "自分の旅行が0件でも正常に取得できる",
 			repository: &MockRepository{
-				FindByUserIDFunc: func(userID uint) ([]*Travel, error) {
-					return []*Travel{}, nil
+				FindByUserIDFunc: func(userID uint) ([]*model.Travel, error) {
+					return []*model.Travel{}, nil
 				},
 			},
 			wantStatus: http.StatusOK,
@@ -49,7 +50,7 @@ func TestHandler_GetTravel(t *testing.T) {
 		{
 			name: "Repositoryでエラーが発生した場合",
 			repository: &MockRepository{
-				FindByUserIDFunc: func(userID uint) ([]*Travel, error) {
+				FindByUserIDFunc: func(userID uint) ([]*model.Travel, error) {
 					return nil, errors.New("database error")
 				},
 			},

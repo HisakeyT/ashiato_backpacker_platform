@@ -4,20 +4,22 @@ import (
 	"errors"
 	"reflect"
 	"testing"
+
+	"github.com/HisakeyT/backpacker-platform/internal/model"
 )
 
 func TestUseCase_GetPublicTravels(t *testing.T) {
 	tests := []struct {
 		name        string
 		repository  Repository
-		wantTravels []*PublicTravel
+		wantTravels []*model.PublicTravel
 		wantErr     bool
 	}{
 		{
 			name: "公開Travelを複数取得できる",
 			repository: &MockRepository{
-				FindPublicTravelsFunc: func() ([]*PublicTravel, error) {
-					return []*PublicTravel{
+				FindPublicTravelsFunc: func() ([]*model.PublicTravel, error) {
+					return []*model.PublicTravel{
 						{
 							ID:       1,
 							UserID:   1,
@@ -33,7 +35,7 @@ func TestUseCase_GetPublicTravels(t *testing.T) {
 					}, nil
 				},
 			},
-			wantTravels: []*PublicTravel{
+			wantTravels: []*model.PublicTravel{
 				{
 					ID:       1,
 					UserID:   1,
@@ -51,16 +53,16 @@ func TestUseCase_GetPublicTravels(t *testing.T) {
 		{
 			name: "公開Travelが0件",
 			repository: &MockRepository{
-				FindPublicTravelsFunc: func() ([]*PublicTravel, error) {
-					return []*PublicTravel{}, nil
+				FindPublicTravelsFunc: func() ([]*model.PublicTravel, error) {
+					return []*model.PublicTravel{}, nil
 				},
 			},
-			wantTravels: []*PublicTravel{},
+			wantTravels: []*model.PublicTravel{},
 		},
 		{
 			name: "Repositoryエラー",
 			repository: &MockRepository{
-				FindPublicTravelsFunc: func() ([]*PublicTravel, error) {
+				FindPublicTravelsFunc: func() ([]*model.PublicTravel, error) {
 					return nil, errors.New("repository error")
 				},
 			},

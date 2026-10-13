@@ -5,6 +5,7 @@ import (
 	"gorm.io/gorm"
 	"time"
 
+	"github.com/HisakeyT/backpacker-platform/internal/model"
 	"github.com/HisakeyT/backpacker-platform/internal/user"
 )
 
@@ -27,12 +28,12 @@ type CreateTravelInput struct {
 	IsPublic  bool
 }
 
-func (u *UseCase) CreateTravel(userID uint, input CreateTravelInput) (*Travel, error) {
+func (u *UseCase) CreateTravel(userID uint, input CreateTravelInput) (*model.Travel, error) {
 	if err := validateDateRange(input.StartDate, input.EndDate); err != nil {
 		return nil, err
 	}
 
-	travel := &Travel{
+	travel := &model.Travel{
 		UserID:    userID,
 		Title:     input.Title,
 		StartDate: input.StartDate,
@@ -56,16 +57,16 @@ func validateDateRange(startDate, endDate time.Time) error {
 	return nil
 }
 
-func (u *UseCase) GetPublicTravels() ([]*PublicTravel, error) {
+func (u *UseCase) GetPublicTravels() ([]*model.PublicTravel, error) {
 	return u.repository.FindPublicTravels()
 }
 
 // ロジックがないので、テストは書かない
-func (u *UseCase) GetPublicTravel(travelID uint) (*PublicTravel, error) {
+func (u *UseCase) GetPublicTravel(travelID uint) (*model.PublicTravel, error) {
 	return u.repository.FindPublicByID(travelID)
 }
 
-func (u *UseCase) GetTravels(userID uint) ([]*Travel, error) {
+func (u *UseCase) GetTravels(userID uint) ([]*model.Travel, error) {
 	travels, err := u.repository.FindByUserID(userID)
 	if err != nil {
 		return nil, err
@@ -74,11 +75,11 @@ func (u *UseCase) GetTravels(userID uint) ([]*Travel, error) {
 	return travels, nil
 }
 
-func (u *UseCase) GetTravel(userID uint, travelID uint) (*TravelDetail, error) {
+func (u *UseCase) GetTravel(userID uint, travelID uint) (*model.TravelDetail, error) {
 	travel, err := u.repository.FindByID(travelID)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, ErrTravelNotFound
+			return nil, model.ErrTravelNotFound
 		}
 		return nil, err
 	}
@@ -87,7 +88,7 @@ func (u *UseCase) GetTravel(userID uint, travelID uint) (*TravelDetail, error) {
 		return nil, user.ErrUserNotAuthorized
 	}
 
-	var copiedFrom *CopySource
+	var copiedFrom *model.CopySource
 	if travel.CopiedFromTravelID != nil {
 		copiedFrom, err = u.repository.FindCopySource(*travel.CopiedFromTravelID)
 		if err != nil {
@@ -95,7 +96,7 @@ func (u *UseCase) GetTravel(userID uint, travelID uint) (*TravelDetail, error) {
 		}
 	}
 
-	travelDetail := &TravelDetail{Travel: travel, CopiedFrom: copiedFrom}
+	travelDetail := &model.TravelDetail{Travel: travel, CopiedFrom: copiedFrom}
 	return travelDetail, nil
 }
 
@@ -106,11 +107,11 @@ type UpdateTravelInput struct {
 	IsPublic  *bool      `json:"is_public"`
 }
 
-func (u *UseCase) UpdateTravel(userID uint, travelID uint, input UpdateTravelInput) (*Travel, error) {
+func (u *UseCase) UpdateTravel(userID uint, travelID uint, input UpdateTravelInput) (*model.Travel, error) {
 	travel, err := u.repository.FindByID(travelID)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, ErrTravelNotFound
+			return nil, model.ErrTravelNotFound
 		}
 		return nil, err
 	}
@@ -132,7 +133,7 @@ func (u *UseCase) UpdateTravel(userID uint, travelID uint, input UpdateTravelInp
 	return travel, nil
 }
 
-func applyUpdate(travel *Travel, input UpdateTravelInput) {
+func applyUpdate(travel *model.Travel, input UpdateTravelInput) {
 	if input.Title != nil {
 		travel.Title = *input.Title
 	}
@@ -154,7 +155,7 @@ func (u *UseCase) DeleteTravel(userID uint, travelID uint) error {
 	travel, err := u.repository.FindByID(travelID)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return ErrTravelNotFound
+			return model.ErrTravelNotFound
 		}
 
 		return err
@@ -171,18 +172,18 @@ func (u *UseCase) DeleteTravel(userID uint, travelID uint) error {
 	return nil
 }
 
-func (uc *UseCase) CopyTravel(userID, travelID uint) (*Travel, error) {
+func (uc *UseCase) CopyTravel(userID, travelID uint) (*model.Travel, error) {
 	originalTravel, err := uc.repository.FindByID(travelID)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, ErrTravelNotFound
+			return nil, model.ErrTravelNotFound
 		}
 		return nil, err
 	}
 
 	// 非公開かつ他人の旅行は存在しない扱い
 	if !originalTravel.IsPublic && originalTravel.UserID != userID {
-		return nil, ErrTravelNotFound
+		return nil, model.ErrTravelNotFound
 	}
 
 	return uc.repository.CopyTravel(originalTravel, userID)

@@ -6,6 +6,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/HisakeyT/backpacker-platform/internal/model"
 	"github.com/gin-gonic/gin"
 )
 
@@ -22,7 +23,7 @@ func TestHandler_CreateTravel(t *testing.T) {
 			name:    "正常に作成できる",
 			request: `{"title":"東南アジア3週間","start_date":"2026-10-01","end_date":"2026-10-21","is_public":true}`,
 			repository: &MockRepository{
-				CreateFunc: func(travel *Travel) error {
+				CreateFunc: func(travel *model.Travel) error {
 					travel.ID = 1
 					return nil
 				},

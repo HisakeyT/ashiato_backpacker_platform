@@ -95,7 +95,7 @@ func (h *PlanHandler) CreateTravelPlan(c *gin.Context) {
 	)
 
 	if err != nil {
-		if errors.Is(err, ErrTravelNotFound) {
+		if errors.Is(err, model.ErrTravelNotFound) {
 			c.JSON(http.StatusNotFound, gin.H{
 				"error": err.Error(),
 			})
@@ -221,7 +221,7 @@ func (h *PlanHandler) UpdateTravelPlan(c *gin.Context) {
 
 	travelPlan, err := h.useCase.UpdateTravelPlan(userID, travelID, travelPlanID, updateInput)
 	if err != nil {
-		if errors.Is(err, ErrTravelNotFound) {
+		if errors.Is(err, model.ErrTravelNotFound) {
 			c.JSON(http.StatusNotFound, gin.H{
 				"error": err.Error(),
 			})
@@ -295,7 +295,7 @@ func (h *PlanHandler) GetTravelPlans(c *gin.Context) {
 
 	travelPlans, err := h.useCase.GetTravelPlans(userID, uint(travelID))
 	if err != nil {
-		if errors.Is(err, ErrTravelNotFound) {
+		if errors.Is(err, model.ErrTravelNotFound) {
 			c.JSON(http.StatusNotFound, gin.H{
 				"error": err.Error(),
 			})
@@ -339,7 +339,7 @@ func (h *PlanHandler) DeleteTravelPlan(c *gin.Context) {
 
 	err = h.useCase.DeleteTravelPlan(userID, uint(travelID64), uint(travelPlanID64))
 	if err != nil {
-		if errors.Is(err, ErrTravelNotFound) {
+		if errors.Is(err, model.ErrTravelNotFound) {
 			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 			return
 		}
@@ -377,7 +377,7 @@ func (h *PlanHandler) GetPublicTravelPlan(c *gin.Context) {
 
 	travelPlans, err := h.useCase.GetPulicTravelPlan(uint(travelID))
 	if err != nil {
-		if errors.Is(err, ErrTravelNotFound) {
+		if errors.Is(err, model.ErrTravelNotFound) {
 			c.JSON(http.StatusNotFound, gin.H{
 				"error": err.Error(),
 			})

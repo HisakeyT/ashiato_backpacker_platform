@@ -1,4 +1,4 @@
-package travel
+package model
 
 import (
 	"errors"

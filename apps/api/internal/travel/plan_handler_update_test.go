@@ -151,8 +151,8 @@ func TestHandler_UpdateTravelPlan(t *testing.T) {
 			// TravelRepositoryはUseCaseで必要なので、
 			// 実際のプロジェクトのMockTravelRepositoryに合わせる
 			travelRepository := &MockTravelRepository{
-				FindByIDFunc: func(id uint) (*Travel, error) {
-					return &Travel{
+				FindByIDFunc: func(id uint) (*model.Travel, error) {
+					return &model.Travel{
 						ID:     1,
 						UserID: 1,
 					}, nil

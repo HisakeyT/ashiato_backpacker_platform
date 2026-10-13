@@ -6,6 +6,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/HisakeyT/backpacker-platform/internal/model"
 	"github.com/HisakeyT/backpacker-platform/internal/user"
 	"gorm.io/gorm"
 )
@@ -25,14 +26,14 @@ func TestUseCase_UpdateTravel(t *testing.T) {
 	tests := []struct {
 		name        string
 		updateInput UpdateTravelInput
-		want        *Travel
+		want        *model.Travel
 	}{
 		{
 			name: "タイトルを更新する",
 			updateInput: UpdateTravelInput{
 				Title: &newTitle,
 			},
-			want: &Travel{
+			want: &model.Travel{
 				ID:        travelID,
 				UserID:    userID,
 				Title:     newTitle,
@@ -46,7 +47,7 @@ func TestUseCase_UpdateTravel(t *testing.T) {
 			updateInput: UpdateTravelInput{
 				StartDate: &newStartDate,
 			},
-			want: &Travel{
+			want: &model.Travel{
 				ID:        travelID,
 				UserID:    userID,
 				Title:     "元のタイトル",
@@ -60,7 +61,7 @@ func TestUseCase_UpdateTravel(t *testing.T) {
 			updateInput: UpdateTravelInput{
 				EndDate: &newEndDate,
 			},
-			want: &Travel{
+			want: &model.Travel{
 				ID:        travelID,
 				UserID:    userID,
 				Title:     "元のタイトル",
@@ -74,7 +75,7 @@ func TestUseCase_UpdateTravel(t *testing.T) {
 			updateInput: UpdateTravelInput{
 				IsPublic: &newIsPublic,
 			},
-			want: &Travel{
+			want: &model.Travel{
 				ID:        travelID,
 				UserID:    userID,
 				Title:     "元のタイトル",
@@ -88,8 +89,8 @@ func TestUseCase_UpdateTravel(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			repository := &MockRepository{
-				FindByIDFunc: func(id uint) (*Travel, error) {
-					return &Travel{
+				FindByIDFunc: func(id uint) (*model.Travel, error) {
+					return &model.Travel{
 						ID:        travelID,
 						UserID:    userID,
 						Title:     "元のタイトル",
@@ -98,7 +99,7 @@ func TestUseCase_UpdateTravel(t *testing.T) {
 						IsPublic:  false,
 					}, nil
 				},
-				UpdateFunc: func(travel *Travel) error {
+				UpdateFunc: func(travel *model.Travel) error {
 					return nil
 				},
 			}
@@ -141,7 +142,7 @@ func TestUseCase_UpdateTravel_Error(t *testing.T) {
 	tests := []struct {
 		name          string
 		updateInput   UpdateTravelInput
-		repository    *Travel
+		repository    *model.Travel
 		repositoryErr error
 		updateErr     error
 		wantErr       error
@@ -149,11 +150,11 @@ func TestUseCase_UpdateTravel_Error(t *testing.T) {
 		{
 			name:          "Travelが存在しない",
 			repositoryErr: gorm.ErrRecordNotFound,
-			wantErr:       ErrTravelNotFound,
+			wantErr:       model.ErrTravelNotFound,
 		},
 		{
 			name: "他人のTravelを更新しようとする",
-			repository: &Travel{
+			repository: &model.Travel{
 				ID:     travelID,
 				UserID: 2,
 				Title:  "他人の旅行",
@@ -175,7 +176,7 @@ func TestUseCase_UpdateTravel_Error(t *testing.T) {
 			updateInput: UpdateTravelInput{
 				StartDate: &invalidStartDate,
 			},
-			repository: &Travel{
+			repository: &model.Travel{
 				ID:        travelID,
 				UserID:    userID,
 				Title:     "元のタイトル",
@@ -189,7 +190,7 @@ func TestUseCase_UpdateTravel_Error(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			repository := &MockRepository{
-				FindByIDFunc: func(id uint) (*Travel, error) {
+				FindByIDFunc: func(id uint) (*model.Travel, error) {
 					if tt.repositoryErr != nil {
 						return nil, tt.repositoryErr
 					}
@@ -198,13 +199,13 @@ func TestUseCase_UpdateTravel_Error(t *testing.T) {
 						return tt.repository, nil
 					}
 
-					return &Travel{
+					return &model.Travel{
 						ID:     travelID,
 						UserID: userID,
 						Title:  "元のタイトル",
 					}, nil
 				},
-				UpdateFunc: func(travel *Travel) error {
+				UpdateFunc: func(travel *model.Travel) error {
 					return tt.updateErr
 				},
 			}
