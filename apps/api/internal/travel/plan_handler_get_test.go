@@ -5,6 +5,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/HisakeyT/backpacker-platform/internal/model"
+
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
@@ -34,8 +36,8 @@ func TestHandler_GetTravelPlans(t *testing.T) {
 				}
 
 				travelPlanRepository := &MockPlanRepository{
-					FindByTravelIDFunc: func(id uint) ([]TravelPlan, error) {
-						return []TravelPlan{
+					FindByTravelIDFunc: func(id uint) ([]model.TravelPlan, error) {
+						return []model.TravelPlan{
 							{
 								ID:        1,
 								TravelID:  10,
@@ -73,8 +75,8 @@ func TestHandler_GetTravelPlans(t *testing.T) {
 				}
 
 				travelPlanRepository := &MockPlanRepository{
-					FindByTravelIDFunc: func(id uint) ([]TravelPlan, error) {
-						return []TravelPlan{}, nil
+					FindByTravelIDFunc: func(id uint) ([]model.TravelPlan, error) {
+						return []model.TravelPlan{}, nil
 					},
 				}
 

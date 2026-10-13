@@ -6,6 +6,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/HisakeyT/backpacker-platform/internal/model"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
@@ -42,7 +43,7 @@ func TestHandler_CreateTravelPlan(t *testing.T) {
 				}
 
 				travelPlanRepository := &MockPlanRepository{
-					CreateFunc: func(travelPlan *TravelPlan) error {
+					CreateFunc: func(travelPlan *model.TravelPlan) error {
 						return nil
 					},
 				}

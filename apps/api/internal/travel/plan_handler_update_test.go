@@ -7,6 +7,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/HisakeyT/backpacker-platform/internal/model"
 	"github.com/gin-gonic/gin"
 )
 
@@ -27,8 +28,8 @@ func TestHandler_UpdateTravelPlan(t *testing.T) {
 			planID:   "1",
 			request:  `{"start_date":"2026-10-02"}`,
 			repository: &MockPlanRepository{
-				FindByIDFunc: func(id uint) (*TravelPlan, error) {
-					return &TravelPlan{
+				FindByIDFunc: func(id uint) (*model.TravelPlan, error) {
+					return &model.TravelPlan{
 						ID:        1,
 						TravelID:  1,
 						StartDate: time.Date(2026, 10, 1, 0, 0, 0, 0, time.UTC),
@@ -37,7 +38,7 @@ func TestHandler_UpdateTravelPlan(t *testing.T) {
 						SortOrder: 1,
 					}, nil
 				},
-				UpdateFunc: func(travelPlan *TravelPlan) error {
+				UpdateFunc: func(travelPlan *model.TravelPlan) error {
 					return nil
 				},
 			},
@@ -49,8 +50,8 @@ func TestHandler_UpdateTravelPlan(t *testing.T) {
 			planID:   "1",
 			request:  `{"place":"チェンマイ"}`,
 			repository: &MockPlanRepository{
-				FindByIDFunc: func(id uint) (*TravelPlan, error) {
-					return &TravelPlan{
+				FindByIDFunc: func(id uint) (*model.TravelPlan, error) {
+					return &model.TravelPlan{
 						ID:        1,
 						TravelID:  1,
 						StartDate: time.Date(2026, 10, 1, 0, 0, 0, 0, time.UTC),
@@ -59,7 +60,7 @@ func TestHandler_UpdateTravelPlan(t *testing.T) {
 						SortOrder: 1,
 					}, nil
 				},
-				UpdateFunc: func(travelPlan *TravelPlan) error {
+				UpdateFunc: func(travelPlan *model.TravelPlan) error {
 					return nil
 				},
 			},
@@ -71,8 +72,8 @@ func TestHandler_UpdateTravelPlan(t *testing.T) {
 			planID:   "1",
 			request:  `{"content":"ワット・プラ・シン"}`,
 			repository: &MockPlanRepository{
-				FindByIDFunc: func(id uint) (*TravelPlan, error) {
-					return &TravelPlan{
+				FindByIDFunc: func(id uint) (*model.TravelPlan, error) {
+					return &model.TravelPlan{
 						ID:        1,
 						TravelID:  1,
 						StartDate: time.Date(2026, 10, 1, 0, 0, 0, 0, time.UTC),
@@ -81,7 +82,7 @@ func TestHandler_UpdateTravelPlan(t *testing.T) {
 						SortOrder: 1,
 					}, nil
 				},
-				UpdateFunc: func(travelPlan *TravelPlan) error {
+				UpdateFunc: func(travelPlan *model.TravelPlan) error {
 					return nil
 				},
 			},
@@ -93,8 +94,8 @@ func TestHandler_UpdateTravelPlan(t *testing.T) {
 			planID:   "1",
 			request:  `{"sort_order":2}`,
 			repository: &MockPlanRepository{
-				FindByIDFunc: func(id uint) (*TravelPlan, error) {
-					return &TravelPlan{
+				FindByIDFunc: func(id uint) (*model.TravelPlan, error) {
+					return &model.TravelPlan{
 						ID:        1,
 						TravelID:  1,
 						StartDate: time.Date(2026, 10, 1, 0, 0, 0, 0, time.UTC),
@@ -103,7 +104,7 @@ func TestHandler_UpdateTravelPlan(t *testing.T) {
 						SortOrder: 1,
 					}, nil
 				},
-				UpdateFunc: func(travelPlan *TravelPlan) error {
+				UpdateFunc: func(travelPlan *model.TravelPlan) error {
 					return nil
 				},
 			},

@@ -1,6 +1,7 @@
 package travel
 
 import (
+	"github.com/HisakeyT/backpacker-platform/internal/model"
 	"time"
 )
 
@@ -21,7 +22,7 @@ type TravelPlanResponse struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
-func toTravelPlanResponse(p TravelPlan) TravelPlanResponse {
+func toTravelPlanResponse(p model.TravelPlan) TravelPlanResponse {
 	var endDate *string
 	if p.EndDate != nil {
 		formattedEndDate := p.EndDate.Format(dateLayout)

@@ -1,21 +1,25 @@
 package travel
 
+import (
+	"github.com/HisakeyT/backpacker-platform/internal/model"
+)
+
 type MockPlanRepository struct {
-	CreateFunc         func(travelPlan *TravelPlan) error
-	UpdateFunc         func(travelPlan *TravelPlan) error
+	CreateFunc         func(travelPlan *model.TravelPlan) error
+	UpdateFunc         func(travelPlan *model.TravelPlan) error
 	DeleteFunc         func(id uint) error
-	FindByIDFunc       func(id uint) (*TravelPlan, error)
-	FindByTravelIDFunc func(travelID uint) ([]TravelPlan, error)
+	FindByIDFunc       func(id uint) (*model.TravelPlan, error)
+	FindByTravelIDFunc func(travelID uint) ([]model.TravelPlan, error)
 }
 
-func (m *MockPlanRepository) Create(travelPlan *TravelPlan) error {
+func (m *MockPlanRepository) Create(travelPlan *model.TravelPlan) error {
 	if m.CreateFunc != nil {
 		return m.CreateFunc(travelPlan)
 	}
 	return nil
 }
 
-func (m *MockPlanRepository) Update(travelPlan *TravelPlan) error {
+func (m *MockPlanRepository) Update(travelPlan *model.TravelPlan) error {
 	if m.UpdateFunc != nil {
 		return m.UpdateFunc(travelPlan)
 	}
@@ -31,7 +35,7 @@ func (m *MockPlanRepository) Delete(id uint) error {
 	return nil
 }
 
-func (m *MockPlanRepository) FindByID(id uint) (*TravelPlan, error) {
+func (m *MockPlanRepository) FindByID(id uint) (*model.TravelPlan, error) {
 	if m.FindByIDFunc != nil {
 		return m.FindByIDFunc(id)
 	}
@@ -39,7 +43,7 @@ func (m *MockPlanRepository) FindByID(id uint) (*TravelPlan, error) {
 	return nil, nil
 }
 
-func (m *MockPlanRepository) FindByTravelID(travelID uint) ([]TravelPlan, error) {
+func (m *MockPlanRepository) FindByTravelID(travelID uint) ([]model.TravelPlan, error) {
 	if m.FindByTravelIDFunc != nil {
 		return m.FindByTravelIDFunc(travelID)
 	}

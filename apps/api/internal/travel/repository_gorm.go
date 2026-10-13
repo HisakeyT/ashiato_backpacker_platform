@@ -3,6 +3,8 @@ package travel
 import (
 	"gorm.io/gorm"
 	"time"
+
+	"github.com/HisakeyT/backpacker-platform/internal/model"
 )
 
 type GormRepository struct {
@@ -117,7 +119,7 @@ func (r *GormRepository) CopyTravel(originalTravel *Travel, newUserID uint) (*Tr
 			return err
 		}
 
-		var travelPlans []TravelPlan
+		var travelPlans []model.TravelPlan
 		if err := tx.Where("travel_id = ?", originalTravel.ID).Find(&travelPlans).Error; err != nil {
 			return err
 		}
@@ -125,14 +127,14 @@ func (r *GormRepository) CopyTravel(originalTravel *Travel, newUserID uint) (*Tr
 			return nil
 		}
 
-		copiedPlans := make([]TravelPlan, len(travelPlans))
+		copiedPlans := make([]model.TravelPlan, len(travelPlans))
 		for i, plan := range travelPlans {
 			var endDate *time.Time
 			if plan.EndDate != nil {
 				e := *plan.EndDate
 				endDate = &e
 			}
-			copiedPlans[i] = TravelPlan{
+			copiedPlans[i] = model.TravelPlan{
 				TravelID:  createdTravel.ID,
 				StartDate: plan.StartDate,
 				EndDate:   endDate,

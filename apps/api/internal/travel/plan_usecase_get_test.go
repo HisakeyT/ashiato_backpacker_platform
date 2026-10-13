@@ -6,6 +6,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/HisakeyT/backpacker-platform/internal/model"
 	"github.com/HisakeyT/backpacker-platform/internal/user"
 )
 
@@ -16,12 +17,12 @@ func TestUseCase_GetTravelPlans(t *testing.T) {
 	t.Run("正常系", func(t *testing.T) {
 		tests := []struct {
 			name          string
-			travelPlans   []TravelPlan
+			travelPlans   []model.TravelPlan
 			expectedCount int
 		}{
 			{
 				name: "TravelPlanを複数件取得できる",
-				travelPlans: []TravelPlan{
+				travelPlans: []model.TravelPlan{
 					{
 						ID:        1,
 						TravelID:  travelID,
@@ -43,7 +44,7 @@ func TestUseCase_GetTravelPlans(t *testing.T) {
 			},
 			{
 				name:          "TravelPlanが0件でも取得できる",
-				travelPlans:   []TravelPlan{},
+				travelPlans:   []model.TravelPlan{},
 				expectedCount: 0,
 			},
 		}
@@ -63,7 +64,7 @@ func TestUseCase_GetTravelPlans(t *testing.T) {
 				}
 
 				travelPlanRepository := &MockPlanRepository{
-					FindByTravelIDFunc: func(id uint) ([]TravelPlan, error) {
+					FindByTravelIDFunc: func(id uint) ([]model.TravelPlan, error) {
 						return tt.travelPlans, nil
 					},
 				}

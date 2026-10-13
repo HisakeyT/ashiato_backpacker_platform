@@ -5,6 +5,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/HisakeyT/backpacker-platform/internal/model"
 	"github.com/HisakeyT/backpacker-platform/internal/user"
 )
 
@@ -35,7 +36,7 @@ func TestUseCase_CreateTravelPlan(t *testing.T) {
 		}
 
 		travelPlanRepository := &MockPlanRepository{
-			CreateFunc: func(travelPlan *TravelPlan) error {
+			CreateFunc: func(travelPlan *model.TravelPlan) error {
 				return nil
 			},
 		}
@@ -111,7 +112,7 @@ func TestUseCase_CreateTravelPlan_Invalid(t *testing.T) {
 			}
 
 			travelPlanRepository := &MockPlanRepository{
-				CreateFunc: func(travelPlan *TravelPlan) error {
+				CreateFunc: func(travelPlan *model.TravelPlan) error {
 					t.Fatal("Create should not be called")
 					return nil
 				},

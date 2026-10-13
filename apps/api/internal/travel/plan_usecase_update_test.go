@@ -7,6 +7,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/HisakeyT/backpacker-platform/internal/model"
 	"github.com/HisakeyT/backpacker-platform/internal/user"
 )
 
@@ -31,14 +32,14 @@ func TestUseCase_UpdateTravelPlan(t *testing.T) {
 		tests := []struct {
 			name        string
 			updateInput UpdateTravelPlanInput
-			want        *TravelPlan
+			want        *model.TravelPlan
 		}{
 			{
 				name: "日付を更新する",
 				updateInput: UpdateTravelPlanInput{
 					StartDate: &newDate,
 				},
-				want: &TravelPlan{
+				want: &model.TravelPlan{
 					ID:        travelPlanID,
 					TravelID:  travelID,
 					StartDate: newDate,
@@ -52,7 +53,7 @@ func TestUseCase_UpdateTravelPlan(t *testing.T) {
 				updateInput: UpdateTravelPlanInput{
 					Place: &newPlace,
 				},
-				want: &TravelPlan{
+				want: &model.TravelPlan{
 					ID:        travelPlanID,
 					TravelID:  travelID,
 					StartDate: date,
@@ -66,7 +67,7 @@ func TestUseCase_UpdateTravelPlan(t *testing.T) {
 				updateInput: UpdateTravelPlanInput{
 					Content: &newContent,
 				},
-				want: &TravelPlan{
+				want: &model.TravelPlan{
 					ID:        travelPlanID,
 					TravelID:  travelID,
 					StartDate: date,
@@ -80,7 +81,7 @@ func TestUseCase_UpdateTravelPlan(t *testing.T) {
 				updateInput: UpdateTravelPlanInput{
 					SortOrder: &newSortOrder,
 				},
-				want: &TravelPlan{
+				want: &model.TravelPlan{
 					ID:        travelPlanID,
 					TravelID:  travelID,
 					StartDate: date,
@@ -94,8 +95,8 @@ func TestUseCase_UpdateTravelPlan(t *testing.T) {
 		for _, tt := range tests {
 			t.Run(tt.name, func(t *testing.T) {
 				repository := &MockPlanRepository{
-					FindByIDFunc: func(id uint) (*TravelPlan, error) {
-						return &TravelPlan{
+					FindByIDFunc: func(id uint) (*model.TravelPlan, error) {
+						return &model.TravelPlan{
 							ID:        travelPlanID,
 							TravelID:  travelID,
 							StartDate: date,
@@ -104,7 +105,7 @@ func TestUseCase_UpdateTravelPlan(t *testing.T) {
 							SortOrder: sortOrder,
 						}, nil
 					},
-					UpdateFunc: func(travelPlan *TravelPlan) error {
+					UpdateFunc: func(travelPlan *model.TravelPlan) error {
 						return nil
 					},
 				}
@@ -146,7 +147,7 @@ func TestUseCase_UpdateTravelPlan(t *testing.T) {
 			name                    string
 			travelRepository        *Travel
 			travelRepositoryErr     error
-			travelPlanRepository    *TravelPlan
+			travelPlanRepository    *model.TravelPlan
 			travelPlanRepositoryErr error
 			updateErr               error
 			wantErr                 error
@@ -176,7 +177,7 @@ func TestUseCase_UpdateTravelPlan(t *testing.T) {
 					UserID: userID,
 				},
 				travelPlanRepositoryErr: gorm.ErrRecordNotFound,
-				wantErr:                 ErrTravelPlanNotFound,
+				wantErr:                 model.ErrTravelPlanNotFound,
 			},
 			{
 				name: "TravelPlanのRepositoryでエラーが発生する",
@@ -193,11 +194,11 @@ func TestUseCase_UpdateTravelPlan(t *testing.T) {
 					ID:     travelID,
 					UserID: userID,
 				},
-				travelPlanRepository: &TravelPlan{
+				travelPlanRepository: &model.TravelPlan{
 					ID:       travelPlanID,
 					TravelID: 2,
 				},
-				wantErr: ErrTravelPlanNotBelongToTravel,
+				wantErr: model.ErrTravelPlanNotBelongToTravel,
 			},
 			{
 				name: "TravelPlanのUpdateでエラーが発生する",
@@ -205,7 +206,7 @@ func TestUseCase_UpdateTravelPlan(t *testing.T) {
 					ID:     travelID,
 					UserID: userID,
 				},
-				travelPlanRepository: &TravelPlan{
+				travelPlanRepository: &model.TravelPlan{
 					ID:       travelPlanID,
 					TravelID: travelID,
 				},
@@ -217,10 +218,10 @@ func TestUseCase_UpdateTravelPlan(t *testing.T) {
 		for _, tt := range tests {
 			t.Run(tt.name, func(t *testing.T) {
 				repository := &MockPlanRepository{
-					FindByIDFunc: func(id uint) (*TravelPlan, error) {
+					FindByIDFunc: func(id uint) (*model.TravelPlan, error) {
 						return tt.travelPlanRepository, tt.travelPlanRepositoryErr
 					},
-					UpdateFunc: func(travelPlan *TravelPlan) error {
+					UpdateFunc: func(travelPlan *model.TravelPlan) error {
 						return tt.updateErr
 					},
 				}
