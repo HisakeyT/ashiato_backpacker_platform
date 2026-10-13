@@ -2,6 +2,7 @@ package travel
 
 import (
 	"errors"
+	"github.com/HisakeyT/backpacker-platform/internal/model"
 	"github.com/HisakeyT/backpacker-platform/internal/user"
 	"time"
 
@@ -31,7 +32,7 @@ type CreateTravelPlanInput struct {
 	StartDate time.Time
 	EndDate   *time.Time
 	Place     string
-	Location  Location
+	Location  model.Location
 	Content   string
 	SortOrder int
 }
@@ -74,7 +75,7 @@ type UpdateTravelPlanInput struct {
 	StartDate *time.Time
 	EndDate   *time.Time
 	Place     *string
-	Location  *Location
+	Location  *model.Location
 	Content   *string
 	SortOrder *int
 }

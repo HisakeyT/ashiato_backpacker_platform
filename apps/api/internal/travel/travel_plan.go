@@ -2,6 +2,7 @@ package travel
 
 import (
 	"errors"
+	"github.com/HisakeyT/backpacker-platform/internal/model"
 	"time"
 )
 
@@ -15,10 +16,10 @@ type TravelPlan struct {
 	TravelID  uint      `gorm:"not null;index"`
 	StartDate time.Time `gorm:"not null"`
 	EndDate   *time.Time
-	Place     string   `gorm:"not null"`
-	Location  Location `gorm:"embedded"`
-	Content   string   `gorm:"not null"`
-	SortOrder int      `gorm:"not null"`
+	Place     string         `gorm:"not null"`
+	Location  model.Location `gorm:"embedded"`
+	Content   string         `gorm:"not null"`
+	SortOrder int            `gorm:"not null"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }

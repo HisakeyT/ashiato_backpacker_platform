@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/HisakeyT/backpacker-platform/internal/model"
 	"github.com/HisakeyT/backpacker-platform/internal/response"
 	"github.com/HisakeyT/backpacker-platform/internal/user"
 	"github.com/gin-gonic/gin"
@@ -76,7 +77,7 @@ func (h *PlanHandler) CreateTravelPlan(c *gin.Context) {
 		StartDate: startDate,
 		EndDate:   endDate,
 		Place:     req.Place,
-		Location: Location{
+		Location: model.Location{
 			Country:   req.Country,
 			State:     req.State,
 			City:      req.City,
@@ -113,7 +114,7 @@ func (h *PlanHandler) CreateTravelPlan(c *gin.Context) {
 			return
 		}
 
-		if errors.Is(err, ErrInvalidCoordinates) {
+		if errors.Is(err, model.ErrInvalidCoordinates) {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
@@ -253,7 +254,7 @@ func (h *PlanHandler) UpdateTravelPlan(c *gin.Context) {
 			return
 		}
 
-		if errors.Is(err, ErrInvalidCoordinates) {
+		if errors.Is(err, model.ErrInvalidCoordinates) {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
@@ -267,12 +268,12 @@ func (h *PlanHandler) UpdateTravelPlan(c *gin.Context) {
 	c.JSON(http.StatusOK, toTravelPlanResponse(*travelPlan))
 }
 
-func (r UpdateTravelPlanRequest) location() *Location {
+func (r UpdateTravelPlanRequest) location() *model.Location {
 	if r.Country == nil && r.State == nil && r.City == nil &&
 		r.Latitude == nil && r.Longitude == nil {
 		return nil
 	}
-	return &Location{
+	return &model.Location{
 		Country:   r.Country,
 		State:     r.State,
 		City:      r.City,
