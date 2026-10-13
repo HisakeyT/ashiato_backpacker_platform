@@ -31,6 +31,7 @@ type CreateTravelPlanInput struct {
 	StartDate time.Time
 	EndDate   *time.Time
 	Place     string
+	Location  Location
 	Content   string
 	SortOrder int
 }
@@ -56,6 +57,7 @@ func (uc *PlanUseCase) CreateTravelPlan(userID, travelID uint, input CreateTrave
 		TravelID:  travelID,
 		StartDate: input.StartDate,
 		EndDate:   input.EndDate,
+		Location:  input.Location,
 		Place:     input.Place,
 		Content:   input.Content,
 		SortOrder: input.SortOrder,
@@ -72,6 +74,7 @@ type UpdateTravelPlanInput struct {
 	StartDate *time.Time
 	EndDate   *time.Time
 	Place     *string
+	Location  *Location
 	Content   *string
 	SortOrder *int
 }
@@ -105,6 +108,10 @@ func (uc *PlanUseCase) UpdateTravelPlan(userID, travelID, travelPlanID uint, inp
 	applyTravelPlanUpdates(travelPlan, input)
 
 	if err := validatePlanDates(travelPlan.StartDate, travelPlan.EndDate); err != nil {
+		return nil, err
+	}
+
+	if travelPlan.Location.Validate() != nil {
 		return nil, err
 	}
 
@@ -190,6 +197,11 @@ func applyTravelPlanUpdates(travelPlan *TravelPlan, input UpdateTravelPlanInput)
 
 	if input.SortOrder != nil {
 		travelPlan.SortOrder = *input.SortOrder
+	}
+
+	if input.Location != nil {
+		travelPlan.Location = *input.Location
+		travelPlan.Location.Normalize()
 	}
 }
 
