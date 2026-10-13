@@ -137,6 +137,7 @@ func (r *GormRepository) CopyTravel(originalTravel *Travel, newUserID uint) (*Tr
 				StartDate: plan.StartDate,
 				EndDate:   endDate,
 				Place:     plan.Place,
+				Location:  plan.Location,
 				Content:   plan.Content,
 				SortOrder: plan.SortOrder,
 			}
