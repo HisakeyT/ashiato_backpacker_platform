@@ -23,11 +23,16 @@ func NewPlanHandler(useCase *PlanUseCase) *PlanHandler {
 }
 
 type CreateTravelPlanRequest struct {
-	StartDate string  `json:"start_date" binding:"required"`
-	EndDate   *string `json:"end_date"`
-	Place     string  `json:"place" binding:"required"`
-	Content   string  `json:"content" binding:"required"`
-	SortOrder int     `json:"sort_order"`
+	StartDate string   `json:"start_date" binding:"required"`
+	EndDate   *string  `json:"end_date"`
+	Place     string   `json:"place" binding:"required"`
+	Country   *string  `json:"country"`
+	State     *string  `json:"state"`
+	City      *string  `json:"city"`
+	Latitude  *float64 `json:"latitude"`
+	Longitude *float64 `json:"longitude"`
+	Content   string   `json:"content" binding:"required"`
+	SortOrder int      `json:"sort_order"`
 }
 
 func (h *PlanHandler) CreateTravelPlan(c *gin.Context) {
@@ -71,6 +76,13 @@ func (h *PlanHandler) CreateTravelPlan(c *gin.Context) {
 		StartDate: startDate,
 		EndDate:   endDate,
 		Place:     req.Place,
+		Location: Location{
+			Country:   req.Country,
+			State:     req.State,
+			City:      req.City,
+			Latitude:  req.Latitude,
+			Longitude: req.Longitude,
+		},
 		Content:   req.Content,
 		SortOrder: req.SortOrder,
 	}
@@ -101,6 +113,11 @@ func (h *PlanHandler) CreateTravelPlan(c *gin.Context) {
 			return
 		}
 
+		if errors.Is(err, ErrInvalidCoordinates) {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})
@@ -111,11 +128,16 @@ func (h *PlanHandler) CreateTravelPlan(c *gin.Context) {
 }
 
 type UpdateTravelPlanRequest struct {
-	StartDate *string `json:"start_date"`
-	EndDate   *string `json:"end_date"`
-	Place     *string `json:"place"`
-	Content   *string `json:"content"`
-	SortOrder *int    `json:"sort_order"`
+	StartDate *string  `json:"start_date"`
+	EndDate   *string  `json:"end_date"`
+	Place     *string  `json:"place"`
+	Country   *string  `json:"country"`
+	State     *string  `json:"state"`
+	City      *string  `json:"city"`
+	Latitude  *float64 `json:"latitude"`
+	Longitude *float64 `json:"longitude"`
+	Content   *string  `json:"content"`
+	SortOrder *int     `json:"sort_order"`
 }
 
 func (h *PlanHandler) UpdateTravelPlan(c *gin.Context) {
@@ -191,6 +213,7 @@ func (h *PlanHandler) UpdateTravelPlan(c *gin.Context) {
 		StartDate: startDate,
 		EndDate:   endDate,
 		Place:     updateReq.Place,
+		Location:  updateReq.location(),
 		Content:   updateReq.Content,
 		SortOrder: updateReq.SortOrder,
 	}
@@ -230,6 +253,11 @@ func (h *PlanHandler) UpdateTravelPlan(c *gin.Context) {
 			return
 		}
 
+		if errors.Is(err, ErrInvalidCoordinates) {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})
@@ -237,6 +265,20 @@ func (h *PlanHandler) UpdateTravelPlan(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, toTravelPlanResponse(*travelPlan))
+}
+
+func (r UpdateTravelPlanRequest) location() *Location {
+	if r.Country == nil && r.State == nil && r.City == nil &&
+		r.Latitude == nil && r.Longitude == nil {
+		return nil
+	}
+	return &Location{
+		Country:   r.Country,
+		State:     r.State,
+		City:      r.City,
+		Latitude:  r.Latitude,
+		Longitude: r.Longitude,
+	}
 }
 
 func (h *PlanHandler) GetTravelPlans(c *gin.Context) {
