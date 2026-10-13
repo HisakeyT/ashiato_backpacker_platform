@@ -15,14 +15,10 @@ type TravelPlan struct {
 	TravelID  uint      `gorm:"not null;index"`
 	StartDate time.Time `gorm:"not null"`
 	EndDate   *time.Time
-	Place     string `gorm:"not null"`
-	Country   *string
-	State     *string
-	City      *string
-	Latitude  *float64
-	Longitude *float64
-	Content   string `gorm:"not null"`
-	SortOrder int    `gorm:"not null"`
+	Place     string   `gorm:"not null"`
+	Location  Location `gorm:"embedded"`
+	Content   string   `gorm:"not null"`
+	SortOrder int      `gorm:"not null"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
