@@ -1,4 +1,4 @@
-package user
+package usecase
 
 import (
 	"errors"
@@ -6,13 +6,14 @@ import (
 
 	"github.com/HisakeyT/backpacker-platform/internal/auth"
 	"github.com/HisakeyT/backpacker-platform/internal/model"
+	"github.com/HisakeyT/backpacker-platform/internal/repository/mock"
 	"golang.org/x/crypto/bcrypt"
 )
 
 func TestUseCase_Register(t *testing.T) {
 	email := "taro@example.com"
 
-	repository := &MockRepository{
+	repository := &mockrepo.MockUserRepository{
 		FindByEmailFunc: func(email string) (*model.User, error) {
 			return nil, model.ErrUserNotFound
 		},
@@ -23,7 +24,7 @@ func TestUseCase_Register(t *testing.T) {
 	}
 
 	jwtManager := auth.NewJWTManager("test-secret")
-	useCase := NewUseCase(repository, jwtManager)
+	useCase := NewUserUseCase(repository, jwtManager)
 
 	input := RegisterInput{
 		Nickname:             "Taro",
@@ -62,7 +63,7 @@ func TestUseCase_Register(t *testing.T) {
 }
 
 func TestUseCase_Register_PasswordMismatch(t *testing.T) {
-	repository := &MockRepository{
+	repository := &mockrepo.MockUserRepository{
 		FindByEmailFunc: func(email string) (*model.User, error) {
 			return nil, model.ErrUserNotFound
 		},
@@ -73,7 +74,7 @@ func TestUseCase_Register_PasswordMismatch(t *testing.T) {
 	}
 
 	jwtManager := auth.NewJWTManager("test-secret")
-	useCase := NewUseCase(repository, jwtManager)
+	useCase := NewUserUseCase(repository, jwtManager)
 
 	input := RegisterInput{
 		Nickname:             "Taro",
@@ -91,7 +92,7 @@ func TestUseCase_Register_PasswordMismatch(t *testing.T) {
 func TestUseCase_Register_EmailAlreadyUsed(t *testing.T) {
 	email := "taro@example.com"
 
-	repository := &MockRepository{
+	repository := &mockrepo.MockUserRepository{
 		FindByEmailFunc: func(email string) (*model.User, error) {
 			return &model.User{
 				ID:    1,
@@ -105,7 +106,7 @@ func TestUseCase_Register_EmailAlreadyUsed(t *testing.T) {
 	}
 
 	jwtManager := auth.NewJWTManager("test-secret")
-	useCase := NewUseCase(repository, jwtManager)
+	useCase := NewUserUseCase(repository, jwtManager)
 
 	input := RegisterInput{
 		Nickname:             "Taro",
@@ -125,7 +126,7 @@ func TestUseCase_Register_FindByEmailError(t *testing.T) {
 	email := "taro@example.com"
 	expectedErr := errors.New("database error")
 
-	repository := &MockRepository{
+	repository := &mockrepo.MockUserRepository{
 		FindByEmailFunc: func(email string) (*model.User, error) {
 			return nil, expectedErr
 		},
@@ -136,7 +137,7 @@ func TestUseCase_Register_FindByEmailError(t *testing.T) {
 	}
 
 	jwtManager := auth.NewJWTManager("test-secret")
-	useCase := NewUseCase(repository, jwtManager)
+	useCase := NewUserUseCase(repository, jwtManager)
 
 	input := RegisterInput{
 		Nickname:             "Taro",

@@ -1,4 +1,4 @@
-package user
+package handler
 
 import (
 	"encoding/json"
@@ -10,6 +10,8 @@ import (
 	"github.com/HisakeyT/backpacker-platform/internal/auth"
 	"github.com/HisakeyT/backpacker-platform/internal/model"
 	"github.com/HisakeyT/backpacker-platform/internal/repository"
+	"github.com/HisakeyT/backpacker-platform/internal/repository/mock"
+	"github.com/HisakeyT/backpacker-platform/internal/usecase"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -80,7 +82,7 @@ func TestHandler_Register(t *testing.T) {
 			router := gin.New()
 
 			jwtManager := auth.NewJWTManager("secret")
-			useCase := NewUseCase(tt.repository, jwtManager)
+			useCase := usecase.NewUserUseCase(tt.repository, jwtManager)
 			handler := NewHandler(useCase)
 
 			router.POST("/register", handler.Register)
@@ -184,7 +186,7 @@ func TestHandler_Login(t *testing.T) {
 			router := gin.New()
 
 			jwtManager := auth.NewJWTManager("secret")
-			useCase := NewUseCase(tt.repository, jwtManager)
+			useCase := usecase.NewUserUseCase(tt.repository, jwtManager)
 			handler := NewHandler(useCase)
 
 			router.POST("/login", handler.Login)
@@ -252,7 +254,7 @@ func TestHandler_Me(t *testing.T) {
 	}
 
 	jwtManager := auth.NewJWTManager("secret")
-	useCase := NewUseCase(repository, jwtManager)
+	useCase := usecase.NewUserUseCase(repository, jwtManager)
 	handler := NewHandler(useCase)
 
 	router.Use(auth.AuthMiddleware(jwtManager))
@@ -308,7 +310,7 @@ func TestHandler_Me_UserNotFound(t *testing.T) {
 	}
 
 	jwtManager := auth.NewJWTManager("secret")
-	useCase := NewUseCase(repository, jwtManager)
+	useCase := usecase.NewUserUseCase(repository, jwtManager)
 	handler := NewHandler(useCase)
 
 	router := gin.New()
@@ -343,7 +345,7 @@ func TestHandler_Me_UserNotFound(t *testing.T) {
 func TestHandler_UpdateMe(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 
-	mockRepository := &MockRepository{
+	mockRepository := &mockrepo.MockUserRepository{
 		FindByIDFunc: func(id uint) (*model.User, error) {
 			return &model.User{
 				ID:       1,
@@ -357,7 +359,7 @@ func TestHandler_UpdateMe(t *testing.T) {
 	}
 
 	jwtManager := auth.NewJWTManager("test-secret")
-	useCase := NewUseCase(mockRepository, jwtManager)
+	useCase := usecase.NewUserUseCase(mockRepository, jwtManager)
 	handler := NewHandler(useCase)
 
 	router := gin.New()

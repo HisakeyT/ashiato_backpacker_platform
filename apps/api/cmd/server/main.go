@@ -8,9 +8,10 @@ import (
 
 	"github.com/HisakeyT/backpacker-platform/internal/auth"
 	"github.com/HisakeyT/backpacker-platform/internal/database"
+	"github.com/HisakeyT/backpacker-platform/internal/handler"
 	"github.com/HisakeyT/backpacker-platform/internal/repository/gorm"
 	"github.com/HisakeyT/backpacker-platform/internal/travel"
-	"github.com/HisakeyT/backpacker-platform/internal/user"
+	"github.com/HisakeyT/backpacker-platform/internal/usecase"
 )
 
 func main() {
@@ -23,8 +24,8 @@ func main() {
 	jwtManager := auth.NewJWTManager(jwtSecret)
 
 	userRepository := gormrepo.NewUserRepository(db)
-	userUseCase := user.NewUseCase(userRepository, jwtManager)
-	userHandler := user.NewHandler(userUseCase)
+	userUseCase := usecase.NewUserUseCase(userRepository, jwtManager)
+	userHandler := handler.NewHandler(userUseCase)
 
 	travelRepository := gormrepo.NewTravelRepository(db)
 	travelUseCase := travel.NewUseCase(travelRepository)

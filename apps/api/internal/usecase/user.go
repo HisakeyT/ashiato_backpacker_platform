@@ -1,4 +1,4 @@
-package user
+package usecase
 
 import (
 	"errors"
@@ -9,13 +9,13 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type UseCase struct {
+type UserUseCase struct {
 	repository repository.UserRepository
 	jwtManager *auth.JWTManager
 }
 
-func NewUseCase(repository repository.UserRepository, jwtManager *auth.JWTManager) *UseCase {
-	return &UseCase{
+func NewUserUseCase(repository repository.UserRepository, jwtManager *auth.JWTManager) *UserUseCase {
+	return &UserUseCase{
 		repository: repository,
 		jwtManager: jwtManager,
 	}
@@ -34,7 +34,7 @@ var (
 	ErrInvalidCredentials = errors.New("invalid credentials")
 )
 
-func (u *UseCase) Register(input RegisterInput) (*model.User, error) {
+func (u *UserUseCase) Register(input RegisterInput) (*model.User, error) {
 	if input.Password != input.PasswordConfirmation {
 		return nil, ErrPasswordMismatch
 	}
@@ -79,7 +79,7 @@ type LoginOutput struct {
 	Token string
 }
 
-func (u *UseCase) Login(input LoginInput) (*LoginOutput, error) {
+func (u *UserUseCase) Login(input LoginInput) (*LoginOutput, error) {
 	user, err := u.repository.FindByEmail(input.Email)
 	if err != nil {
 		if errors.Is(err, model.ErrUserNotFound) {
@@ -105,7 +105,7 @@ func (u *UseCase) Login(input LoginInput) (*LoginOutput, error) {
 	}, nil
 }
 
-func (u *UseCase) Me(userID uint) (*model.User, error) {
+func (u *UserUseCase) Me(userID uint) (*model.User, error) {
 	return u.repository.FindByID(userID)
 }
 
@@ -113,7 +113,7 @@ type UpdateMeInput struct {
 	Nickname string
 }
 
-func (u *UseCase) UpdateMe(userID uint, input UpdateMeInput) (*model.User, error) {
+func (u *UserUseCase) UpdateMe(userID uint, input UpdateMeInput) (*model.User, error) {
 	user, err := u.repository.FindByID(userID)
 	if err != nil {
 		return nil, err

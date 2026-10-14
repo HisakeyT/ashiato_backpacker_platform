@@ -1,17 +1,19 @@
-package user
+package usecase
 
 import (
 	"errors"
 
+	"testing"
+
 	"github.com/HisakeyT/backpacker-platform/internal/auth"
 	"github.com/HisakeyT/backpacker-platform/internal/model"
-	"testing"
+	"github.com/HisakeyT/backpacker-platform/internal/repository/mock"
 )
 
 func TestUseCase_UpdateMe(t *testing.T) {
 	var updatedUser *model.User
 
-	mockRepository := &MockRepository{
+	mockRepository := &mockrepo.MockUserRepository{
 		FindByIDFunc: func(id uint) (*model.User, error) {
 			return &model.User{
 				ID:       1,
@@ -26,7 +28,7 @@ func TestUseCase_UpdateMe(t *testing.T) {
 	}
 
 	jwtManager := auth.NewJWTManager("test-secret")
-	useCase := NewUseCase(mockRepository, jwtManager)
+	useCase := NewUserUseCase(mockRepository, jwtManager)
 
 	input := UpdateMeInput{
 		Nickname: "new-nickname",
@@ -57,13 +59,13 @@ func TestUseCase_UpdateMe(t *testing.T) {
 func TestUseCase_UpdateMe_FindByIDError(t *testing.T) {
 	expectedErr := errors.New("database error")
 
-	mockRepository := &MockRepository{
+	mockRepository := &mockrepo.MockUserRepository{
 		FindByIDFunc: func(id uint) (*model.User, error) {
 			return nil, expectedErr
 		},
 	}
 
-	useCase := NewUseCase(
+	useCase := NewUserUseCase(
 		mockRepository,
 		auth.NewJWTManager("test-secret"),
 	)
@@ -80,7 +82,7 @@ func TestUseCase_UpdateMe_FindByIDError(t *testing.T) {
 func TestUseCase_UpdateMe_UpdateError(t *testing.T) {
 	expectedErr := errors.New("database error")
 
-	mockRepository := &MockRepository{
+	mockRepository := &mockrepo.MockUserRepository{
 		FindByIDFunc: func(id uint) (*model.User, error) {
 			return &model.User{
 				ID:       1,
@@ -93,7 +95,7 @@ func TestUseCase_UpdateMe_UpdateError(t *testing.T) {
 		},
 	}
 
-	useCase := NewUseCase(
+	useCase := NewUserUseCase(
 		mockRepository,
 		auth.NewJWTManager("test-secret"),
 	)

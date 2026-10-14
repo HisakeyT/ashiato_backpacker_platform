@@ -1,18 +1,19 @@
-package user
+package handler
 
 import (
 	"errors"
 	"net/http"
 
 	"github.com/HisakeyT/backpacker-platform/internal/model"
+	"github.com/HisakeyT/backpacker-platform/internal/usecase"
 	"github.com/gin-gonic/gin"
 )
 
 type Handler struct {
-	useCase *UseCase
+	useCase *usecase.UserUseCase
 }
 
-func NewHandler(useCase *UseCase) *Handler {
+func NewHandler(useCase *usecase.UserUseCase) *Handler {
 	return &Handler{
 		useCase: useCase,
 	}
@@ -46,7 +47,7 @@ func (h *Handler) Register(c *gin.Context) {
 		return
 	}
 
-	input := RegisterInput{
+	input := usecase.RegisterInput{
 		Nickname:             req.Nickname,
 		Email:                req.Email,
 		Password:             req.Password,
@@ -55,14 +56,14 @@ func (h *Handler) Register(c *gin.Context) {
 
 	u, err := h.useCase.Register(input)
 	if err != nil {
-		if errors.Is(err, ErrEmailAlreadyUsed) {
+		if errors.Is(err, usecase.ErrEmailAlreadyUsed) {
 			c.JSON(http.StatusConflict, gin.H{
 				"error": err.Error(),
 			})
 			return
 		}
 
-		if errors.Is(err, ErrPasswordMismatch) {
+		if errors.Is(err, usecase.ErrPasswordMismatch) {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"error": err.Error(),
 			})
@@ -83,7 +84,7 @@ func (h *Handler) Register(c *gin.Context) {
 }
 
 func (h *Handler) Login(c *gin.Context) {
-	var input LoginInput
+	var input usecase.LoginInput
 
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -94,7 +95,7 @@ func (h *Handler) Login(c *gin.Context) {
 
 	result, err := h.useCase.Login(input)
 	if err != nil {
-		if errors.Is(err, ErrInvalidCredentials) {
+		if errors.Is(err, usecase.ErrInvalidCredentials) {
 			c.JSON(http.StatusUnauthorized, gin.H{
 				"error": "invalid email or password",
 			})
@@ -143,7 +144,7 @@ func (h *Handler) Me(c *gin.Context) {
 }
 
 func (h *Handler) UpdateMe(c *gin.Context) {
-	var input UpdateMeInput
+	var input usecase.UpdateMeInput
 
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
