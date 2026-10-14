@@ -1,4 +1,4 @@
-package travel
+package usecase
 
 import (
 	"errors"
@@ -6,11 +6,12 @@ import (
 	"time"
 
 	"github.com/HisakeyT/backpacker-platform/internal/model"
+	"github.com/HisakeyT/backpacker-platform/internal/repository/mock"
 )
 
 var errRepository = errors.New("repository error")
 
-func TestUseCase_CreateTravelPlan(t *testing.T) {
+func TestUsecase_CreateTravelPlan(t *testing.T) {
 	t.Run("正常に作成できる", func(t *testing.T) {
 		// Arrange
 		userID := uint(1)
@@ -28,19 +29,19 @@ func TestUseCase_CreateTravelPlan(t *testing.T) {
 			UserID: userID,
 		}
 
-		travelRepository := &MockTravelRepository{
+		travelRepository := &mockrepo.MockTravelRepository{
 			FindByIDFunc: func(id uint) (*model.Travel, error) {
 				return travelData, nil
 			},
 		}
 
-		travelPlanRepository := &MockPlanRepository{
+		travelPlanRepository := &mockrepo.MockTravelPlanRepository{
 			CreateFunc: func(travelPlan *model.TravelPlan) error {
 				return nil
 			},
 		}
 
-		useCase := NewPlanUseCase(
+		useCase := NewTravelPlanUsecase(
 			travelRepository,
 			travelPlanRepository,
 		)
@@ -74,7 +75,7 @@ func TestUseCase_CreateTravelPlan(t *testing.T) {
 	})
 }
 
-func TestUseCase_CreateTravelPlan_Invalid(t *testing.T) {
+func TestUsecase_CreateTravelPlan_Invalid(t *testing.T) {
 	tests := []struct {
 		name        string
 		userID      uint
@@ -104,20 +105,20 @@ func TestUseCase_CreateTravelPlan_Invalid(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			travelRepository := &MockTravelRepository{
+			travelRepository := &mockrepo.MockTravelRepository{
 				FindByIDFunc: func(id uint) (*model.Travel, error) {
 					return tt.travelData, tt.findByIDErr
 				},
 			}
 
-			travelPlanRepository := &MockPlanRepository{
+			travelPlanRepository := &mockrepo.MockTravelPlanRepository{
 				CreateFunc: func(travelPlan *model.TravelPlan) error {
 					t.Fatal("Create should not be called")
 					return nil
 				},
 			}
 
-			useCase := NewPlanUseCase(
+			useCase := NewTravelPlanUsecase(
 				travelRepository,
 				travelPlanRepository,
 			)

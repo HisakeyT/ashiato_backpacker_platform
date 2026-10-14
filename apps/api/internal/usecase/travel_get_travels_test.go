@@ -1,13 +1,14 @@
-package travel
+package usecase
 
 import (
 	"errors"
 	"testing"
 
 	"github.com/HisakeyT/backpacker-platform/internal/model"
+	mockrepo "github.com/HisakeyT/backpacker-platform/internal/repository/mock"
 )
 
-func TestUseCase_GetTravels(t *testing.T) {
+func TestUsecase_GetTravels(t *testing.T) {
 	userID := uint(1)
 
 	tests := []struct {
@@ -38,20 +39,20 @@ func TestUseCase_GetTravels(t *testing.T) {
 			wantLen:    0,
 		},
 		{
-			name:            "RepositoryのFindByUserIDでエラーが発生した場合、UseCaseでもエラーを返す",
+			name:            "RepositoryのFindByUserIDでエラーが発生した場合、Usecaseでもエラーを返す",
 			repositoryError: errors.New("database error"),
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			repository := &MockRepository{
+			repository := &mockrepo.MockTravelRepository{
 				FindByUserIDFunc: func(userID uint) ([]*model.Travel, error) {
 					return tt.repository, tt.repositoryError
 				},
 			}
 
-			useCase := NewUseCase(repository)
+			useCase := NewTravelUsecase(repository)
 			travels, err := useCase.GetTravels(userID)
 
 			if tt.repositoryError != nil {

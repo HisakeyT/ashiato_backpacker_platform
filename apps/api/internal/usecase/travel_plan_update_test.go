@@ -1,4 +1,4 @@
-package travel
+package usecase
 
 import (
 	"errors"
@@ -8,9 +8,10 @@ import (
 	"time"
 
 	"github.com/HisakeyT/backpacker-platform/internal/model"
+	"github.com/HisakeyT/backpacker-platform/internal/repository/mock"
 )
 
-func TestUseCase_UpdateTravelPlan(t *testing.T) {
+func TestUsecase_UpdateTravelPlan(t *testing.T) {
 	userID := uint(1)
 	travelID := uint(1)
 	travelPlanID := uint(1)
@@ -93,7 +94,7 @@ func TestUseCase_UpdateTravelPlan(t *testing.T) {
 
 		for _, tt := range tests {
 			t.Run(tt.name, func(t *testing.T) {
-				repository := &MockPlanRepository{
+				repository := &mockrepo.MockTravelPlanRepository{
 					FindByIDFunc: func(id uint) (*model.TravelPlan, error) {
 						return &model.TravelPlan{
 							ID:        travelPlanID,
@@ -109,7 +110,7 @@ func TestUseCase_UpdateTravelPlan(t *testing.T) {
 					},
 				}
 
-				travelRepository := &MockTravelRepository{
+				travelRepository := &mockrepo.MockTravelRepository{
 					FindByIDFunc: func(id uint) (*model.Travel, error) {
 						return &model.Travel{
 							ID:     travelID,
@@ -118,7 +119,7 @@ func TestUseCase_UpdateTravelPlan(t *testing.T) {
 					},
 				}
 
-				useCase := NewPlanUseCase(travelRepository, repository)
+				useCase := NewTravelPlanUsecase(travelRepository, repository)
 
 				got, err := useCase.UpdateTravelPlan(
 					userID,
@@ -216,7 +217,7 @@ func TestUseCase_UpdateTravelPlan(t *testing.T) {
 
 		for _, tt := range tests {
 			t.Run(tt.name, func(t *testing.T) {
-				repository := &MockPlanRepository{
+				repository := &mockrepo.MockTravelPlanRepository{
 					FindByIDFunc: func(id uint) (*model.TravelPlan, error) {
 						return tt.travelPlanRepository, tt.travelPlanRepositoryErr
 					},
@@ -225,13 +226,13 @@ func TestUseCase_UpdateTravelPlan(t *testing.T) {
 					},
 				}
 
-				travelRepository := &MockTravelRepository{
+				travelRepository := &mockrepo.MockTravelRepository{
 					FindByIDFunc: func(id uint) (*model.Travel, error) {
 						return tt.travelRepository, tt.travelRepositoryErr
 					},
 				}
 
-				useCase := NewPlanUseCase(travelRepository, repository)
+				useCase := NewTravelPlanUsecase(travelRepository, repository)
 
 				_, err := useCase.UpdateTravelPlan(
 					userID,

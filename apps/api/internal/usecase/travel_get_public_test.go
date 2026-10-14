@@ -1,4 +1,4 @@
-package travel
+package usecase
 
 import (
 	"errors"
@@ -7,9 +7,10 @@ import (
 
 	"github.com/HisakeyT/backpacker-platform/internal/model"
 	"github.com/HisakeyT/backpacker-platform/internal/repository"
+	mockrepo "github.com/HisakeyT/backpacker-platform/internal/repository/mock"
 )
 
-func TestUseCase_GetPublicTravels(t *testing.T) {
+func TestUsecase_GetPublicTravels(t *testing.T) {
 	tests := []struct {
 		name        string
 		repository  repository.TravelRepository
@@ -18,7 +19,7 @@ func TestUseCase_GetPublicTravels(t *testing.T) {
 	}{
 		{
 			name: "公開Travelを複数取得できる",
-			repository: &MockRepository{
+			repository: &mockrepo.MockTravelRepository{
 				FindPublicTravelsFunc: func() ([]*model.PublicTravel, error) {
 					return []*model.PublicTravel{
 						{
@@ -53,7 +54,7 @@ func TestUseCase_GetPublicTravels(t *testing.T) {
 		},
 		{
 			name: "公開Travelが0件",
-			repository: &MockRepository{
+			repository: &mockrepo.MockTravelRepository{
 				FindPublicTravelsFunc: func() ([]*model.PublicTravel, error) {
 					return []*model.PublicTravel{}, nil
 				},
@@ -62,7 +63,7 @@ func TestUseCase_GetPublicTravels(t *testing.T) {
 		},
 		{
 			name: "Repositoryエラー",
-			repository: &MockRepository{
+			repository: &mockrepo.MockTravelRepository{
 				FindPublicTravelsFunc: func() ([]*model.PublicTravel, error) {
 					return nil, errors.New("repository error")
 				},
@@ -73,7 +74,7 @@ func TestUseCase_GetPublicTravels(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			uc := &UseCase{
+			uc := &TravelUsecase{
 				repository: tt.repository,
 			}
 

@@ -1,13 +1,14 @@
-package travel
+package usecase
 
 import (
 	"testing"
 	"time"
 
 	"github.com/HisakeyT/backpacker-platform/internal/model"
+	"github.com/HisakeyT/backpacker-platform/internal/repository/mock"
 )
 
-func TestUseCase_CreateTravel(t *testing.T) {
+func TestUsecase_CreateTravel(t *testing.T) {
 	userID := uint(1)
 
 	startDate := time.Date(2026, 10, 1, 0, 0, 0, 0, time.UTC)
@@ -30,14 +31,14 @@ func TestUseCase_CreateTravel(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			repository := &MockRepository{
+			repository := &mockrepo.MockTravelRepository{
 				CreateFunc: func(travel *model.Travel) error {
 					travel.ID = 1
 					return nil
 				},
 			}
 
-			useCase := NewUseCase(repository)
+			useCase := NewTravelUsecase(repository)
 
 			travel, err := useCase.CreateTravel(userID, tt.input)
 
@@ -72,7 +73,7 @@ func TestUseCase_CreateTravel(t *testing.T) {
 	}
 }
 
-func TestUseCase_CreateTravel_Invalid(t *testing.T) {
+func TestUsecase_CreateTravel_Invalid(t *testing.T) {
 	tests := []struct {
 		name  string
 		input CreateTravelInput
@@ -90,8 +91,8 @@ func TestUseCase_CreateTravel_Invalid(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			repository := &MockRepository{}
-			useCase := NewUseCase(repository)
+			repository := &mockrepo.MockTravelRepository{}
+			useCase := NewTravelUsecase(repository)
 
 			_, err := useCase.CreateTravel(1, tt.input)
 

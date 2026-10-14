@@ -1,15 +1,17 @@
-package travel
+package usecase
 
 import (
 	"errors"
-	"gorm.io/gorm"
 	"reflect"
 	"testing"
 
+	"gorm.io/gorm"
+
 	"github.com/HisakeyT/backpacker-platform/internal/model"
+	mockrepo "github.com/HisakeyT/backpacker-platform/internal/repository/mock"
 )
 
-func TestUseCase_GetTravel(t *testing.T) {
+func TestUsecase_GetTravel(t *testing.T) {
 	userID := uint(1)
 	sourceID := uint(10)
 
@@ -94,7 +96,7 @@ func TestUseCase_GetTravel(t *testing.T) {
 			wantErr: model.ErrUserNotAuthorized,
 		},
 		{
-			name:            "Repositoryでエラーが発生した場合、UseCaseでもエラーを返す",
+			name:            "Repositoryでエラーが発生した場合、Usecaseでもエラーを返す",
 			travelID:        1,
 			repositoryError: errors.New("database error"),
 			wantErr:         errors.New("database error"),
@@ -116,7 +118,7 @@ func TestUseCase_GetTravel(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			copySourceCalls := 0
-			repository := &MockRepository{
+			repository := &mockrepo.MockTravelRepository{
 				FindByIDFunc: func(id uint) (*model.Travel, error) {
 					return tt.repository, tt.repositoryError
 				},
@@ -129,7 +131,7 @@ func TestUseCase_GetTravel(t *testing.T) {
 				},
 			}
 
-			useCase := NewUseCase(repository)
+			useCase := NewTravelUsecase(repository)
 			got, err := useCase.GetTravel(userID, tt.travelID)
 
 			if copySourceCalls != tt.wantCopySourceCalls {

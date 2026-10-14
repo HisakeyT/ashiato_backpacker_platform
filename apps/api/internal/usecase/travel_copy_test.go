@@ -1,19 +1,20 @@
-package travel
+package usecase
 
 import (
 	"errors"
 	"testing"
 
 	"github.com/HisakeyT/backpacker-platform/internal/model"
+	"github.com/HisakeyT/backpacker-platform/internal/repository/mock"
 	"gorm.io/gorm"
 )
 
-func TestUseCase_CopyTravel(t *testing.T) {
+func TestUsecase_CopyTravel(t *testing.T) {
 	tests := []struct {
 		name       string
 		userID     uint
 		travelID   uint
-		repository *MockRepository
+		repository *mockrepo.MockTravelRepository
 		wantErr    error
 		wantID     uint
 	}{
@@ -21,7 +22,7 @@ func TestUseCase_CopyTravel(t *testing.T) {
 			name:     "公開旅行を他人がコピーできる",
 			userID:   2,
 			travelID: 10,
-			repository: &MockRepository{
+			repository: &mockrepo.MockTravelRepository{
 				FindByIDFunc: func(id uint) (*model.Travel, error) {
 					return &model.Travel{ID: 10, UserID: 1, IsPublic: true}, nil
 				},
@@ -35,7 +36,7 @@ func TestUseCase_CopyTravel(t *testing.T) {
 			name:     "自分の非公開旅行はコピーできる",
 			userID:   1,
 			travelID: 10,
-			repository: &MockRepository{
+			repository: &mockrepo.MockTravelRepository{
 				FindByIDFunc: func(id uint) (*model.Travel, error) {
 					return &model.Travel{ID: 10, UserID: 1, IsPublic: false}, nil
 				},
@@ -49,7 +50,7 @@ func TestUseCase_CopyTravel(t *testing.T) {
 			name:     "他人の非公開旅行はNotFound",
 			userID:   2,
 			travelID: 10,
-			repository: &MockRepository{
+			repository: &mockrepo.MockTravelRepository{
 				FindByIDFunc: func(id uint) (*model.Travel, error) {
 					return &model.Travel{ID: 10, UserID: 1, IsPublic: false}, nil
 				},
@@ -60,7 +61,7 @@ func TestUseCase_CopyTravel(t *testing.T) {
 			name:     "存在しない旅行はNotFound",
 			userID:   2,
 			travelID: 99,
-			repository: &MockRepository{
+			repository: &mockrepo.MockTravelRepository{
 				FindByIDFunc: func(id uint) (*model.Travel, error) {
 					return nil, gorm.ErrRecordNotFound
 				},
@@ -71,7 +72,7 @@ func TestUseCase_CopyTravel(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			uc := NewUseCase(tt.repository)
+			uc := NewTravelUsecase(tt.repository)
 
 			got, err := uc.CopyTravel(tt.userID, tt.travelID)
 

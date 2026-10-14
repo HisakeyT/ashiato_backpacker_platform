@@ -1,4 +1,4 @@
-package travel
+package usecase
 
 import (
 	"errors"
@@ -7,9 +7,10 @@ import (
 	"time"
 
 	"github.com/HisakeyT/backpacker-platform/internal/model"
+	"github.com/HisakeyT/backpacker-platform/internal/repository/mock"
 )
 
-func TestUseCase_GetTravelPlans(t *testing.T) {
+func TestUsecase_GetTravelPlans(t *testing.T) {
 	userID := uint(1)
 	travelID := uint(10)
 
@@ -56,19 +57,19 @@ func TestUseCase_GetTravelPlans(t *testing.T) {
 					UserID: userID,
 				}
 
-				travelRepository := &MockTravelRepository{
+				travelRepository := &mockrepo.MockTravelRepository{
 					FindByIDFunc: func(id uint) (*model.Travel, error) {
 						return travelData, nil
 					},
 				}
 
-				travelPlanRepository := &MockPlanRepository{
+				travelPlanRepository := &mockrepo.MockTravelPlanRepository{
 					FindByTravelIDFunc: func(id uint) ([]model.TravelPlan, error) {
 						return tt.travelPlans, nil
 					},
 				}
 
-				useCase := NewPlanUseCase(
+				useCase := NewTravelPlanUsecase(
 					travelRepository,
 					travelPlanRepository,
 				)
@@ -117,15 +118,15 @@ func TestUseCase_GetTravelPlans(t *testing.T) {
 		for _, tt := range tests {
 			t.Run(tt.name, func(t *testing.T) {
 				// Arrange
-				travelRepository := &MockTravelRepository{
+				travelRepository := &mockrepo.MockTravelRepository{
 					FindByIDFunc: func(id uint) (*model.Travel, error) {
 						return tt.travelData, tt.findByIDError
 					},
 				}
 
-				travelPlanRepository := &MockPlanRepository{}
+				travelPlanRepository := &mockrepo.MockTravelPlanRepository{}
 
-				useCase := NewPlanUseCase(
+				useCase := NewTravelPlanUsecase(
 					travelRepository,
 					travelPlanRepository,
 				)

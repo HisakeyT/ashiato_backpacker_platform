@@ -1,4 +1,4 @@
-package travel
+package usecase
 
 import (
 	"errors"
@@ -7,10 +7,11 @@ import (
 	"time"
 
 	"github.com/HisakeyT/backpacker-platform/internal/model"
+	"github.com/HisakeyT/backpacker-platform/internal/repository/mock"
 	"gorm.io/gorm"
 )
 
-func TestUseCase_UpdateTravel(t *testing.T) {
+func TestUsecase_UpdateTravel(t *testing.T) {
 	userID := uint(1)
 	travelID := uint(1)
 
@@ -87,7 +88,7 @@ func TestUseCase_UpdateTravel(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			repository := &MockRepository{
+			repository := &mockrepo.MockTravelRepository{
 				FindByIDFunc: func(id uint) (*model.Travel, error) {
 					return &model.Travel{
 						ID:        travelID,
@@ -103,7 +104,7 @@ func TestUseCase_UpdateTravel(t *testing.T) {
 				},
 			}
 
-			useCase := NewUseCase(repository)
+			useCase := NewTravelUsecase(repository)
 
 			travel, err := useCase.UpdateTravel(
 				userID,
@@ -122,7 +123,7 @@ func TestUseCase_UpdateTravel(t *testing.T) {
 	}
 }
 
-func TestUseCase_UpdateTravel_Error(t *testing.T) {
+func TestUsecase_UpdateTravel_Error(t *testing.T) {
 	userID := uint(1)
 	travelID := uint(1)
 	databaseError := errors.New("database error")
@@ -188,7 +189,7 @@ func TestUseCase_UpdateTravel_Error(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			repository := &MockRepository{
+			repository := &mockrepo.MockTravelRepository{
 				FindByIDFunc: func(id uint) (*model.Travel, error) {
 					if tt.repositoryErr != nil {
 						return nil, tt.repositoryErr
@@ -209,7 +210,7 @@ func TestUseCase_UpdateTravel_Error(t *testing.T) {
 				},
 			}
 
-			useCase := NewUseCase(repository)
+			useCase := NewTravelUsecase(repository)
 
 			_, err := useCase.UpdateTravel(
 				userID,

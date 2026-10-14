@@ -1,15 +1,17 @@
-package travel
+package usecase
 
 import (
 	"errors"
-	"gorm.io/gorm"
 	"testing"
+
+	"gorm.io/gorm"
 
 	"github.com/HisakeyT/backpacker-platform/internal/model"
 	"github.com/HisakeyT/backpacker-platform/internal/repository"
+	mockrepo "github.com/HisakeyT/backpacker-platform/internal/repository/mock"
 )
 
-func TestUseCase_DeleteTravel(t *testing.T) {
+func TestUsecase_DeleteTravel(t *testing.T) {
 	tests := []struct {
 		name       string
 		userID     uint
@@ -21,7 +23,7 @@ func TestUseCase_DeleteTravel(t *testing.T) {
 			name:     "自分のTravelを削除できる",
 			userID:   1,
 			travelID: 10,
-			repository: &MockRepository{
+			repository: &mockrepo.MockTravelRepository{
 				FindByIDFunc: func(id uint) (*model.Travel, error) {
 					return &model.Travel{
 						ID:     10,
@@ -38,7 +40,7 @@ func TestUseCase_DeleteTravel(t *testing.T) {
 			name:     "Travelが存在しない",
 			userID:   1,
 			travelID: 10,
-			repository: &MockRepository{
+			repository: &mockrepo.MockTravelRepository{
 				FindByIDFunc: func(id uint) (*model.Travel, error) {
 					return nil, gorm.ErrRecordNotFound
 				},
@@ -52,7 +54,7 @@ func TestUseCase_DeleteTravel(t *testing.T) {
 			name:     "他ユーザーのTravel",
 			userID:   1,
 			travelID: 10,
-			repository: &MockRepository{
+			repository: &mockrepo.MockTravelRepository{
 				FindByIDFunc: func(id uint) (*model.Travel, error) {
 					return &model.Travel{
 						ID:     10,
@@ -69,7 +71,7 @@ func TestUseCase_DeleteTravel(t *testing.T) {
 			name:     "FindByIDでRepositoryエラー",
 			userID:   1,
 			travelID: 10,
-			repository: &MockRepository{
+			repository: &mockrepo.MockTravelRepository{
 				FindByIDFunc: func(id uint) (*model.Travel, error) {
 					return nil, errors.New("database error")
 				},
@@ -83,7 +85,7 @@ func TestUseCase_DeleteTravel(t *testing.T) {
 			name:     "DeleteでRepositoryエラー",
 			userID:   1,
 			travelID: 10,
-			repository: &MockRepository{
+			repository: &mockrepo.MockTravelRepository{
 				FindByIDFunc: func(id uint) (*model.Travel, error) {
 					return &model.Travel{
 						ID:     10,
@@ -100,7 +102,7 @@ func TestUseCase_DeleteTravel(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			u := &UseCase{
+			u := &TravelUsecase{
 				repository: tt.repository,
 			}
 
