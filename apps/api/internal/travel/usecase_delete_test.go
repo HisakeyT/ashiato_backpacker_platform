@@ -14,7 +14,7 @@ func TestUseCase_DeleteTravel(t *testing.T) {
 		name       string
 		userID     uint
 		travelID   uint
-		repository repository.Repository
+		repository repository.TravelRepository
 		wantErr    error
 	}{
 		{

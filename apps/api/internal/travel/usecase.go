@@ -12,10 +12,10 @@ import (
 var ErrInvalidDateRange = errors.New("start date must not be after end date")
 
 type UseCase struct {
-	repository repository.Repository
+	repository repository.TravelRepository
 }
 
-func NewUseCase(repository repository.Repository) *UseCase {
+func NewUseCase(repository repository.TravelRepository) *UseCase {
 	return &UseCase{
 		repository: repository,
 	}

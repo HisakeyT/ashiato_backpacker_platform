@@ -4,7 +4,7 @@ import (
 	"github.com/HisakeyT/backpacker-platform/internal/model"
 )
 
-type Repository interface {
+type TravelRepository interface {
 	Create(travel *model.Travel) error
 	FindByID(id uint) (*model.Travel, error)
 	FindByUserID(userID uint) ([]*model.Travel, error)

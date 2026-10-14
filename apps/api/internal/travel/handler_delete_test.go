@@ -19,7 +19,7 @@ func TestHandler_DeleteTravel(t *testing.T) {
 		name       string
 		travelID   string
 		userID     uint
-		repository repository.Repository
+		repository repository.TravelRepository
 		wantStatus int
 	}{
 		{

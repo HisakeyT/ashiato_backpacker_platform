@@ -17,7 +17,7 @@ func TestHandler_CreateTravel(t *testing.T) {
 	tests := []struct {
 		name       string
 		request    string
-		repository repository.Repository
+		repository repository.TravelRepository
 		wantStatus int
 	}{
 		{
