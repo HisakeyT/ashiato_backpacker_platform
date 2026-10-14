@@ -26,7 +26,7 @@ func main() {
 	userUseCase := user.NewUseCase(userRepository, jwtManager)
 	userHandler := user.NewHandler(userUseCase)
 
-	travelRepository := travel.NewGormRepository(db)
+	travelRepository := gormrepo.NewTravelRepository(db)
 	travelUseCase := travel.NewUseCase(travelRepository)
 	travelHandler := travel.NewHandler(travelUseCase)
 

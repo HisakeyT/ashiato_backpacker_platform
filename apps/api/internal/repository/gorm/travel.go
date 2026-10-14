@@ -1,25 +1,27 @@
-package travel
+package gormrepo
 
 import (
-	"gorm.io/gorm"
 	"time"
 
+	"gorm.io/gorm"
+
 	"github.com/HisakeyT/backpacker-platform/internal/model"
+	"github.com/HisakeyT/backpacker-platform/internal/repository"
 )
 
-type GormRepository struct {
+type TravelRepository struct {
 	db *gorm.DB
 }
 
-func NewGormRepository(db *gorm.DB) *GormRepository {
-	return &GormRepository{db: db}
+func NewTravelRepository(db *gorm.DB) *TravelRepository {
+	return &TravelRepository{db: db}
 }
 
-func (r *GormRepository) Create(travel *model.Travel) error {
+func (r *TravelRepository) Create(travel *model.Travel) error {
 	return r.db.Create(travel).Error
 }
 
-func (r *GormRepository) FindByID(id uint) (*model.Travel, error) {
+func (r *TravelRepository) FindByID(id uint) (*model.Travel, error) {
 	var travel model.Travel
 
 	if err := r.db.First(&travel, id).Error; err != nil {
@@ -29,7 +31,7 @@ func (r *GormRepository) FindByID(id uint) (*model.Travel, error) {
 	return &travel, nil
 }
 
-func (r *GormRepository) FindByUserID(userID uint) ([]*model.Travel, error) {
+func (r *TravelRepository) FindByUserID(userID uint) ([]*model.Travel, error) {
 	var travels []*model.Travel
 
 	if err := r.db.Where("user_id = ?", userID).Find(&travels).Error; err != nil {
@@ -39,11 +41,11 @@ func (r *GormRepository) FindByUserID(userID uint) ([]*model.Travel, error) {
 	return travels, nil
 }
 
-func (r *GormRepository) Update(travel *model.Travel) error {
+func (r *TravelRepository) Update(travel *model.Travel) error {
 	return r.db.Save(travel).Error
 }
 
-func (r *GormRepository) Delete(id uint) error {
+func (r *TravelRepository) Delete(id uint) error {
 	if err := r.db.Delete(&model.Travel{}, id).Error; err != nil {
 		return err
 	}
@@ -51,7 +53,7 @@ func (r *GormRepository) Delete(id uint) error {
 	return nil
 }
 
-func (r *GormRepository) FindPublicTravels() ([]*model.PublicTravel, error) {
+func (r *TravelRepository) FindPublicTravels() ([]*model.PublicTravel, error) {
 	var PublicTravels []*model.PublicTravel
 
 	if err := r.db.Model(&model.Travel{}).
@@ -66,7 +68,7 @@ func (r *GormRepository) FindPublicTravels() ([]*model.PublicTravel, error) {
 	return PublicTravels, nil
 }
 
-func (r *GormRepository) FindPublicByID(id uint) (*model.PublicTravel, error) {
+func (r *TravelRepository) FindPublicByID(id uint) (*model.PublicTravel, error) {
 	var publicTravel model.PublicTravel
 
 	result := r.db.Model(&model.Travel{}).
@@ -85,7 +87,7 @@ func (r *GormRepository) FindPublicByID(id uint) (*model.PublicTravel, error) {
 	return &publicTravel, nil
 }
 
-func (r *GormRepository) FindCopySource(sourceTravelID uint) (*model.CopySource, error) {
+func (r *TravelRepository) FindCopySource(sourceTravelID uint) (*model.CopySource, error) {
 	var copySource model.CopySource
 
 	result := r.db.Model(&model.Travel{}).
@@ -104,7 +106,7 @@ func (r *GormRepository) FindCopySource(sourceTravelID uint) (*model.CopySource,
 	return &copySource, nil
 }
 
-func (r *GormRepository) CopyTravel(originalTravel *model.Travel, newUserID uint) (*model.Travel, error) {
+func (r *TravelRepository) CopyTravel(originalTravel *model.Travel, newUserID uint) (*model.Travel, error) {
 	var createdTravel model.Travel
 
 	err := r.db.Transaction(func(tx *gorm.DB) error {
@@ -152,3 +154,5 @@ func (r *GormRepository) CopyTravel(originalTravel *model.Travel, newUserID uint
 
 	return &createdTravel, nil
 }
+
+var _ repository.TravelRepository = (*TravelRepository)(nil)
