@@ -1,4 +1,4 @@
-package travel
+package gormrepo
 
 import (
 	"github.com/HisakeyT/backpacker-platform/internal/model"

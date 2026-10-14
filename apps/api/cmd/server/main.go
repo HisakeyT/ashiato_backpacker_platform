@@ -30,7 +30,7 @@ func main() {
 	travelUseCase := travel.NewUseCase(travelRepository)
 	travelHandler := travel.NewHandler(travelUseCase)
 
-	travelPlanRepository := travel.NewGormPlanRepository(db)
+	travelPlanRepository := gormrepo.NewGormPlanRepository(db)
 	travelPlanUseCase := travel.NewPlanUseCase(travelRepository, travelPlanRepository)
 	travelPlanHandler := travel.NewPlanHandler(travelPlanUseCase)
 
