@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/HisakeyT/backpacker-platform/internal/model"
+	"github.com/HisakeyT/backpacker-platform/internal/repository"
 	"github.com/gin-gonic/gin"
 )
 
@@ -19,7 +20,7 @@ func TestHandler_UpdateTravelPlan(t *testing.T) {
 		travelID   string
 		planID     string
 		request    string
-		repository PlanRepository
+		repository repository.TravelPlanRepository
 		wantStatus int
 	}{
 		{

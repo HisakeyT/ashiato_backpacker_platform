@@ -1,10 +1,10 @@
-package travel
+package repository
 
 import (
 	"github.com/HisakeyT/backpacker-platform/internal/model"
 )
 
-type PlanRepository interface {
+type TravelPlanRepository interface {
 	Create(travelPlan *model.TravelPlan) error
 	Update(travelPlan *model.TravelPlan) error
 	Delete(id uint) error

@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/HisakeyT/backpacker-platform/internal/model"
+	"github.com/HisakeyT/backpacker-platform/internal/repository"
 	"gorm.io/gorm"
 )
 
@@ -14,12 +15,12 @@ type TravelRepository interface {
 
 type PlanUseCase struct {
 	travelRepository     TravelRepository
-	travelPlanRepository PlanRepository
+	travelPlanRepository repository.TravelPlanRepository
 }
 
 func NewPlanUseCase(
 	travelRepository TravelRepository,
-	travelPlanRepository PlanRepository,
+	travelPlanRepository repository.TravelPlanRepository,
 ) *PlanUseCase {
 	return &PlanUseCase{
 		travelRepository:     travelRepository,
