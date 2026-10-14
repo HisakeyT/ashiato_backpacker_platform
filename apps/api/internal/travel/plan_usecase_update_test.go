@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/HisakeyT/backpacker-platform/internal/model"
-	"github.com/HisakeyT/backpacker-platform/internal/user"
 )
 
 func TestUseCase_UpdateTravelPlan(t *testing.T) {
@@ -163,7 +162,7 @@ func TestUseCase_UpdateTravelPlan(t *testing.T) {
 					ID:     travelID,
 					UserID: 2,
 				},
-				wantErr: user.ErrUserNotAuthorized,
+				wantErr: model.ErrUserNotAuthorized,
 			},
 			{
 				name:                "TravelのRepositoryでエラーが発生する",

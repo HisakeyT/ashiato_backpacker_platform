@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/HisakeyT/backpacker-platform/internal/model"
-	"github.com/HisakeyT/backpacker-platform/internal/user"
 )
 
 func TestUseCase_GetTravelPlans(t *testing.T) {
@@ -111,7 +110,7 @@ func TestUseCase_GetTravelPlans(t *testing.T) {
 					ID:     travelID,
 					UserID: 999,
 				},
-				expectedError: user.ErrUserNotAuthorized,
+				expectedError: model.ErrUserNotAuthorized,
 			},
 		}
 

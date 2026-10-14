@@ -9,7 +9,6 @@ import (
 
 	"github.com/HisakeyT/backpacker-platform/internal/model"
 	"github.com/HisakeyT/backpacker-platform/internal/response"
-	"github.com/HisakeyT/backpacker-platform/internal/user"
 	"github.com/gin-gonic/gin"
 )
 
@@ -102,7 +101,7 @@ func (h *PlanHandler) CreateTravelPlan(c *gin.Context) {
 			return
 		}
 
-		if errors.Is(err, user.ErrUserNotAuthorized) {
+		if errors.Is(err, model.ErrUserNotAuthorized) {
 			c.JSON(http.StatusForbidden, gin.H{
 				"error": err.Error(),
 			})
@@ -228,7 +227,7 @@ func (h *PlanHandler) UpdateTravelPlan(c *gin.Context) {
 			return
 		}
 
-		if errors.Is(err, user.ErrUserNotAuthorized) {
+		if errors.Is(err, model.ErrUserNotAuthorized) {
 			c.JSON(http.StatusForbidden, gin.H{
 				"error": err.Error(),
 			})
@@ -302,7 +301,7 @@ func (h *PlanHandler) GetTravelPlans(c *gin.Context) {
 			return
 		}
 
-		if errors.Is(err, user.ErrUserNotAuthorized) {
+		if errors.Is(err, model.ErrUserNotAuthorized) {
 			c.JSON(http.StatusForbidden, gin.H{
 				"error": err.Error(),
 			})
@@ -344,7 +343,7 @@ func (h *PlanHandler) DeleteTravelPlan(c *gin.Context) {
 			return
 		}
 
-		if errors.Is(err, user.ErrUserNotAuthorized) {
+		if errors.Is(err, model.ErrUserNotAuthorized) {
 			c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
 			return
 		}

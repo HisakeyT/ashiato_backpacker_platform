@@ -7,7 +7,6 @@ import (
 	"testing"
 
 	"github.com/HisakeyT/backpacker-platform/internal/model"
-	"github.com/HisakeyT/backpacker-platform/internal/user"
 )
 
 func TestUseCase_GetTravel(t *testing.T) {
@@ -92,7 +91,7 @@ func TestUseCase_GetTravel(t *testing.T) {
 				UserID: 2,
 				Title:  "他人の旅行",
 			},
-			wantErr: user.ErrUserNotAuthorized,
+			wantErr: model.ErrUserNotAuthorized,
 		},
 		{
 			name:            "Repositoryでエラーが発生した場合、UseCaseでもエラーを返す",

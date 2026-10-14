@@ -2,10 +2,9 @@ package travel
 
 import (
 	"errors"
-	"github.com/HisakeyT/backpacker-platform/internal/model"
-	"github.com/HisakeyT/backpacker-platform/internal/user"
 	"time"
 
+	"github.com/HisakeyT/backpacker-platform/internal/model"
 	"gorm.io/gorm"
 )
 
@@ -47,7 +46,7 @@ func (uc *PlanUseCase) CreateTravelPlan(userID, travelID uint, input CreateTrave
 	}
 
 	if travelData.UserID != userID {
-		return nil, user.ErrUserNotAuthorized
+		return nil, model.ErrUserNotAuthorized
 	}
 
 	if err := validatePlanDates(input.StartDate, input.EndDate); err != nil {
@@ -90,7 +89,7 @@ func (uc *PlanUseCase) UpdateTravelPlan(userID, travelID, travelPlanID uint, inp
 	}
 
 	if travelData.UserID != userID {
-		return nil, user.ErrUserNotAuthorized
+		return nil, model.ErrUserNotAuthorized
 	}
 
 	travelPlan, err := uc.travelPlanRepository.FindByID(travelPlanID)
@@ -140,7 +139,7 @@ func (uc *PlanUseCase) GetTravelPlans(userID, travelID uint) ([]model.TravelPlan
 	}
 
 	if travelData.UserID != userID {
-		return nil, user.ErrUserNotAuthorized
+		return nil, model.ErrUserNotAuthorized
 	}
 
 	travelPlans, err := uc.travelPlanRepository.FindByTravelID(travelID)
@@ -161,7 +160,7 @@ func (uc *PlanUseCase) DeleteTravelPlan(userID, travelID, travelPlanID uint) err
 	}
 
 	if travelData.UserID != userID {
-		return user.ErrUserNotAuthorized
+		return model.ErrUserNotAuthorized
 	}
 
 	travelPlan, err := uc.travelPlanRepository.FindByID(travelPlanID)

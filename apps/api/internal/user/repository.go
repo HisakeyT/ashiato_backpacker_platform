@@ -1,12 +1,15 @@
 package user
 
-import "errors"
+import (
+	"errors"
+	"github.com/HisakeyT/backpacker-platform/internal/model"
+)
 
 var ErrUserNotFound = errors.New("user not found")
 
 type Repository interface {
-	Create(user *User) error
-	FindByID(id uint) (*User, error)
-	FindByEmail(email string) (*User, error)
-	Update(user *User) error
+	Create(user *model.User) error
+	FindByID(id uint) (*model.User, error)
+	FindByEmail(email string) (*model.User, error)
+	Update(user *model.User) error
 }

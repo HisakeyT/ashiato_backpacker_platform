@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/HisakeyT/backpacker-platform/internal/model"
-	"github.com/HisakeyT/backpacker-platform/internal/user"
 )
 
 var errRepository = errors.New("repository error")
@@ -92,7 +91,7 @@ func TestUseCase_CreateTravelPlan_Invalid(t *testing.T) {
 				ID:     10,
 				UserID: 2,
 			},
-			wantErr: user.ErrUserNotAuthorized,
+			wantErr: model.ErrUserNotAuthorized,
 		},
 		{
 			name:        "旅行の取得に失敗した場合",

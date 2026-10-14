@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/HisakeyT/backpacker-platform/internal/auth"
+	"github.com/HisakeyT/backpacker-platform/internal/model"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -12,10 +13,10 @@ func TestUseCase_Register(t *testing.T) {
 	email := "taro@example.com"
 
 	repository := &MockRepository{
-		FindByEmailFunc: func(email string) (*User, error) {
+		FindByEmailFunc: func(email string) (*model.User, error) {
 			return nil, ErrUserNotFound
 		},
-		CreateFunc: func(user *User) error {
+		CreateFunc: func(user *model.User) error {
 			user.ID = 1
 			return nil
 		},
@@ -62,10 +63,10 @@ func TestUseCase_Register(t *testing.T) {
 
 func TestUseCase_Register_PasswordMismatch(t *testing.T) {
 	repository := &MockRepository{
-		FindByEmailFunc: func(email string) (*User, error) {
+		FindByEmailFunc: func(email string) (*model.User, error) {
 			return nil, ErrUserNotFound
 		},
-		CreateFunc: func(user *User) error {
+		CreateFunc: func(user *model.User) error {
 			t.Fatal("Create should not be called")
 			return nil
 		},
@@ -91,13 +92,13 @@ func TestUseCase_Register_EmailAlreadyUsed(t *testing.T) {
 	email := "taro@example.com"
 
 	repository := &MockRepository{
-		FindByEmailFunc: func(email string) (*User, error) {
-			return &User{
+		FindByEmailFunc: func(email string) (*model.User, error) {
+			return &model.User{
 				ID:    1,
 				Email: email,
 			}, nil
 		},
-		CreateFunc: func(user *User) error {
+		CreateFunc: func(user *model.User) error {
 			t.Fatal("Create should not be called")
 			return nil
 		},
@@ -125,10 +126,10 @@ func TestUseCase_Register_FindByEmailError(t *testing.T) {
 	expectedErr := errors.New("database error")
 
 	repository := &MockRepository{
-		FindByEmailFunc: func(email string) (*User, error) {
+		FindByEmailFunc: func(email string) (*model.User, error) {
 			return nil, expectedErr
 		},
-		CreateFunc: func(user *User) error {
+		CreateFunc: func(user *model.User) error {
 			t.Fatal("Create should not be called")
 			return nil
 		},

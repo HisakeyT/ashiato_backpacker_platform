@@ -6,7 +6,6 @@ import (
 	"testing"
 
 	"github.com/HisakeyT/backpacker-platform/internal/model"
-	"github.com/HisakeyT/backpacker-platform/internal/user"
 )
 
 func TestUseCase_DeleteTravel(t *testing.T) {
@@ -63,7 +62,7 @@ func TestUseCase_DeleteTravel(t *testing.T) {
 					return nil
 				},
 			},
-			wantErr: user.ErrUserNotAuthorized,
+			wantErr: model.ErrUserNotAuthorized,
 		},
 		{
 			name:     "FindByIDでRepositoryエラー",

@@ -2,22 +2,24 @@ package user
 
 import (
 	"errors"
+
 	"github.com/HisakeyT/backpacker-platform/internal/auth"
+	"github.com/HisakeyT/backpacker-platform/internal/model"
 	"testing"
 )
 
 func TestUseCase_UpdateMe(t *testing.T) {
-	var updatedUser *User
+	var updatedUser *model.User
 
 	mockRepository := &MockRepository{
-		FindByIDFunc: func(id uint) (*User, error) {
-			return &User{
+		FindByIDFunc: func(id uint) (*model.User, error) {
+			return &model.User{
 				ID:       1,
 				Nickname: "old-nickname",
 				Email:    "test@example.com",
 			}, nil
 		},
-		UpdateFunc: func(user *User) error {
+		UpdateFunc: func(user *model.User) error {
 			updatedUser = user
 			return nil
 		},
@@ -56,7 +58,7 @@ func TestUseCase_UpdateMe_FindByIDError(t *testing.T) {
 	expectedErr := errors.New("database error")
 
 	mockRepository := &MockRepository{
-		FindByIDFunc: func(id uint) (*User, error) {
+		FindByIDFunc: func(id uint) (*model.User, error) {
 			return nil, expectedErr
 		},
 	}
@@ -79,14 +81,14 @@ func TestUseCase_UpdateMe_UpdateError(t *testing.T) {
 	expectedErr := errors.New("database error")
 
 	mockRepository := &MockRepository{
-		FindByIDFunc: func(id uint) (*User, error) {
-			return &User{
+		FindByIDFunc: func(id uint) (*model.User, error) {
+			return &model.User{
 				ID:       1,
 				Nickname: "old-nickname",
 				Email:    "test@example.com",
 			}, nil
 		},
-		UpdateFunc: func(user *User) error {
+		UpdateFunc: func(user *model.User) error {
 			return expectedErr
 		},
 	}

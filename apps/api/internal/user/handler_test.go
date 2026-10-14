@@ -8,28 +8,29 @@ import (
 	"testing"
 
 	"github.com/HisakeyT/backpacker-platform/internal/auth"
+	"github.com/HisakeyT/backpacker-platform/internal/model"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type fakeRepository struct {
-	user *User
+	user *model.User
 	err  error
 }
 
-func (f *fakeRepository) Create(user *User) error {
+func (f *fakeRepository) Create(user *model.User) error {
 	return nil
 }
 
-func (f *fakeRepository) FindByID(id uint) (*User, error) {
+func (f *fakeRepository) FindByID(id uint) (*model.User, error) {
 	return f.user, f.err
 }
 
-func (f *fakeRepository) FindByEmail(email string) (*User, error) {
+func (f *fakeRepository) FindByEmail(email string) (*model.User, error) {
 	return f.user, f.err
 }
 
-func (f *fakeRepository) Update(user *User) error {
+func (f *fakeRepository) Update(user *model.User) error {
 	return nil
 }
 
@@ -52,7 +53,7 @@ func TestHandler_Register(t *testing.T) {
 			name:    "メールアドレスが重複している",
 			request: `{"nickname":"test","email":"test@example.com","password":"password","password_confirmation":"password"}`,
 			repository: &fakeRepository{
-				user: &User{
+				user: &model.User{
 					ID:    1,
 					Email: "test@example.com",
 				},
@@ -131,7 +132,7 @@ func TestHandler_Login(t *testing.T) {
 			name:    "正常にログインできる",
 			request: `{"email":"test@example.com","password":"password"}`,
 			repository: &fakeRepository{
-				user: &User{
+				user: &model.User{
 					ID:           1,
 					Nickname:     nickName,
 					Email:        email,
@@ -152,7 +153,7 @@ func TestHandler_Login(t *testing.T) {
 			name:    "認証情報が不正",
 			request: `{"email":"test@example.com","password":"wrong-password"}`,
 			repository: &fakeRepository{
-				user: &User{
+				user: &model.User{
 					ID:           1,
 					Nickname:     nickName,
 					Email:        email,
@@ -242,7 +243,7 @@ func TestHandler_Me(t *testing.T) {
 	router := gin.New()
 
 	repository := &fakeRepository{
-		user: &User{
+		user: &model.User{
 			ID:       123,
 			Nickname: "test",
 			Email:    "test@example.com",
@@ -342,14 +343,14 @@ func TestHandler_UpdateMe(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 
 	mockRepository := &MockRepository{
-		FindByIDFunc: func(id uint) (*User, error) {
-			return &User{
+		FindByIDFunc: func(id uint) (*model.User, error) {
+			return &model.User{
 				ID:       1,
 				Nickname: "old-nickname",
 				Email:    "test@example.com",
 			}, nil
 		},
-		UpdateFunc: func(user *User) error {
+		UpdateFunc: func(user *model.User) error {
 			return nil
 		},
 	}

@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"github.com/HisakeyT/backpacker-platform/internal/auth"
+	"github.com/HisakeyT/backpacker-platform/internal/model"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -32,7 +33,7 @@ var (
 	ErrInvalidCredentials = errors.New("invalid credentials")
 )
 
-func (u *UseCase) Register(input RegisterInput) (*User, error) {
+func (u *UseCase) Register(input RegisterInput) (*model.User, error) {
 	if input.Password != input.PasswordConfirmation {
 		return nil, ErrPasswordMismatch
 	}
@@ -54,7 +55,7 @@ func (u *UseCase) Register(input RegisterInput) (*User, error) {
 		return nil, err
 	}
 
-	user := &User{
+	user := &model.User{
 		Nickname:     input.Nickname,
 		Email:        input.Email,
 		PasswordHash: string(passwordHash),
@@ -73,7 +74,7 @@ type LoginInput struct {
 }
 
 type LoginOutput struct {
-	User  *User
+	User  *model.User
 	Token string
 }
 
@@ -103,7 +104,7 @@ func (u *UseCase) Login(input LoginInput) (*LoginOutput, error) {
 	}, nil
 }
 
-func (u *UseCase) Me(userID uint) (*User, error) {
+func (u *UseCase) Me(userID uint) (*model.User, error) {
 	return u.repository.FindByID(userID)
 }
 
@@ -111,7 +112,7 @@ type UpdateMeInput struct {
 	Nickname string
 }
 
-func (u *UseCase) UpdateMe(userID uint, input UpdateMeInput) (*User, error) {
+func (u *UseCase) UpdateMe(userID uint, input UpdateMeInput) (*model.User, error) {
 	user, err := u.repository.FindByID(userID)
 	if err != nil {
 		return nil, err

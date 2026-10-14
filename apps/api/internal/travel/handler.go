@@ -8,7 +8,6 @@ import (
 
 	"github.com/HisakeyT/backpacker-platform/internal/model"
 	"github.com/HisakeyT/backpacker-platform/internal/response"
-	"github.com/HisakeyT/backpacker-platform/internal/user"
 	"github.com/gin-gonic/gin"
 )
 
@@ -122,7 +121,7 @@ func (h *Handler) GetTravel(c *gin.Context) {
 			return
 		}
 
-		if errors.Is(err, user.ErrUserNotAuthorized) {
+		if errors.Is(err, model.ErrUserNotAuthorized) {
 			c.JSON(http.StatusForbidden, gin.H{
 				"error": err.Error(),
 			})
@@ -201,7 +200,7 @@ func (h *Handler) UpdateTravel(c *gin.Context) {
 			return
 		}
 
-		if errors.Is(err, user.ErrUserNotAuthorized) {
+		if errors.Is(err, model.ErrUserNotAuthorized) {
 			c.JSON(http.StatusForbidden, gin.H{
 				"error": err.Error(),
 			})
@@ -261,7 +260,7 @@ func (h *Handler) DeleteTravel(c *gin.Context) {
 			return
 		}
 
-		if errors.Is(err, user.ErrUserNotAuthorized) {
+		if errors.Is(err, model.ErrUserNotAuthorized) {
 			c.JSON(http.StatusForbidden, gin.H{
 				"error": err.Error(),
 			})

@@ -3,6 +3,7 @@ package user
 import (
 	"errors"
 
+	"github.com/HisakeyT/backpacker-platform/internal/model"
 	"gorm.io/gorm"
 )
 
@@ -18,12 +19,12 @@ func NewGormRepository(db *gorm.DB) *GormRepository {
 	}
 }
 
-func (r *GormRepository) Create(user *User) error {
+func (r *GormRepository) Create(user *model.User) error {
 	return r.db.Create(user).Error
 }
 
-func (r *GormRepository) FindByID(id uint) (*User, error) {
-	var user User
+func (r *GormRepository) FindByID(id uint) (*model.User, error) {
+	var user model.User
 
 	if err := r.db.First(&user, id).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -36,8 +37,8 @@ func (r *GormRepository) FindByID(id uint) (*User, error) {
 	return &user, nil
 }
 
-func (r *GormRepository) FindByEmail(email string) (*User, error) {
-	var user User
+func (r *GormRepository) FindByEmail(email string) (*model.User, error) {
+	var user model.User
 
 	if err := r.db.Where("email = ?", email).First(&user).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -50,6 +51,6 @@ func (r *GormRepository) FindByEmail(email string) (*User, error) {
 	return &user, nil
 }
 
-func (r *GormRepository) Update(user *User) error {
+func (r *GormRepository) Update(user *model.User) error {
 	return r.db.Save(user).Error
 }

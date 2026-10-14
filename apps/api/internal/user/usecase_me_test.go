@@ -5,11 +5,12 @@ import (
 	"testing"
 
 	"github.com/HisakeyT/backpacker-platform/internal/auth"
+	"github.com/HisakeyT/backpacker-platform/internal/model"
 )
 
 func TestUseCase_Me(t *testing.T) {
 	repository := &fakeRepository{
-		user: &User{
+		user: &model.User{
 			ID:       1,
 			Nickname: "test",
 			Email:    "test@example.com",

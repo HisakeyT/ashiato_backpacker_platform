@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/HisakeyT/backpacker-platform/internal/auth"
+	"github.com/HisakeyT/backpacker-platform/internal/model"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -21,8 +22,8 @@ func TestLogin_Success(t *testing.T) {
 	}
 
 	mockRepo := &MockRepository{
-		FindByEmailFunc: func(email string) (*User, error) {
-			return &User{
+		FindByEmailFunc: func(email string) (*model.User, error) {
+			return &model.User{
 				ID:           1,
 				Nickname:     "Taro",
 				Email:        "test@example.com",
@@ -82,7 +83,7 @@ func TestLogin_Success(t *testing.T) {
 
 func TestLogin_UserNotFound(t *testing.T) {
 	mockRepo := &MockRepository{
-		FindByEmailFunc: func(email string) (*User, error) {
+		FindByEmailFunc: func(email string) (*model.User, error) {
 			return nil, ErrUserNotFound
 		},
 	}
@@ -110,8 +111,8 @@ func TestLogin_WrongPassword(t *testing.T) {
 	}
 
 	mockRepo := &MockRepository{
-		FindByEmailFunc: func(email string) (*User, error) {
-			return &User{
+		FindByEmailFunc: func(email string) (*model.User, error) {
+			return &model.User{
 				ID:           1,
 				Nickname:     "Taro",
 				Email:        "test@example.com",

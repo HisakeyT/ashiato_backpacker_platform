@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/HisakeyT/backpacker-platform/internal/model"
-	"github.com/HisakeyT/backpacker-platform/internal/user"
 	"gorm.io/gorm"
 )
 
@@ -159,7 +158,7 @@ func TestUseCase_UpdateTravel_Error(t *testing.T) {
 				UserID: 2,
 				Title:  "他人の旅行",
 			},
-			wantErr: user.ErrUserNotAuthorized,
+			wantErr: model.ErrUserNotAuthorized,
 		},
 		{
 			name:          "RepositoryのFindByIDでエラーが発生する",

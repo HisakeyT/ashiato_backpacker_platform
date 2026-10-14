@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/HisakeyT/backpacker-platform/internal/model"
-	"github.com/HisakeyT/backpacker-platform/internal/user"
 )
 
 var ErrInvalidDateRange = errors.New("start date must not be after end date")
@@ -85,7 +84,7 @@ func (u *UseCase) GetTravel(userID uint, travelID uint) (*model.TravelDetail, er
 	}
 
 	if travel.UserID != userID {
-		return nil, user.ErrUserNotAuthorized
+		return nil, model.ErrUserNotAuthorized
 	}
 
 	var copiedFrom *model.CopySource
@@ -117,7 +116,7 @@ func (u *UseCase) UpdateTravel(userID uint, travelID uint, input UpdateTravelInp
 	}
 
 	if travel.UserID != userID {
-		return nil, user.ErrUserNotAuthorized
+		return nil, model.ErrUserNotAuthorized
 	}
 
 	applyUpdate(travel, input)
@@ -162,7 +161,7 @@ func (u *UseCase) DeleteTravel(userID uint, travelID uint) error {
 	}
 
 	if travel.UserID != userID {
-		return user.ErrUserNotAuthorized
+		return model.ErrUserNotAuthorized
 	}
 
 	if err := u.repository.Delete(travelID); err != nil {
