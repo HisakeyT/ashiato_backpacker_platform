@@ -1,4 +1,4 @@
-package user
+package gormrepo
 
 import (
 	"errors"
@@ -8,23 +8,21 @@ import (
 	"gorm.io/gorm"
 )
 
-type GormRepository struct {
+type UserRepository struct {
 	db *gorm.DB
 }
 
-var _ repository.Repository = (*GormRepository)(nil)
-
-func NewGormRepository(db *gorm.DB) *GormRepository {
-	return &GormRepository{
+func NewUserRepository(db *gorm.DB) *UserRepository {
+	return &UserRepository{
 		db: db,
 	}
 }
 
-func (r *GormRepository) Create(user *model.User) error {
+func (r *UserRepository) Create(user *model.User) error {
 	return r.db.Create(user).Error
 }
 
-func (r *GormRepository) FindByID(id uint) (*model.User, error) {
+func (r *UserRepository) FindByID(id uint) (*model.User, error) {
 	var user model.User
 
 	if err := r.db.First(&user, id).Error; err != nil {
@@ -38,7 +36,7 @@ func (r *GormRepository) FindByID(id uint) (*model.User, error) {
 	return &user, nil
 }
 
-func (r *GormRepository) FindByEmail(email string) (*model.User, error) {
+func (r *UserRepository) FindByEmail(email string) (*model.User, error) {
 	var user model.User
 
 	if err := r.db.Where("email = ?", email).First(&user).Error; err != nil {
@@ -52,6 +50,8 @@ func (r *GormRepository) FindByEmail(email string) (*model.User, error) {
 	return &user, nil
 }
 
-func (r *GormRepository) Update(user *model.User) error {
+func (r *UserRepository) Update(user *model.User) error {
 	return r.db.Save(user).Error
 }
+
+var _ repository.UserRepository = (*UserRepository)(nil)

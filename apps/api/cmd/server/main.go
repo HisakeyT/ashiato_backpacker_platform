@@ -8,6 +8,7 @@ import (
 
 	"github.com/HisakeyT/backpacker-platform/internal/auth"
 	"github.com/HisakeyT/backpacker-platform/internal/database"
+	"github.com/HisakeyT/backpacker-platform/internal/repository/gorm"
 	"github.com/HisakeyT/backpacker-platform/internal/travel"
 	"github.com/HisakeyT/backpacker-platform/internal/user"
 )
@@ -21,7 +22,7 @@ func main() {
 	jwtSecret := os.Getenv("JWT_SECRET")
 	jwtManager := auth.NewJWTManager(jwtSecret)
 
-	userRepository := user.NewGormRepository(db)
+	userRepository := gormrepo.NewUserRepository(db)
 	userUseCase := user.NewUseCase(userRepository, jwtManager)
 	userHandler := user.NewHandler(userUseCase)
 
