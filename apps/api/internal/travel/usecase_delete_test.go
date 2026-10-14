@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/HisakeyT/backpacker-platform/internal/model"
+	"github.com/HisakeyT/backpacker-platform/internal/repository"
 )
 
 func TestUseCase_DeleteTravel(t *testing.T) {
@@ -13,7 +14,7 @@ func TestUseCase_DeleteTravel(t *testing.T) {
 		name       string
 		userID     uint
 		travelID   uint
-		repository Repository
+		repository repository.Repository
 		wantErr    error
 	}{
 		{

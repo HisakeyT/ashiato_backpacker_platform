@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/HisakeyT/backpacker-platform/internal/model"
+	"github.com/HisakeyT/backpacker-platform/internal/repository"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
@@ -22,7 +23,7 @@ func TestHandler_UpdateTravel(t *testing.T) {
 		name       string
 		travelID   string
 		request    string
-		repository Repository
+		repository repository.Repository
 		wantStatus int
 	}{
 		{

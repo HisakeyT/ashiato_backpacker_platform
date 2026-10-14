@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/HisakeyT/backpacker-platform/internal/model"
+	"github.com/HisakeyT/backpacker-platform/internal/repository"
 	"github.com/gin-gonic/gin"
 )
 
@@ -15,7 +16,7 @@ func TestHandler_GetTravels(t *testing.T) {
 
 	tests := []struct {
 		name       string
-		repository Repository
+		repository repository.Repository
 		wantStatus int
 	}{
 		{

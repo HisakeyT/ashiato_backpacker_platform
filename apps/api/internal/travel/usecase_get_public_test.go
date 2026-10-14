@@ -6,12 +6,13 @@ import (
 	"testing"
 
 	"github.com/HisakeyT/backpacker-platform/internal/model"
+	"github.com/HisakeyT/backpacker-platform/internal/repository"
 )
 
 func TestUseCase_GetPublicTravels(t *testing.T) {
 	tests := []struct {
 		name        string
-		repository  Repository
+		repository  repository.Repository
 		wantTravels []*model.PublicTravel
 		wantErr     bool
 	}{

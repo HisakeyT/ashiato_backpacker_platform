@@ -41,7 +41,7 @@ func TestHandler_Register(t *testing.T) {
 	tests := []struct {
 		name       string
 		request    string
-		repository repository.Repository
+		repository repository.UserRepository
 		wantStatus int
 	}{
 		{
@@ -125,7 +125,7 @@ func TestHandler_Login(t *testing.T) {
 	tests := []struct {
 		name         string
 		request      string
-		repository   repository.Repository
+		repository   repository.UserRepository
 		wantStatus   int
 		wantResponse *LoginResponse
 	}{

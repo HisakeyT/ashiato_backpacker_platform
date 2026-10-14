@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/HisakeyT/backpacker-platform/internal/model"
+	"github.com/HisakeyT/backpacker-platform/internal/repository"
 	"github.com/gin-gonic/gin"
 )
 
@@ -18,7 +19,7 @@ func TestHandler_DeleteTravel(t *testing.T) {
 		name       string
 		travelID   string
 		userID     uint
-		repository Repository
+		repository repository.Repository
 		wantStatus int
 	}{
 		{

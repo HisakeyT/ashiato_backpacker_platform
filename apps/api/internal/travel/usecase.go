@@ -6,15 +6,16 @@ import (
 	"time"
 
 	"github.com/HisakeyT/backpacker-platform/internal/model"
+	"github.com/HisakeyT/backpacker-platform/internal/repository"
 )
 
 var ErrInvalidDateRange = errors.New("start date must not be after end date")
 
 type UseCase struct {
-	repository Repository
+	repository repository.Repository
 }
 
-func NewUseCase(repository Repository) *UseCase {
+func NewUseCase(repository repository.Repository) *UseCase {
 	return &UseCase{
 		repository: repository,
 	}
