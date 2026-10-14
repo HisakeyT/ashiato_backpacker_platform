@@ -10,7 +10,7 @@ import (
 	"github.com/HisakeyT/backpacker-platform/internal/repository/mock"
 )
 
-func TestUseCase_UpdateMe(t *testing.T) {
+func TestUserUsecase_UpdateMe(t *testing.T) {
 	var updatedUser *model.User
 
 	mockRepository := &mockrepo.MockUserRepository{
@@ -28,7 +28,7 @@ func TestUseCase_UpdateMe(t *testing.T) {
 	}
 
 	jwtManager := auth.NewJWTManager("test-secret")
-	useCase := NewUserUseCase(mockRepository, jwtManager)
+	useCase := NewUserUsecase(mockRepository, jwtManager)
 
 	input := UpdateMeInput{
 		Nickname: "new-nickname",
@@ -56,7 +56,7 @@ func TestUseCase_UpdateMe(t *testing.T) {
 	}
 }
 
-func TestUseCase_UpdateMe_FindByIDError(t *testing.T) {
+func TestUserUsecase_UpdateMe_FindByIDError(t *testing.T) {
 	expectedErr := errors.New("database error")
 
 	mockRepository := &mockrepo.MockUserRepository{
@@ -65,7 +65,7 @@ func TestUseCase_UpdateMe_FindByIDError(t *testing.T) {
 		},
 	}
 
-	useCase := NewUserUseCase(
+	useCase := NewUserUsecase(
 		mockRepository,
 		auth.NewJWTManager("test-secret"),
 	)
@@ -79,7 +79,7 @@ func TestUseCase_UpdateMe_FindByIDError(t *testing.T) {
 	}
 }
 
-func TestUseCase_UpdateMe_UpdateError(t *testing.T) {
+func TestUserUsecase_UpdateMe_UpdateError(t *testing.T) {
 	expectedErr := errors.New("database error")
 
 	mockRepository := &mockrepo.MockUserRepository{
@@ -95,7 +95,7 @@ func TestUseCase_UpdateMe_UpdateError(t *testing.T) {
 		},
 	}
 
-	useCase := NewUserUseCase(
+	useCase := NewUserUsecase(
 		mockRepository,
 		auth.NewJWTManager("test-secret"),
 	)

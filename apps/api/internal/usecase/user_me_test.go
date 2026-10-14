@@ -21,7 +21,7 @@ func TestUserUsecase_Me(t *testing.T) {
 	}
 
 	jwtManager := auth.NewJWTManager("secret")
-	uc := NewUserUseCase(repo, jwtManager)
+	uc := NewUserUsecase(repo, jwtManager)
 
 	user, err := uc.Me(1)
 	if err != nil {
@@ -41,7 +41,7 @@ func TestUserUsecase_Me_UserNotFound(t *testing.T) {
 	}
 
 	jwtManager := auth.NewJWTManager("secret")
-	uc := NewUserUseCase(repo, jwtManager)
+	uc := NewUserUsecase(repo, jwtManager)
 
 	user, err := uc.Me(999)
 

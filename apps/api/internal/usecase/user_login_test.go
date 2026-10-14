@@ -34,7 +34,7 @@ func TestLogin_Success(t *testing.T) {
 	}
 
 	jwtManager := auth.NewJWTManager("test-secret")
-	useCase := NewUserUseCase(mockRepo, jwtManager)
+	useCase := NewUserUsecase(mockRepo, jwtManager)
 
 	result, err := useCase.Login(LoginInput{
 		Email:    email,
@@ -90,7 +90,7 @@ func TestLogin_UserNotFound(t *testing.T) {
 	}
 
 	jwtManager := auth.NewJWTManager("test-secret")
-	useCase := NewUserUseCase(mockRepo, jwtManager)
+	useCase := NewUserUsecase(mockRepo, jwtManager)
 
 	_, err := useCase.Login(LoginInput{
 		Email:    "notfound@example.com",
@@ -123,7 +123,7 @@ func TestLogin_WrongPassword(t *testing.T) {
 	}
 
 	jwtManager := auth.NewJWTManager("test-secret")
-	useCase := NewUserUseCase(mockRepo, jwtManager)
+	useCase := NewUserUsecase(mockRepo, jwtManager)
 
 	_, err = useCase.Login(LoginInput{
 		Email:    "test@example.com",

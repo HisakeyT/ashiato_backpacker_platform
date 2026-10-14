@@ -82,7 +82,7 @@ func TestHandler_Register(t *testing.T) {
 			router := gin.New()
 
 			jwtManager := auth.NewJWTManager("secret")
-			useCase := usecase.NewUserUseCase(tt.repository, jwtManager)
+			useCase := usecase.NewUserUsecase(tt.repository, jwtManager)
 			handler := NewHandler(useCase)
 
 			router.POST("/register", handler.Register)
@@ -186,7 +186,7 @@ func TestHandler_Login(t *testing.T) {
 			router := gin.New()
 
 			jwtManager := auth.NewJWTManager("secret")
-			useCase := usecase.NewUserUseCase(tt.repository, jwtManager)
+			useCase := usecase.NewUserUsecase(tt.repository, jwtManager)
 			handler := NewHandler(useCase)
 
 			router.POST("/login", handler.Login)
@@ -254,7 +254,7 @@ func TestHandler_Me(t *testing.T) {
 	}
 
 	jwtManager := auth.NewJWTManager("secret")
-	useCase := usecase.NewUserUseCase(repository, jwtManager)
+	useCase := usecase.NewUserUsecase(repository, jwtManager)
 	handler := NewHandler(useCase)
 
 	router.Use(auth.AuthMiddleware(jwtManager))
@@ -310,7 +310,7 @@ func TestHandler_Me_UserNotFound(t *testing.T) {
 	}
 
 	jwtManager := auth.NewJWTManager("secret")
-	useCase := usecase.NewUserUseCase(repository, jwtManager)
+	useCase := usecase.NewUserUsecase(repository, jwtManager)
 	handler := NewHandler(useCase)
 
 	router := gin.New()
@@ -359,7 +359,7 @@ func TestHandler_UpdateMe(t *testing.T) {
 	}
 
 	jwtManager := auth.NewJWTManager("test-secret")
-	useCase := usecase.NewUserUseCase(mockRepository, jwtManager)
+	useCase := usecase.NewUserUsecase(mockRepository, jwtManager)
 	handler := NewHandler(useCase)
 
 	router := gin.New()

@@ -24,8 +24,8 @@ func main() {
 	jwtManager := auth.NewJWTManager(jwtSecret)
 
 	userRepository := gormrepo.NewUserRepository(db)
-	userUseCase := usecase.NewUserUseCase(userRepository, jwtManager)
-	userHandler := handler.NewHandler(userUseCase)
+	userUsecase := usecase.NewUserUsecase(userRepository, jwtManager)
+	userHandler := handler.NewHandler(userUsecase)
 
 	travelRepository := gormrepo.NewTravelRepository(db)
 	travelUseCase := travel.NewUseCase(travelRepository)
