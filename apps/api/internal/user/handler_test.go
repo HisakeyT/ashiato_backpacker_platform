@@ -9,6 +9,7 @@ import (
 
 	"github.com/HisakeyT/backpacker-platform/internal/auth"
 	"github.com/HisakeyT/backpacker-platform/internal/model"
+	"github.com/HisakeyT/backpacker-platform/internal/repository"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -40,7 +41,7 @@ func TestHandler_Register(t *testing.T) {
 	tests := []struct {
 		name       string
 		request    string
-		repository Repository
+		repository repository.Repository
 		wantStatus int
 	}{
 		{
@@ -124,7 +125,7 @@ func TestHandler_Login(t *testing.T) {
 	tests := []struct {
 		name         string
 		request      string
-		repository   Repository
+		repository   repository.Repository
 		wantStatus   int
 		wantResponse *LoginResponse
 	}{
@@ -172,7 +173,7 @@ func TestHandler_Login(t *testing.T) {
 			name:    "ユーザーが存在しない",
 			request: `{"email":"unknown@example.com","password":"password"}`,
 			repository: &fakeRepository{
-				err: ErrUserNotFound,
+				err: model.ErrUserNotFound,
 			},
 			wantStatus: http.StatusUnauthorized,
 		},
@@ -303,7 +304,7 @@ func TestHandler_Me_UserNotFound(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 
 	repository := &fakeRepository{
-		err: ErrUserNotFound,
+		err: model.ErrUserNotFound,
 	}
 
 	jwtManager := auth.NewJWTManager("secret")

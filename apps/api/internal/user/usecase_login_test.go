@@ -84,7 +84,7 @@ func TestLogin_Success(t *testing.T) {
 func TestLogin_UserNotFound(t *testing.T) {
 	mockRepo := &MockRepository{
 		FindByEmailFunc: func(email string) (*model.User, error) {
-			return nil, ErrUserNotFound
+			return nil, model.ErrUserNotFound
 		},
 	}
 

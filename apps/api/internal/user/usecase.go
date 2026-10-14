@@ -5,15 +5,16 @@ import (
 
 	"github.com/HisakeyT/backpacker-platform/internal/auth"
 	"github.com/HisakeyT/backpacker-platform/internal/model"
+	"github.com/HisakeyT/backpacker-platform/internal/repository"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type UseCase struct {
-	repository Repository
+	repository repository.Repository
 	jwtManager *auth.JWTManager
 }
 
-func NewUseCase(repository Repository, jwtManager *auth.JWTManager) *UseCase {
+func NewUseCase(repository repository.Repository, jwtManager *auth.JWTManager) *UseCase {
 	return &UseCase{
 		repository: repository,
 		jwtManager: jwtManager,
@@ -43,7 +44,7 @@ func (u *UseCase) Register(input RegisterInput) (*model.User, error) {
 		return nil, ErrEmailAlreadyUsed
 	}
 
-	if !errors.Is(err, ErrUserNotFound) && err != nil {
+	if !errors.Is(err, model.ErrUserNotFound) && err != nil {
 		return nil, err
 	}
 
@@ -81,7 +82,7 @@ type LoginOutput struct {
 func (u *UseCase) Login(input LoginInput) (*LoginOutput, error) {
 	user, err := u.repository.FindByEmail(input.Email)
 	if err != nil {
-		if errors.Is(err, ErrUserNotFound) {
+		if errors.Is(err, model.ErrUserNotFound) {
 			return nil, ErrInvalidCredentials
 		}
 

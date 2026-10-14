@@ -4,6 +4,7 @@ import (
 	"errors"
 	"net/http"
 
+	"github.com/HisakeyT/backpacker-platform/internal/model"
 	"github.com/gin-gonic/gin"
 )
 
@@ -121,7 +122,7 @@ func (h *Handler) Me(c *gin.Context) {
 
 	user, err := h.useCase.Me(userID.(uint))
 	if err != nil {
-		if errors.Is(err, ErrUserNotFound) {
+		if errors.Is(err, model.ErrUserNotFound) {
 			c.JSON(http.StatusNotFound, gin.H{
 				"error": "user not found",
 			})
@@ -155,7 +156,7 @@ func (h *Handler) UpdateMe(c *gin.Context) {
 
 	user, err := h.useCase.UpdateMe(userID.(uint), input)
 	if err != nil {
-		if errors.Is(err, ErrUserNotFound) {
+		if errors.Is(err, model.ErrUserNotFound) {
 			c.JSON(http.StatusNotFound, gin.H{
 				"error": "user not found",
 			})

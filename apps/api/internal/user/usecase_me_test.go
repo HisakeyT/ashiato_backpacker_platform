@@ -31,13 +31,13 @@ func TestUseCase_Me(t *testing.T) {
 }
 
 func TestUseCase_Me_UserNotFound(t *testing.T) {
-	repository := &fakeRepository{err: ErrUserNotFound}
+	repository := &fakeRepository{err: model.ErrUserNotFound}
 	jwtManager := auth.NewJWTManager("secret")
 	useCase := NewUseCase(repository, jwtManager)
 
 	user, err := useCase.Me(999)
 
-	if !errors.Is(err, ErrUserNotFound) {
+	if !errors.Is(err, model.ErrUserNotFound) {
 		t.Fatalf("expected ErrUserNotFound, got %v", err)
 	}
 

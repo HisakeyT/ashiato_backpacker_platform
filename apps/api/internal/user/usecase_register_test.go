@@ -14,7 +14,7 @@ func TestUseCase_Register(t *testing.T) {
 
 	repository := &MockRepository{
 		FindByEmailFunc: func(email string) (*model.User, error) {
-			return nil, ErrUserNotFound
+			return nil, model.ErrUserNotFound
 		},
 		CreateFunc: func(user *model.User) error {
 			user.ID = 1
@@ -64,7 +64,7 @@ func TestUseCase_Register(t *testing.T) {
 func TestUseCase_Register_PasswordMismatch(t *testing.T) {
 	repository := &MockRepository{
 		FindByEmailFunc: func(email string) (*model.User, error) {
-			return nil, ErrUserNotFound
+			return nil, model.ErrUserNotFound
 		},
 		CreateFunc: func(user *model.User) error {
 			t.Fatal("Create should not be called")

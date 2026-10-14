@@ -1,11 +1,8 @@
-package user
+package repository
 
 import (
-	"errors"
 	"github.com/HisakeyT/backpacker-platform/internal/model"
 )
-
-var ErrUserNotFound = errors.New("user not found")
 
 type Repository interface {
 	Create(user *model.User) error

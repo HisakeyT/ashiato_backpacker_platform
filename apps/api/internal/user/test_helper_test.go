@@ -22,14 +22,14 @@ func (m *MockRepository) FindByID(id uint) (*model.User, error) {
 	if m.FindByIDFunc != nil {
 		return m.FindByIDFunc(id)
 	}
-	return nil, ErrUserNotFound
+	return nil, model.ErrUserNotFound
 }
 
 func (m *MockRepository) FindByEmail(email string) (*model.User, error) {
 	if m.FindByEmailFunc != nil {
 		return m.FindByEmailFunc(email)
 	}
-	return nil, ErrUserNotFound
+	return nil, model.ErrUserNotFound
 }
 
 func (m *MockRepository) Update(user *model.User) error {
