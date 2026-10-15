@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"errors"
 	"net/http"
 	"strings"
 	"time"
@@ -91,35 +90,8 @@ func (h *TravelPlanHandler) CreateTravelPlan(c *gin.Context) {
 		travelID,
 		input,
 	)
-
 	if err != nil {
-		if errors.Is(err, model.ErrTravelNotFound) {
-			c.JSON(http.StatusNotFound, gin.H{
-				"error": err.Error(),
-			})
-			return
-		}
-
-		if errors.Is(err, model.ErrUserNotAuthorized) {
-			c.JSON(http.StatusForbidden, gin.H{
-				"error": err.Error(),
-			})
-			return
-		}
-
-		if errors.Is(err, usecase.ErrInvalidDateRange) {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
-
-		if errors.Is(err, model.ErrInvalidCoordinates) {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
-
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
-		})
+		respondUsecaseError(c, err)
 		return
 	}
 
@@ -216,47 +188,7 @@ func (h *TravelPlanHandler) UpdateTravelPlan(c *gin.Context) {
 
 	travelPlan, err := h.useCase.UpdateTravelPlan(userID, travelID, travelPlanID, updateInput)
 	if err != nil {
-		if errors.Is(err, model.ErrTravelNotFound) {
-			c.JSON(http.StatusNotFound, gin.H{
-				"error": err.Error(),
-			})
-			return
-		}
-
-		if errors.Is(err, model.ErrUserNotAuthorized) {
-			c.JSON(http.StatusForbidden, gin.H{
-				"error": err.Error(),
-			})
-			return
-		}
-
-		if errors.Is(err, model.ErrTravelPlanNotFound) {
-			c.JSON(http.StatusNotFound, gin.H{
-				"error": err.Error(),
-			})
-			return
-		}
-
-		if errors.Is(err, model.ErrTravelPlanNotBelongToTravel) {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"error": err.Error(),
-			})
-			return
-		}
-
-		if errors.Is(err, usecase.ErrInvalidDateRange) {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
-
-		if errors.Is(err, model.ErrInvalidCoordinates) {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
-
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
-		})
+		respondUsecaseError(c, err)
 		return
 	}
 
@@ -290,23 +222,7 @@ func (h *TravelPlanHandler) GetTravelPlans(c *gin.Context) {
 
 	travelPlans, err := h.useCase.GetTravelPlans(userID, travelID)
 	if err != nil {
-		if errors.Is(err, model.ErrTravelNotFound) {
-			c.JSON(http.StatusNotFound, gin.H{
-				"error": err.Error(),
-			})
-			return
-		}
-
-		if errors.Is(err, model.ErrUserNotAuthorized) {
-			c.JSON(http.StatusForbidden, gin.H{
-				"error": err.Error(),
-			})
-			return
-		}
-
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
-		})
+		respondUsecaseError(c, err)
 		return
 	}
 
@@ -334,27 +250,7 @@ func (h *TravelPlanHandler) DeleteTravelPlan(c *gin.Context) {
 
 	err = h.useCase.DeleteTravelPlan(userID, travelID, travelPlanID)
 	if err != nil {
-		if errors.Is(err, model.ErrTravelNotFound) {
-			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
-			return
-		}
-
-		if errors.Is(err, model.ErrUserNotAuthorized) {
-			c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
-			return
-		}
-
-		if errors.Is(err, model.ErrTravelPlanNotFound) {
-			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
-			return
-		}
-
-		if errors.Is(err, model.ErrTravelPlanNotBelongToTravel) {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
-
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		respondUsecaseError(c, err)
 		return
 	}
 
@@ -372,16 +268,7 @@ func (h *TravelPlanHandler) GetPublicTravelPlan(c *gin.Context) {
 
 	travelPlans, err := h.useCase.GetPulicTravelPlan(uint(travelID))
 	if err != nil {
-		if errors.Is(err, model.ErrTravelNotFound) {
-			c.JSON(http.StatusNotFound, gin.H{
-				"error": err.Error(),
-			})
-			return
-		}
-
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
-		})
+		respondUsecaseError(c, err)
 		return
 	}
 

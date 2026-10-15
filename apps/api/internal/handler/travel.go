@@ -1,10 +1,8 @@
 package handler
 
 import (
-	"errors"
 	"net/http"
 
-	"github.com/HisakeyT/backpacker-platform/internal/model"
 	"github.com/HisakeyT/backpacker-platform/internal/usecase"
 	"github.com/gin-gonic/gin"
 )
@@ -61,16 +59,7 @@ func (h *TravelHandler) CreateTravel(c *gin.Context) {
 
 	travel, err := h.useCase.CreateTravel(userID, input)
 	if err != nil {
-		if errors.Is(err, usecase.ErrInvalidDateRange) {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"error": err.Error(),
-			})
-			return
-		}
-
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
-		})
+		respondUsecaseError(c, err)
 		return
 	}
 
@@ -104,24 +93,7 @@ func (h *TravelHandler) GetTravel(c *gin.Context) {
 
 	travelDetail, err := h.useCase.GetTravel(userID, travelID)
 	if err != nil {
-		if errors.Is(err, model.ErrTravelNotFound) {
-			c.JSON(http.StatusNotFound, gin.H{
-				"error": err.Error(),
-			})
-			return
-		}
-
-		if errors.Is(err, model.ErrUserNotAuthorized) {
-			c.JSON(http.StatusForbidden, gin.H{
-				"error": err.Error(),
-			})
-			return
-		}
-
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
-		})
-
+		respondUsecaseError(c, err)
 		return
 	}
 
@@ -180,31 +152,7 @@ func (h *TravelHandler) UpdateTravel(c *gin.Context) {
 
 	travel, err := h.useCase.UpdateTravel(userID, travelID, input)
 	if err != nil {
-		if errors.Is(err, model.ErrTravelNotFound) {
-			c.JSON(http.StatusNotFound, gin.H{
-				"error": err.Error(),
-			})
-			return
-		}
-
-		if errors.Is(err, model.ErrUserNotAuthorized) {
-			c.JSON(http.StatusForbidden, gin.H{
-				"error": err.Error(),
-			})
-			return
-		}
-
-		if errors.Is(err, usecase.ErrInvalidDateRange) {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"error": err.Error(),
-			})
-			return
-		}
-
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
-		})
-
+		respondUsecaseError(c, err)
 		return
 	}
 
@@ -223,23 +171,7 @@ func (h *TravelHandler) DeleteTravel(c *gin.Context) {
 	}
 
 	if err := h.useCase.DeleteTravel(userID, travelID); err != nil {
-		if errors.Is(err, model.ErrTravelNotFound) {
-			c.JSON(http.StatusNotFound, gin.H{
-				"error": err.Error(),
-			})
-			return
-		}
-
-		if errors.Is(err, model.ErrUserNotAuthorized) {
-			c.JSON(http.StatusForbidden, gin.H{
-				"error": err.Error(),
-			})
-			return
-		}
-
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
-		})
+		respondUsecaseError(c, err)
 		return
 	}
 
@@ -270,16 +202,7 @@ func (h *TravelHandler) GetPublicTravel(c *gin.Context) {
 
 	travel, err := h.useCase.GetPublicTravel(travelID)
 	if err != nil {
-		if errors.Is(err, model.ErrTravelNotFound) {
-			c.JSON(http.StatusNotFound, gin.H{
-				"error": err.Error(),
-			})
-			return
-		}
-
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
-		})
+		respondUsecaseError(c, err)
 		return
 	}
 
@@ -299,16 +222,7 @@ func (h *TravelHandler) CopyTravel(c *gin.Context) {
 
 	travel, err := h.useCase.CopyTravel(userID, travelID)
 	if err != nil {
-		if errors.Is(err, model.ErrTravelNotFound) {
-			c.JSON(http.StatusNotFound, gin.H{
-				"error": err.Error(),
-			})
-			return
-		}
-
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "internal server error",
-		})
+		respondUsecaseError(c, err)
 		return
 	}
 

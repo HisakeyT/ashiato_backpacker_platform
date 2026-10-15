@@ -1,10 +1,8 @@
 package handler
 
 import (
-	"errors"
 	"net/http"
 
-	"github.com/HisakeyT/backpacker-platform/internal/model"
 	"github.com/HisakeyT/backpacker-platform/internal/usecase"
 	"github.com/gin-gonic/gin"
 )
@@ -56,23 +54,7 @@ func (h *Handler) Register(c *gin.Context) {
 
 	u, err := h.useCase.Register(input)
 	if err != nil {
-		if errors.Is(err, usecase.ErrEmailAlreadyUsed) {
-			c.JSON(http.StatusConflict, gin.H{
-				"error": err.Error(),
-			})
-			return
-		}
-
-		if errors.Is(err, usecase.ErrPasswordMismatch) {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"error": err.Error(),
-			})
-			return
-		}
-
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
-		})
+		respondUsecaseError(c, err)
 		return
 	}
 
@@ -95,16 +77,7 @@ func (h *Handler) Login(c *gin.Context) {
 
 	result, err := h.useCase.Login(input)
 	if err != nil {
-		if errors.Is(err, usecase.ErrInvalidCredentials) {
-			c.JSON(http.StatusUnauthorized, gin.H{
-				"error": "invalid email or password",
-			})
-			return
-		}
-
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "internal server error",
-		})
+		respondUsecaseError(c, err)
 		return
 	}
 
@@ -123,16 +96,7 @@ func (h *Handler) Me(c *gin.Context) {
 
 	user, err := h.useCase.Me(userID.(uint))
 	if err != nil {
-		if errors.Is(err, model.ErrUserNotFound) {
-			c.JSON(http.StatusNotFound, gin.H{
-				"error": "user not found",
-			})
-			return
-		}
-
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "internal server error",
-		})
+		respondUsecaseError(c, err)
 		return
 	}
 
@@ -157,16 +121,7 @@ func (h *Handler) UpdateMe(c *gin.Context) {
 
 	user, err := h.useCase.UpdateMe(userID.(uint), input)
 	if err != nil {
-		if errors.Is(err, model.ErrUserNotFound) {
-			c.JSON(http.StatusNotFound, gin.H{
-				"error": "user not found",
-			})
-			return
-		}
-
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "internal server error",
-		})
+		respondUsecaseError(c, err)
 		return
 	}
 
