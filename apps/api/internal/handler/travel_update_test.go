@@ -1,4 +1,4 @@
-package travel
+package handler
 
 import (
 	"errors"
@@ -10,6 +10,8 @@ import (
 
 	"github.com/HisakeyT/backpacker-platform/internal/model"
 	"github.com/HisakeyT/backpacker-platform/internal/repository"
+	"github.com/HisakeyT/backpacker-platform/internal/repository/mock"
+	"github.com/HisakeyT/backpacker-platform/internal/usecase"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
@@ -30,7 +32,7 @@ func TestHandler_UpdateTravel(t *testing.T) {
 			name:     "正常に更新できる",
 			travelID: "1",
 			request:  `{"title":"新しいタイトル"}`,
-			repository: &MockRepository{
+			repository: &mockrepo.MockTravelRepository{
 				FindByIDFunc: func(id uint) (*model.Travel, error) {
 					return &model.Travel{
 						ID:        1,
@@ -51,21 +53,21 @@ func TestHandler_UpdateTravel(t *testing.T) {
 			name:       "不正なJSON",
 			travelID:   "1",
 			request:    `{"title":}`,
-			repository: &MockRepository{},
+			repository: &mockrepo.MockTravelRepository{},
 			wantStatus: http.StatusBadRequest,
 		},
 		{
 			name:       "travel_idが不正",
 			travelID:   "abc",
 			request:    `{"title":"新しいタイトル"}`,
-			repository: &MockRepository{},
+			repository: &mockrepo.MockTravelRepository{},
 			wantStatus: http.StatusBadRequest,
 		},
 		{
 			name:     "開始日が不正",
 			travelID: "1",
 			request:  `{"start_date":"2026-99-99"}`,
-			repository: &MockRepository{
+			repository: &mockrepo.MockTravelRepository{
 				FindByIDFunc: func(id uint) (*model.Travel, error) {
 					return &model.Travel{
 						ID:     1,
@@ -79,7 +81,7 @@ func TestHandler_UpdateTravel(t *testing.T) {
 			name:     "終了日が不正",
 			travelID: "1",
 			request:  `{"end_date":"2026-99-99"}`,
-			repository: &MockRepository{
+			repository: &mockrepo.MockTravelRepository{
 				FindByIDFunc: func(id uint) (*model.Travel, error) {
 					return &model.Travel{
 						ID:     1,
@@ -93,7 +95,7 @@ func TestHandler_UpdateTravel(t *testing.T) {
 			name:     "Travelが存在しない",
 			travelID: "1",
 			request:  `{"title":"新しいタイトル"}`,
-			repository: &MockRepository{
+			repository: &mockrepo.MockTravelRepository{
 				FindByIDFunc: func(id uint) (*model.Travel, error) {
 					return nil, gorm.ErrRecordNotFound
 				},
@@ -104,7 +106,7 @@ func TestHandler_UpdateTravel(t *testing.T) {
 			name:     "他人のTravelを更新しようとする",
 			travelID: "1",
 			request:  `{"title":"新しいタイトル"}`,
-			repository: &MockRepository{
+			repository: &mockrepo.MockTravelRepository{
 				FindByIDFunc: func(id uint) (*model.Travel, error) {
 					return &model.Travel{
 						ID:     1,
@@ -118,7 +120,7 @@ func TestHandler_UpdateTravel(t *testing.T) {
 			name:     "開始日が終了日より後",
 			travelID: "1",
 			request:  `{"start_date":"2026-10-10"}`,
-			repository: &MockRepository{
+			repository: &mockrepo.MockTravelRepository{
 				FindByIDFunc: func(id uint) (*model.Travel, error) {
 					return &model.Travel{
 						ID:        1,
@@ -134,7 +136,7 @@ func TestHandler_UpdateTravel(t *testing.T) {
 			name:     "Repositoryでエラーが発生する",
 			travelID: "1",
 			request:  `{"title":"新しいタイトル"}`,
-			repository: &MockRepository{
+			repository: &mockrepo.MockTravelRepository{
 				FindByIDFunc: func(id uint) (*model.Travel, error) {
 					return nil, databaseError
 				},
@@ -147,8 +149,8 @@ func TestHandler_UpdateTravel(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			router := gin.New()
 
-			useCase := NewUseCase(tt.repository)
-			handler := NewHandler(useCase)
+			useCase := usecase.NewTravelUsecase(tt.repository)
+			handler := NewTravelHandler(useCase)
 
 			router.PATCH("/travels/:travel_id", func(c *gin.Context) {
 				c.Set("userID", uint(1))

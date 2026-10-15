@@ -1,4 +1,4 @@
-package travel
+package handler
 
 import (
 	"errors"
@@ -8,10 +8,12 @@ import (
 
 	"github.com/HisakeyT/backpacker-platform/internal/model"
 	"github.com/HisakeyT/backpacker-platform/internal/repository"
+	"github.com/HisakeyT/backpacker-platform/internal/repository/mock"
+	"github.com/HisakeyT/backpacker-platform/internal/usecase"
 	"github.com/gin-gonic/gin"
 )
 
-func TestHandler_GetTravel(t *testing.T) {
+func TestHandler_GetTravels(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 
 	tests := []struct {
@@ -21,7 +23,7 @@ func TestHandler_GetTravel(t *testing.T) {
 	}{
 		{
 			name: "自分の旅行を複数件取得できる",
-			repository: &MockRepository{
+			repository: &mockrepo.MockTravelRepository{
 				FindByUserIDFunc: func(userID uint) ([]*model.Travel, error) {
 					return []*model.Travel{
 						{
@@ -41,7 +43,7 @@ func TestHandler_GetTravel(t *testing.T) {
 		},
 		{
 			name: "自分の旅行が0件でも正常に取得できる",
-			repository: &MockRepository{
+			repository: &mockrepo.MockTravelRepository{
 				FindByUserIDFunc: func(userID uint) ([]*model.Travel, error) {
 					return []*model.Travel{}, nil
 				},
@@ -50,7 +52,7 @@ func TestHandler_GetTravel(t *testing.T) {
 		},
 		{
 			name: "Repositoryでエラーが発生した場合",
-			repository: &MockRepository{
+			repository: &mockrepo.MockTravelRepository{
 				FindByUserIDFunc: func(userID uint) ([]*model.Travel, error) {
 					return nil, errors.New("database error")
 				},
@@ -63,8 +65,8 @@ func TestHandler_GetTravel(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			router := gin.New()
 
-			useCase := NewUseCase(tt.repository)
-			handler := NewHandler(useCase)
+			useCase := usecase.NewTravelUsecase(tt.repository)
+			handler := NewTravelHandler(useCase)
 
 			router.GET("/travels", func(c *gin.Context) {
 				c.Set("userID", uint(1))

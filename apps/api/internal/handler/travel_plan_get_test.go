@@ -1,4 +1,4 @@
-package travel
+package handler
 
 import (
 	"net/http"
@@ -6,6 +6,8 @@ import (
 	"testing"
 
 	"github.com/HisakeyT/backpacker-platform/internal/model"
+	"github.com/HisakeyT/backpacker-platform/internal/repository/mock"
+	"github.com/HisakeyT/backpacker-platform/internal/usecase"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -18,15 +20,15 @@ func TestHandler_GetTravelPlans(t *testing.T) {
 		name            string
 		userID          uint
 		travelID        string
-		setupRepository func() (*MockTravelRepository, *MockPlanRepository)
+		setupRepository func() (*mockrepo.MockTravelRepository, *mockrepo.MockTravelPlanRepository)
 		wantStatus      int
 	}{
 		{
 			name:     "正常に取得できる",
 			userID:   1,
 			travelID: "10",
-			setupRepository: func() (*MockTravelRepository, *MockPlanRepository) {
-				travelRepository := &MockTravelRepository{
+			setupRepository: func() (*mockrepo.MockTravelRepository, *mockrepo.MockTravelPlanRepository) {
+				travelRepository := &mockrepo.MockTravelRepository{
 					FindByIDFunc: func(id uint) (*model.Travel, error) {
 						return &model.Travel{
 							ID:     10,
@@ -35,7 +37,7 @@ func TestHandler_GetTravelPlans(t *testing.T) {
 					},
 				}
 
-				travelPlanRepository := &MockPlanRepository{
+				travelPlanRepository := &mockrepo.MockTravelPlanRepository{
 					FindByTravelIDFunc: func(id uint) ([]model.TravelPlan, error) {
 						return []model.TravelPlan{
 							{
@@ -64,8 +66,8 @@ func TestHandler_GetTravelPlans(t *testing.T) {
 			name:     "TravelPlanが0件でも取得できる",
 			userID:   1,
 			travelID: "10",
-			setupRepository: func() (*MockTravelRepository, *MockPlanRepository) {
-				travelRepository := &MockTravelRepository{
+			setupRepository: func() (*mockrepo.MockTravelRepository, *mockrepo.MockTravelPlanRepository) {
+				travelRepository := &mockrepo.MockTravelRepository{
 					FindByIDFunc: func(id uint) (*model.Travel, error) {
 						return &model.Travel{
 							ID:     10,
@@ -74,7 +76,7 @@ func TestHandler_GetTravelPlans(t *testing.T) {
 					},
 				}
 
-				travelPlanRepository := &MockPlanRepository{
+				travelPlanRepository := &mockrepo.MockTravelPlanRepository{
 					FindByTravelIDFunc: func(id uint) ([]model.TravelPlan, error) {
 						return []model.TravelPlan{}, nil
 					},
@@ -88,14 +90,14 @@ func TestHandler_GetTravelPlans(t *testing.T) {
 			name:     "旅行が存在しない",
 			userID:   1,
 			travelID: "999",
-			setupRepository: func() (*MockTravelRepository, *MockPlanRepository) {
-				travelRepository := &MockTravelRepository{
+			setupRepository: func() (*mockrepo.MockTravelRepository, *mockrepo.MockTravelPlanRepository) {
+				travelRepository := &mockrepo.MockTravelRepository{
 					FindByIDFunc: func(id uint) (*model.Travel, error) {
 						return nil, gorm.ErrRecordNotFound
 					},
 				}
 
-				travelPlanRepository := &MockPlanRepository{}
+				travelPlanRepository := &mockrepo.MockTravelPlanRepository{}
 
 				return travelRepository, travelPlanRepository
 			},
@@ -105,8 +107,8 @@ func TestHandler_GetTravelPlans(t *testing.T) {
 			name:     "他人の旅行は取得できない",
 			userID:   1,
 			travelID: "10",
-			setupRepository: func() (*MockTravelRepository, *MockPlanRepository) {
-				travelRepository := &MockTravelRepository{
+			setupRepository: func() (*mockrepo.MockTravelRepository, *mockrepo.MockTravelPlanRepository) {
+				travelRepository := &mockrepo.MockTravelRepository{
 					FindByIDFunc: func(id uint) (*model.Travel, error) {
 						return &model.Travel{
 							ID:     10,
@@ -115,7 +117,7 @@ func TestHandler_GetTravelPlans(t *testing.T) {
 					},
 				}
 
-				travelPlanRepository := &MockPlanRepository{}
+				travelPlanRepository := &mockrepo.MockTravelPlanRepository{}
 
 				return travelRepository, travelPlanRepository
 			},
@@ -125,8 +127,8 @@ func TestHandler_GetTravelPlans(t *testing.T) {
 			name:     "travel_idが不正",
 			userID:   1,
 			travelID: "abc",
-			setupRepository: func() (*MockTravelRepository, *MockPlanRepository) {
-				return &MockTravelRepository{}, &MockPlanRepository{}
+			setupRepository: func() (*mockrepo.MockTravelRepository, *mockrepo.MockTravelPlanRepository) {
+				return &mockrepo.MockTravelRepository{}, &mockrepo.MockTravelPlanRepository{}
 			},
 			wantStatus: http.StatusBadRequest,
 		},
@@ -136,12 +138,12 @@ func TestHandler_GetTravelPlans(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			travelRepository, travelPlanRepository := tt.setupRepository()
 
-			useCase := NewPlanUseCase(
+			useCase := usecase.NewTravelPlanUsecase(
 				travelRepository,
 				travelPlanRepository,
 			)
 
-			handler := NewPlanHandler(useCase)
+			handler := NewTravelPlanHandler(useCase)
 
 			recorder := httptest.NewRecorder()
 			c, _ := gin.CreateTestContext(recorder)

@@ -10,7 +10,6 @@ import (
 	"github.com/HisakeyT/backpacker-platform/internal/database"
 	"github.com/HisakeyT/backpacker-platform/internal/handler"
 	"github.com/HisakeyT/backpacker-platform/internal/repository/gorm"
-	"github.com/HisakeyT/backpacker-platform/internal/travel"
 	"github.com/HisakeyT/backpacker-platform/internal/usecase"
 )
 
@@ -28,12 +27,12 @@ func main() {
 	userHandler := handler.NewHandler(userUsecase)
 
 	travelRepository := gormrepo.NewTravelRepository(db)
-	travelUseCase := travel.NewUseCase(travelRepository)
-	travelHandler := travel.NewHandler(travelUseCase)
+	travelUsecase := usecase.NewTravelUsecase(travelRepository)
+	travelHandler := handler.NewTravelHandler(travelUsecase)
 
 	travelPlanRepository := gormrepo.NewGormPlanRepository(db)
-	travelPlanUseCase := travel.NewPlanUseCase(travelRepository, travelPlanRepository)
-	travelPlanHandler := travel.NewPlanHandler(travelPlanUseCase)
+	travelPlanUsecase := usecase.NewTravelPlanUsecase(travelRepository, travelPlanRepository)
+	travelPlanHandler := handler.NewTravelPlanHandler(travelPlanUsecase)
 
 	r := gin.Default()
 

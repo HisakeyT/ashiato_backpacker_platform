@@ -1,4 +1,4 @@
-package travel
+package handler
 
 import (
 	"errors"
@@ -9,6 +9,8 @@ import (
 
 	"github.com/HisakeyT/backpacker-platform/internal/model"
 	"github.com/HisakeyT/backpacker-platform/internal/repository"
+	"github.com/HisakeyT/backpacker-platform/internal/repository/mock"
+	"github.com/HisakeyT/backpacker-platform/internal/usecase"
 	"github.com/gin-gonic/gin"
 )
 
@@ -26,7 +28,7 @@ func TestHandler_DeleteTravel(t *testing.T) {
 			name:     "正常に削除できる",
 			travelID: "1",
 			userID:   1,
-			repository: &MockRepository{
+			repository: &mockrepo.MockTravelRepository{
 				FindByIDFunc: func(id uint) (*model.Travel, error) {
 					return &model.Travel{
 						ID:     1,
@@ -43,7 +45,7 @@ func TestHandler_DeleteTravel(t *testing.T) {
 			name:     "Travelが存在しない",
 			travelID: "999",
 			userID:   1,
-			repository: &MockRepository{
+			repository: &mockrepo.MockTravelRepository{
 				FindByIDFunc: func(id uint) (*model.Travel, error) {
 					return nil, gorm.ErrRecordNotFound
 				},
@@ -54,7 +56,7 @@ func TestHandler_DeleteTravel(t *testing.T) {
 			name:     "他ユーザーのTravel",
 			travelID: "1",
 			userID:   1,
-			repository: &MockRepository{
+			repository: &mockrepo.MockTravelRepository{
 				FindByIDFunc: func(id uint) (*model.Travel, error) {
 					return &model.Travel{
 						ID:     1,
@@ -68,7 +70,7 @@ func TestHandler_DeleteTravel(t *testing.T) {
 			name:     "FindByIDでRepositoryエラー",
 			travelID: "1",
 			userID:   1,
-			repository: &MockRepository{
+			repository: &mockrepo.MockTravelRepository{
 				FindByIDFunc: func(id uint) (*model.Travel, error) {
 					return nil, errors.New("database error")
 				},
@@ -79,7 +81,7 @@ func TestHandler_DeleteTravel(t *testing.T) {
 			name:     "DeleteでRepositoryエラー",
 			travelID: "1",
 			userID:   1,
-			repository: &MockRepository{
+			repository: &mockrepo.MockTravelRepository{
 				FindByIDFunc: func(id uint) (*model.Travel, error) {
 					return &model.Travel{
 						ID:     1,
@@ -96,7 +98,7 @@ func TestHandler_DeleteTravel(t *testing.T) {
 			name:       "travel_idが不正",
 			travelID:   "abc",
 			userID:     1,
-			repository: &MockRepository{},
+			repository: &mockrepo.MockTravelRepository{},
 			wantStatus: http.StatusBadRequest,
 		},
 	}
@@ -105,8 +107,8 @@ func TestHandler_DeleteTravel(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			router := gin.New()
 
-			useCase := NewUseCase(tt.repository)
-			handler := NewHandler(useCase)
+			useCase := usecase.NewTravelUsecase(tt.repository)
+			handler := NewTravelHandler(useCase)
 
 			router.DELETE("/travels/:travel_id", func(c *gin.Context) {
 				c.Set("userID", tt.userID)

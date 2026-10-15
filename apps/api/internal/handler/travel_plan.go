@@ -1,4 +1,4 @@
-package travel
+package handler
 
 import (
 	"errors"
@@ -9,15 +9,16 @@ import (
 
 	"github.com/HisakeyT/backpacker-platform/internal/model"
 	"github.com/HisakeyT/backpacker-platform/internal/response"
+	"github.com/HisakeyT/backpacker-platform/internal/usecase"
 	"github.com/gin-gonic/gin"
 )
 
-type PlanHandler struct {
-	useCase *PlanUseCase
+type TravelPlanHandler struct {
+	useCase *usecase.TravelPlanUsecase
 }
 
-func NewPlanHandler(useCase *PlanUseCase) *PlanHandler {
-	return &PlanHandler{
+func NewTravelPlanHandler(useCase *usecase.TravelPlanUsecase) *TravelPlanHandler {
+	return &TravelPlanHandler{
 		useCase: useCase,
 	}
 }
@@ -35,7 +36,7 @@ type CreateTravelPlanRequest struct {
 	SortOrder int      `json:"sort_order"`
 }
 
-func (h *PlanHandler) CreateTravelPlan(c *gin.Context) {
+func (h *TravelPlanHandler) CreateTravelPlan(c *gin.Context) {
 	userID := c.GetUint("userID")
 
 	travelID, err := strconv.ParseUint(c.Param("travel_id"), 10, 64)
@@ -72,7 +73,7 @@ func (h *PlanHandler) CreateTravelPlan(c *gin.Context) {
 		endDate = &parsed
 	}
 
-	input := CreateTravelPlanInput{
+	input := usecase.CreateTravelPlanInput{
 		StartDate: startDate,
 		EndDate:   endDate,
 		Place:     req.Place,
@@ -108,7 +109,7 @@ func (h *PlanHandler) CreateTravelPlan(c *gin.Context) {
 			return
 		}
 
-		if errors.Is(err, ErrInvalidDateRange) {
+		if errors.Is(err, usecase.ErrInvalidDateRange) {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
@@ -140,7 +141,7 @@ type UpdateTravelPlanRequest struct {
 	SortOrder *int     `json:"sort_order"`
 }
 
-func (h *PlanHandler) UpdateTravelPlan(c *gin.Context) {
+func (h *TravelPlanHandler) UpdateTravelPlan(c *gin.Context) {
 	userID := c.GetUint("userID")
 
 	travelPlanID64, err := strconv.ParseUint(c.Param("travel_plan_id"), 10, 64)
@@ -209,7 +210,7 @@ func (h *PlanHandler) UpdateTravelPlan(c *gin.Context) {
 		endDate = &parsed
 	}
 
-	updateInput := UpdateTravelPlanInput{
+	updateInput := usecase.UpdateTravelPlanInput{
 		StartDate: startDate,
 		EndDate:   endDate,
 		Place:     updateReq.Place,
@@ -248,7 +249,7 @@ func (h *PlanHandler) UpdateTravelPlan(c *gin.Context) {
 			return
 		}
 
-		if errors.Is(err, ErrInvalidDateRange) {
+		if errors.Is(err, usecase.ErrInvalidDateRange) {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
@@ -281,7 +282,7 @@ func (r UpdateTravelPlanRequest) location() *model.Location {
 	}
 }
 
-func (h *PlanHandler) GetTravelPlans(c *gin.Context) {
+func (h *TravelPlanHandler) GetTravelPlans(c *gin.Context) {
 	userID := c.GetUint("userID")
 
 	travelID, err := strconv.ParseUint(c.Param("travel_id"), 10, 64)
@@ -317,7 +318,7 @@ func (h *PlanHandler) GetTravelPlans(c *gin.Context) {
 	c.JSON(http.StatusOK, response.MapSlice(travelPlans, toTravelPlanResponse))
 }
 
-func (h *PlanHandler) DeleteTravelPlan(c *gin.Context) {
+func (h *TravelPlanHandler) DeleteTravelPlan(c *gin.Context) {
 	userID := c.GetUint("userID")
 
 	travelPlanID64, err := strconv.ParseUint(c.Param("travel_plan_id"), 10, 64)
@@ -365,7 +366,7 @@ func (h *PlanHandler) DeleteTravelPlan(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
-func (h *PlanHandler) GetPublicTravelPlan(c *gin.Context) {
+func (h *TravelPlanHandler) GetPublicTravelPlan(c *gin.Context) {
 	travelID, err := strconv.ParseUint(c.Param("travel_id"), 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{

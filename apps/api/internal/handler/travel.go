@@ -1,4 +1,4 @@
-package travel
+package handler
 
 import (
 	"errors"
@@ -8,15 +8,16 @@ import (
 
 	"github.com/HisakeyT/backpacker-platform/internal/model"
 	"github.com/HisakeyT/backpacker-platform/internal/response"
+	"github.com/HisakeyT/backpacker-platform/internal/usecase"
 	"github.com/gin-gonic/gin"
 )
 
-type Handler struct {
-	useCase *UseCase
+type TravelHandler struct {
+	useCase *usecase.TravelUsecase
 }
 
-func NewHandler(useCase *UseCase) *Handler {
-	return &Handler{useCase: useCase}
+func NewTravelHandler(useCase *usecase.TravelUsecase) *TravelHandler {
+	return &TravelHandler{useCase: useCase}
 }
 
 type CreateTravelRequest struct {
@@ -26,7 +27,7 @@ type CreateTravelRequest struct {
 	IsPublic  bool   `json:"is_public"`
 }
 
-func (h *Handler) CreateTravel(c *gin.Context) {
+func (h *TravelHandler) CreateTravel(c *gin.Context) {
 	var req CreateTravelRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -54,7 +55,7 @@ func (h *Handler) CreateTravel(c *gin.Context) {
 		return
 	}
 
-	input := CreateTravelInput{
+	input := usecase.CreateTravelInput{
 		Title:     req.Title,
 		StartDate: startDate,
 		EndDate:   endDate,
@@ -63,7 +64,7 @@ func (h *Handler) CreateTravel(c *gin.Context) {
 
 	travel, err := h.useCase.CreateTravel(userID, input)
 	if err != nil {
-		if errors.Is(err, ErrInvalidDateRange) {
+		if errors.Is(err, usecase.ErrInvalidDateRange) {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"error": err.Error(),
 			})
@@ -83,7 +84,7 @@ func parseDate(dateStr string) (time.Time, error) {
 	return time.Parse("2006-01-02", dateStr)
 }
 
-func (h *Handler) GetTravels(c *gin.Context) {
+func (h *TravelHandler) GetTravels(c *gin.Context) {
 	userID := c.MustGet("userID").(uint)
 
 	travels, err := h.useCase.GetTravels(userID)
@@ -97,7 +98,7 @@ func (h *Handler) GetTravels(c *gin.Context) {
 	c.JSON(http.StatusOK, response.MapSlice(travels, toTravelResponse))
 }
 
-func (h *Handler) GetTravel(c *gin.Context) {
+func (h *TravelHandler) GetTravel(c *gin.Context) {
 	userID := c.MustGet("userID").(uint)
 
 	travelIDStr := c.Param("travel_id")
@@ -145,7 +146,7 @@ type UpdateTravelRequest struct {
 	IsPublic  *bool   `json:"is_public"`
 }
 
-func (h *Handler) UpdateTravel(c *gin.Context) {
+func (h *TravelHandler) UpdateTravel(c *gin.Context) {
 	var updateReq UpdateTravelRequest
 
 	if err := c.ShouldBindJSON(&updateReq); err != nil {
@@ -184,7 +185,7 @@ func (h *Handler) UpdateTravel(c *gin.Context) {
 		return
 	}
 
-	input := UpdateTravelInput{
+	input := usecase.UpdateTravelInput{
 		Title:     updateReq.Title,
 		StartDate: startDate,
 		EndDate:   endDate,
@@ -207,7 +208,7 @@ func (h *Handler) UpdateTravel(c *gin.Context) {
 			return
 		}
 
-		if errors.Is(err, ErrInvalidDateRange) {
+		if errors.Is(err, usecase.ErrInvalidDateRange) {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"error": err.Error(),
 			})
@@ -237,7 +238,7 @@ func parseOptionalDate(value *string) (*time.Time, error) {
 	return &parsed, nil
 }
 
-func (h *Handler) DeleteTravel(c *gin.Context) {
+func (h *TravelHandler) DeleteTravel(c *gin.Context) {
 	userID := c.MustGet("userID").(uint)
 
 	travelIDStr := c.Param("travel_id")
@@ -276,7 +277,7 @@ func (h *Handler) DeleteTravel(c *gin.Context) {
 	c.JSON(http.StatusNoContent, gin.H{})
 }
 
-func (h *Handler) GetPublicTravels(c *gin.Context) {
+func (h *TravelHandler) GetPublicTravels(c *gin.Context) {
 	travels, err := h.useCase.GetPublicTravels()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -289,7 +290,7 @@ func (h *Handler) GetPublicTravels(c *gin.Context) {
 }
 
 // ロジックないので、テストは書かない
-func (h *Handler) GetPublicTravel(c *gin.Context) {
+func (h *TravelHandler) GetPublicTravel(c *gin.Context) {
 	travelIDStr := c.Param("travel_id")
 	travelID64, err := strconv.ParseUint(travelIDStr, 10, 64)
 	if err != nil {
@@ -319,7 +320,7 @@ func (h *Handler) GetPublicTravel(c *gin.Context) {
 	c.JSON(http.StatusOK, toPublicTravelResponse(travel))
 }
 
-func (h *Handler) CopyTravel(c *gin.Context) {
+func (h *TravelHandler) CopyTravel(c *gin.Context) {
 	userID := c.GetUint("userID")
 
 	travelID64, err := strconv.ParseUint(c.Param("travel_id"), 10, 64)

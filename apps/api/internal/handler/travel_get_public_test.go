@@ -1,4 +1,4 @@
-package travel
+package handler
 
 import (
 	"errors"
@@ -8,6 +8,8 @@ import (
 
 	"github.com/HisakeyT/backpacker-platform/internal/model"
 	"github.com/HisakeyT/backpacker-platform/internal/repository"
+	"github.com/HisakeyT/backpacker-platform/internal/repository/mock"
+	"github.com/HisakeyT/backpacker-platform/internal/usecase"
 	"github.com/gin-gonic/gin"
 )
 
@@ -21,7 +23,7 @@ func TestHandler_GetPublicTravels(t *testing.T) {
 	}{
 		{
 			name: "公開Travelを複数取得できる",
-			repository: &MockRepository{
+			repository: &mockrepo.MockTravelRepository{
 				FindPublicTravelsFunc: func() ([]*model.PublicTravel, error) {
 					return []*model.PublicTravel{
 						{
@@ -43,7 +45,7 @@ func TestHandler_GetPublicTravels(t *testing.T) {
 		},
 		{
 			name: "公開Travelが0件",
-			repository: &MockRepository{
+			repository: &mockrepo.MockTravelRepository{
 				FindPublicTravelsFunc: func() ([]*model.PublicTravel, error) {
 					return []*model.PublicTravel{}, nil
 				},
@@ -51,8 +53,8 @@ func TestHandler_GetPublicTravels(t *testing.T) {
 			wantStatus: http.StatusOK,
 		},
 		{
-			name: "UseCaseでエラーが発生する",
-			repository: &MockRepository{
+			name: "Usecaseでエラーが発生する",
+			repository: &mockrepo.MockTravelRepository{
 				FindPublicTravelsFunc: func() ([]*model.PublicTravel, error) {
 					return nil, errors.New("repository error")
 				},
@@ -66,10 +68,8 @@ func TestHandler_GetPublicTravels(t *testing.T) {
 			w := httptest.NewRecorder()
 			c, _ := gin.CreateTestContext(w)
 
-			handler := &Handler{
-				useCase: &UseCase{
-					repository: tt.repository,
-				},
+			handler := &TravelHandler{
+				useCase: usecase.NewTravelUsecase(tt.repository),
 			}
 
 			handler.GetPublicTravels(c)
