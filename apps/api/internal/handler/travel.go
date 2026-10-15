@@ -3,7 +3,6 @@ package handler
 import (
 	"errors"
 	"net/http"
-	"strconv"
 	"time"
 
 	"github.com/HisakeyT/backpacker-platform/internal/model"
@@ -94,23 +93,19 @@ func (h *TravelHandler) GetTravels(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, MapSlice(travels, toTravelResponse))
+	c.JSON(http.StatusOK, mapSlice(travels, toTravelResponse))
 }
 
 func (h *TravelHandler) GetTravel(c *gin.Context) {
 	userID := c.MustGet("userID").(uint)
 
-	travelIDStr := c.Param("travel_id")
-	travelID64, err := strconv.ParseUint(travelIDStr, 10, 64)
+	travelID, err := parseUintParam(c, "travel_id")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "Invalid travel ID",
 		})
-
 		return
 	}
-
-	travelID := uint(travelID64)
 
 	travelDetail, err := h.useCase.GetTravel(userID, travelID)
 	if err != nil {
@@ -157,16 +152,13 @@ func (h *TravelHandler) UpdateTravel(c *gin.Context) {
 
 	userID := c.MustGet("userID").(uint)
 
-	travelIDStr := c.Param("travel_id")
-	travelID64, err := strconv.ParseUint(travelIDStr, 10, 64)
+	travelID, err := parseUintParam(c, "travel_id")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "Invalid travel ID",
 		})
-
 		return
 	}
-	travelID := uint(travelID64)
 
 	startDate, err := parseOptionalDate(updateReq.StartDate)
 	if err != nil {
@@ -240,17 +232,13 @@ func parseOptionalDate(value *string) (*time.Time, error) {
 func (h *TravelHandler) DeleteTravel(c *gin.Context) {
 	userID := c.MustGet("userID").(uint)
 
-	travelIDStr := c.Param("travel_id")
-	travelID64, err := strconv.ParseUint(travelIDStr, 10, 64)
+	travelID, err := parseUintParam(c, "travel_id")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "Invalid travel ID",
 		})
-
 		return
 	}
-
-	travelID := uint(travelID64)
 
 	if err := h.useCase.DeleteTravel(userID, travelID); err != nil {
 		if errors.Is(err, model.ErrTravelNotFound) {
@@ -285,21 +273,18 @@ func (h *TravelHandler) GetPublicTravels(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, MapSlice(travels, toPublicTravelResponse))
+	c.JSON(http.StatusOK, mapSlice(travels, toPublicTravelResponse))
 }
 
 // ロジックないので、テストは書かない
 func (h *TravelHandler) GetPublicTravel(c *gin.Context) {
-	travelIDStr := c.Param("travel_id")
-	travelID64, err := strconv.ParseUint(travelIDStr, 10, 64)
+	travelID, err := parseUintParam(c, "travel_id")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "Invalid travel ID",
 		})
-
 		return
 	}
-	travelID := uint(travelID64)
 
 	travel, err := h.useCase.GetPublicTravel(travelID)
 	if err != nil {
@@ -322,15 +307,15 @@ func (h *TravelHandler) GetPublicTravel(c *gin.Context) {
 func (h *TravelHandler) CopyTravel(c *gin.Context) {
 	userID := c.GetUint("userID")
 
-	travelID64, err := strconv.ParseUint(c.Param("travel_id"), 10, 64)
+	travelID, err := parseUintParam(c, "travel_id")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "invalid travel_id",
+			"error": "Invalid travel ID",
 		})
 		return
 	}
 
-	travel, err := h.useCase.CopyTravel(userID, uint(travelID64))
+	travel, err := h.useCase.CopyTravel(userID, travelID)
 	if err != nil {
 		if errors.Is(err, model.ErrTravelNotFound) {
 			c.JSON(http.StatusNotFound, gin.H{

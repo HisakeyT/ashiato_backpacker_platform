@@ -3,7 +3,6 @@ package handler
 import (
 	"errors"
 	"net/http"
-	"strconv"
 	"strings"
 	"time"
 
@@ -38,10 +37,10 @@ type CreateTravelPlanRequest struct {
 func (h *TravelPlanHandler) CreateTravelPlan(c *gin.Context) {
 	userID := c.GetUint("userID")
 
-	travelID, err := strconv.ParseUint(c.Param("travel_id"), 10, 64)
+	travelID, err := parseUintParam(c, "travel_id")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "invalid travel_id",
+			"error": "Invalid travel ID",
 		})
 		return
 	}
@@ -89,7 +88,7 @@ func (h *TravelPlanHandler) CreateTravelPlan(c *gin.Context) {
 
 	travelPlan, err := h.useCase.CreateTravelPlan(
 		userID,
-		uint(travelID),
+		travelID,
 		input,
 	)
 
@@ -143,24 +142,21 @@ type UpdateTravelPlanRequest struct {
 func (h *TravelPlanHandler) UpdateTravelPlan(c *gin.Context) {
 	userID := c.GetUint("userID")
 
-	travelPlanID64, err := strconv.ParseUint(c.Param("travel_plan_id"), 10, 64)
+	travelPlanID, err := parseUintParam(c, "travel_plan_id")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "invalid travel_plan_id",
+			"error": "Invalid travel ID",
 		})
 		return
 	}
 
-	travelID64, err := strconv.ParseUint(c.Param("travel_id"), 10, 64)
+	travelID, err := parseUintParam(c, "travel_id")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "invalid travel_id",
+			"error": "Invalid travel ID",
 		})
 		return
 	}
-
-	travelID := uint(travelID64)
-	travelPlanID := uint(travelPlanID64)
 
 	var updateReq UpdateTravelPlanRequest
 	if err := c.ShouldBindJSON(&updateReq); err != nil {
@@ -284,7 +280,7 @@ func (r UpdateTravelPlanRequest) location() *model.Location {
 func (h *TravelPlanHandler) GetTravelPlans(c *gin.Context) {
 	userID := c.GetUint("userID")
 
-	travelID, err := strconv.ParseUint(c.Param("travel_id"), 10, 64)
+	travelID, err := parseUintParam(c, "travel_id")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "invalid travel_id",
@@ -292,7 +288,7 @@ func (h *TravelPlanHandler) GetTravelPlans(c *gin.Context) {
 		return
 	}
 
-	travelPlans, err := h.useCase.GetTravelPlans(userID, uint(travelID))
+	travelPlans, err := h.useCase.GetTravelPlans(userID, travelID)
 	if err != nil {
 		if errors.Is(err, model.ErrTravelNotFound) {
 			c.JSON(http.StatusNotFound, gin.H{
@@ -314,13 +310,13 @@ func (h *TravelPlanHandler) GetTravelPlans(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, MapSlice(travelPlans, toTravelPlanResponse))
+	c.JSON(http.StatusOK, mapSlice(travelPlans, toTravelPlanResponse))
 }
 
 func (h *TravelPlanHandler) DeleteTravelPlan(c *gin.Context) {
 	userID := c.GetUint("userID")
 
-	travelPlanID64, err := strconv.ParseUint(c.Param("travel_plan_id"), 10, 64)
+	travelPlanID, err := parseUintParam(c, "travel_plan_id")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "invalid travel_plan_id",
@@ -328,7 +324,7 @@ func (h *TravelPlanHandler) DeleteTravelPlan(c *gin.Context) {
 		return
 	}
 
-	travelID64, err := strconv.ParseUint(c.Param("travel_id"), 10, 64)
+	travelID, err := parseUintParam(c, "travel_id")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "invalid travel_id",
@@ -336,7 +332,7 @@ func (h *TravelPlanHandler) DeleteTravelPlan(c *gin.Context) {
 		return
 	}
 
-	err = h.useCase.DeleteTravelPlan(userID, uint(travelID64), uint(travelPlanID64))
+	err = h.useCase.DeleteTravelPlan(userID, travelID, travelPlanID)
 	if err != nil {
 		if errors.Is(err, model.ErrTravelNotFound) {
 			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
@@ -366,7 +362,7 @@ func (h *TravelPlanHandler) DeleteTravelPlan(c *gin.Context) {
 }
 
 func (h *TravelPlanHandler) GetPublicTravelPlan(c *gin.Context) {
-	travelID, err := strconv.ParseUint(c.Param("travel_id"), 10, 64)
+	travelID, err := parseUintParam(c, "travel_id")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "invalid travel_id",
@@ -389,5 +385,5 @@ func (h *TravelPlanHandler) GetPublicTravelPlan(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, MapSlice(travelPlans, toTravelPlanResponse))
+	c.JSON(http.StatusOK, mapSlice(travelPlans, toTravelPlanResponse))
 }
