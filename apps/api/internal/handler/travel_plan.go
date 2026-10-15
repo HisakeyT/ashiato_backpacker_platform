@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/HisakeyT/backpacker-platform/internal/model"
-	"github.com/HisakeyT/backpacker-platform/internal/response"
 	"github.com/HisakeyT/backpacker-platform/internal/usecase"
 	"github.com/gin-gonic/gin"
 )
@@ -315,7 +314,7 @@ func (h *TravelPlanHandler) GetTravelPlans(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, response.MapSlice(travelPlans, toTravelPlanResponse))
+	c.JSON(http.StatusOK, MapSlice(travelPlans, toTravelPlanResponse))
 }
 
 func (h *TravelPlanHandler) DeleteTravelPlan(c *gin.Context) {
@@ -390,5 +389,5 @@ func (h *TravelPlanHandler) GetPublicTravelPlan(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, response.MapSlice(travelPlans, toTravelPlanResponse))
+	c.JSON(http.StatusOK, MapSlice(travelPlans, toTravelPlanResponse))
 }

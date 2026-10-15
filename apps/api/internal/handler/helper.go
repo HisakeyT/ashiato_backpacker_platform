@@ -1,5 +1,4 @@
-// internal/response/map.go
-package response
+package handler
 
 func MapSlice[T any, R any](items []T, convert func(T) R) []R {
 	result := make([]R, 0, len(items))

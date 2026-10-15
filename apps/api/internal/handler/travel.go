@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/HisakeyT/backpacker-platform/internal/model"
-	"github.com/HisakeyT/backpacker-platform/internal/response"
 	"github.com/HisakeyT/backpacker-platform/internal/usecase"
 	"github.com/gin-gonic/gin"
 )
@@ -95,7 +94,7 @@ func (h *TravelHandler) GetTravels(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, response.MapSlice(travels, toTravelResponse))
+	c.JSON(http.StatusOK, MapSlice(travels, toTravelResponse))
 }
 
 func (h *TravelHandler) GetTravel(c *gin.Context) {
@@ -286,7 +285,7 @@ func (h *TravelHandler) GetPublicTravels(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, response.MapSlice(travels, toPublicTravelResponse))
+	c.JSON(http.StatusOK, MapSlice(travels, toPublicTravelResponse))
 }
 
 // ロジックないので、テストは書かない
