@@ -22,7 +22,7 @@ func TestLogin_Success(t *testing.T) {
 		t.Fatalf("failed to generate password hash: %v", err)
 	}
 
-	mockRepo := &mockrepo.MockUserRepository{
+	mockRepo := &mock.MockUserRepository{
 		FindByEmailFunc: func(email string) (*model.User, error) {
 			return &model.User{
 				ID:           1,
@@ -83,7 +83,7 @@ func TestLogin_Success(t *testing.T) {
 }
 
 func TestLogin_UserNotFound(t *testing.T) {
-	mockRepo := &mockrepo.MockUserRepository{
+	mockRepo := &mock.MockUserRepository{
 		FindByEmailFunc: func(email string) (*model.User, error) {
 			return nil, model.ErrUserNotFound
 		},
@@ -111,7 +111,7 @@ func TestLogin_WrongPassword(t *testing.T) {
 		t.Fatalf("failed to generate password hash: %v", err)
 	}
 
-	mockRepo := &mockrepo.MockUserRepository{
+	mockRepo := &mock.MockUserRepository{
 		FindByEmailFunc: func(email string) (*model.User, error) {
 			return &model.User{
 				ID:           1,

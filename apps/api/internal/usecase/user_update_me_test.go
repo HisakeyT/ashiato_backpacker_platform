@@ -13,7 +13,7 @@ import (
 func TestUserUsecase_UpdateMe(t *testing.T) {
 	var updatedUser *model.User
 
-	mockRepository := &mockrepo.MockUserRepository{
+	mockRepository := &mock.MockUserRepository{
 		FindByIDFunc: func(id uint) (*model.User, error) {
 			return &model.User{
 				ID:       1,
@@ -59,7 +59,7 @@ func TestUserUsecase_UpdateMe(t *testing.T) {
 func TestUserUsecase_UpdateMe_FindByIDError(t *testing.T) {
 	expectedErr := errors.New("database error")
 
-	mockRepository := &mockrepo.MockUserRepository{
+	mockRepository := &mock.MockUserRepository{
 		FindByIDFunc: func(id uint) (*model.User, error) {
 			return nil, expectedErr
 		},
@@ -82,7 +82,7 @@ func TestUserUsecase_UpdateMe_FindByIDError(t *testing.T) {
 func TestUserUsecase_UpdateMe_UpdateError(t *testing.T) {
 	expectedErr := errors.New("database error")
 
-	mockRepository := &mockrepo.MockUserRepository{
+	mockRepository := &mock.MockUserRepository{
 		FindByIDFunc: func(id uint) (*model.User, error) {
 			return &model.User{
 				ID:       1,

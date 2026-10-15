@@ -14,7 +14,7 @@ func TestUsecase_CopyTravel(t *testing.T) {
 		name       string
 		userID     uint
 		travelID   uint
-		repository *mockrepo.MockTravelRepository
+		repository *mock.MockTravelRepository
 		wantErr    error
 		wantID     uint
 	}{
@@ -22,7 +22,7 @@ func TestUsecase_CopyTravel(t *testing.T) {
 			name:     "公開旅行を他人がコピーできる",
 			userID:   2,
 			travelID: 10,
-			repository: &mockrepo.MockTravelRepository{
+			repository: &mock.MockTravelRepository{
 				FindByIDFunc: func(id uint) (*model.Travel, error) {
 					return &model.Travel{ID: 10, UserID: 1, IsPublic: true}, nil
 				},
@@ -36,7 +36,7 @@ func TestUsecase_CopyTravel(t *testing.T) {
 			name:     "自分の非公開旅行はコピーできる",
 			userID:   1,
 			travelID: 10,
-			repository: &mockrepo.MockTravelRepository{
+			repository: &mock.MockTravelRepository{
 				FindByIDFunc: func(id uint) (*model.Travel, error) {
 					return &model.Travel{ID: 10, UserID: 1, IsPublic: false}, nil
 				},
@@ -50,7 +50,7 @@ func TestUsecase_CopyTravel(t *testing.T) {
 			name:     "他人の非公開旅行はNotFound",
 			userID:   2,
 			travelID: 10,
-			repository: &mockrepo.MockTravelRepository{
+			repository: &mock.MockTravelRepository{
 				FindByIDFunc: func(id uint) (*model.Travel, error) {
 					return &model.Travel{ID: 10, UserID: 1, IsPublic: false}, nil
 				},
@@ -61,7 +61,7 @@ func TestUsecase_CopyTravel(t *testing.T) {
 			name:     "存在しない旅行はNotFound",
 			userID:   2,
 			travelID: 99,
-			repository: &mockrepo.MockTravelRepository{
+			repository: &mock.MockTravelRepository{
 				FindByIDFunc: func(id uint) (*model.Travel, error) {
 					return nil, gorm.ErrRecordNotFound
 				},

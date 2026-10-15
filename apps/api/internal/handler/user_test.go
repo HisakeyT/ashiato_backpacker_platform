@@ -345,7 +345,7 @@ func TestHandler_Me_UserNotFound(t *testing.T) {
 func TestHandler_UpdateMe(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 
-	mockRepository := &mockrepo.MockUserRepository{
+	mockRepository := &mock.MockUserRepository{
 		FindByIDFunc: func(id uint) (*model.User, error) {
 			return &model.User{
 				ID:       1,

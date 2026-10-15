@@ -21,7 +21,7 @@ func TestHandler_CreateTravelPlan(t *testing.T) {
 		userID          uint
 		travelID        string
 		body            string
-		setupRepository func() (*mockrepo.MockTravelRepository, *mockrepo.MockTravelPlanRepository)
+		setupRepository func() (*mock.MockTravelRepository, *mock.MockTravelPlanRepository)
 		wantStatus      int
 	}{
 		{
@@ -34,8 +34,8 @@ func TestHandler_CreateTravelPlan(t *testing.T) {
 				"content": "ワット・ポーを観光",
 				"sort_order": 1
 			}`,
-			setupRepository: func() (*mockrepo.MockTravelRepository, *mockrepo.MockTravelPlanRepository) {
-				travelRepository := &mockrepo.MockTravelRepository{
+			setupRepository: func() (*mock.MockTravelRepository, *mock.MockTravelPlanRepository) {
+				travelRepository := &mock.MockTravelRepository{
 					FindByIDFunc: func(id uint) (*model.Travel, error) {
 						return &model.Travel{
 							ID:     10,
@@ -44,7 +44,7 @@ func TestHandler_CreateTravelPlan(t *testing.T) {
 					},
 				}
 
-				travelPlanRepository := &mockrepo.MockTravelPlanRepository{
+				travelPlanRepository := &mock.MockTravelPlanRepository{
 					CreateFunc: func(travelPlan *model.TravelPlan) error {
 						return nil
 					},
@@ -64,14 +64,14 @@ func TestHandler_CreateTravelPlan(t *testing.T) {
 				"content": "ワット・ポーを観光",
 				"sort_order": 1
 			}`,
-			setupRepository: func() (*mockrepo.MockTravelRepository, *mockrepo.MockTravelPlanRepository) {
-				travelRepository := &mockrepo.MockTravelRepository{
+			setupRepository: func() (*mock.MockTravelRepository, *mock.MockTravelPlanRepository) {
+				travelRepository := &mock.MockTravelRepository{
 					FindByIDFunc: func(id uint) (*model.Travel, error) {
 						return nil, gorm.ErrRecordNotFound
 					},
 				}
 
-				travelPlanRepository := &mockrepo.MockTravelPlanRepository{}
+				travelPlanRepository := &mock.MockTravelPlanRepository{}
 
 				return travelRepository, travelPlanRepository
 			},
@@ -87,8 +87,8 @@ func TestHandler_CreateTravelPlan(t *testing.T) {
 				"content": "ワット・ポーを観光",
 				"sort_order": 1
 			}`,
-			setupRepository: func() (*mockrepo.MockTravelRepository, *mockrepo.MockTravelPlanRepository) {
-				travelRepository := &mockrepo.MockTravelRepository{
+			setupRepository: func() (*mock.MockTravelRepository, *mock.MockTravelPlanRepository) {
+				travelRepository := &mock.MockTravelRepository{
 					FindByIDFunc: func(id uint) (*model.Travel, error) {
 						return &model.Travel{
 							ID:     10,
@@ -97,7 +97,7 @@ func TestHandler_CreateTravelPlan(t *testing.T) {
 					},
 				}
 
-				travelPlanRepository := &mockrepo.MockTravelPlanRepository{}
+				travelPlanRepository := &mock.MockTravelPlanRepository{}
 
 				return travelRepository, travelPlanRepository
 			},
@@ -108,8 +108,8 @@ func TestHandler_CreateTravelPlan(t *testing.T) {
 			userID:   1,
 			travelID: "10",
 			body:     `{"date":`,
-			setupRepository: func() (*mockrepo.MockTravelRepository, *mockrepo.MockTravelPlanRepository) {
-				return &mockrepo.MockTravelRepository{}, &mockrepo.MockTravelPlanRepository{}
+			setupRepository: func() (*mock.MockTravelRepository, *mock.MockTravelPlanRepository) {
+				return &mock.MockTravelRepository{}, &mock.MockTravelPlanRepository{}
 			},
 			wantStatus: http.StatusBadRequest,
 		},
@@ -123,8 +123,8 @@ func TestHandler_CreateTravelPlan(t *testing.T) {
 				"content": "ワット・ポーを観光",
 				"sort_order": 1
 			}`,
-			setupRepository: func() (*mockrepo.MockTravelRepository, *mockrepo.MockTravelPlanRepository) {
-				return &mockrepo.MockTravelRepository{}, &mockrepo.MockTravelPlanRepository{}
+			setupRepository: func() (*mock.MockTravelRepository, *mock.MockTravelPlanRepository) {
+				return &mock.MockTravelRepository{}, &mock.MockTravelPlanRepository{}
 			},
 			wantStatus: http.StatusBadRequest,
 		},
@@ -138,15 +138,15 @@ func TestHandler_CreateTravelPlan(t *testing.T) {
 				"content": "ワット・ポーを観光",
 				"sort_order": 1
 			}`,
-			setupRepository: func() (*mockrepo.MockTravelRepository, *mockrepo.MockTravelPlanRepository) {
-				return &mockrepo.MockTravelRepository{
+			setupRepository: func() (*mock.MockTravelRepository, *mock.MockTravelPlanRepository) {
+				return &mock.MockTravelRepository{
 					FindByIDFunc: func(id uint) (*model.Travel, error) {
 						return &model.Travel{
 							ID:     10,
 							UserID: 1,
 						}, nil
 					},
-				}, &mockrepo.MockTravelPlanRepository{}
+				}, &mock.MockTravelPlanRepository{}
 			},
 			wantStatus: http.StatusBadRequest,
 		},

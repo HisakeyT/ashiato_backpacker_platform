@@ -28,7 +28,7 @@ func TestHandler_DeleteTravel(t *testing.T) {
 			name:     "正常に削除できる",
 			travelID: "1",
 			userID:   1,
-			repository: &mockrepo.MockTravelRepository{
+			repository: &mock.MockTravelRepository{
 				FindByIDFunc: func(id uint) (*model.Travel, error) {
 					return &model.Travel{
 						ID:     1,
@@ -45,7 +45,7 @@ func TestHandler_DeleteTravel(t *testing.T) {
 			name:     "Travelが存在しない",
 			travelID: "999",
 			userID:   1,
-			repository: &mockrepo.MockTravelRepository{
+			repository: &mock.MockTravelRepository{
 				FindByIDFunc: func(id uint) (*model.Travel, error) {
 					return nil, gorm.ErrRecordNotFound
 				},
@@ -56,7 +56,7 @@ func TestHandler_DeleteTravel(t *testing.T) {
 			name:     "他ユーザーのTravel",
 			travelID: "1",
 			userID:   1,
-			repository: &mockrepo.MockTravelRepository{
+			repository: &mock.MockTravelRepository{
 				FindByIDFunc: func(id uint) (*model.Travel, error) {
 					return &model.Travel{
 						ID:     1,
@@ -70,7 +70,7 @@ func TestHandler_DeleteTravel(t *testing.T) {
 			name:     "FindByIDでRepositoryエラー",
 			travelID: "1",
 			userID:   1,
-			repository: &mockrepo.MockTravelRepository{
+			repository: &mock.MockTravelRepository{
 				FindByIDFunc: func(id uint) (*model.Travel, error) {
 					return nil, errors.New("database error")
 				},
@@ -81,7 +81,7 @@ func TestHandler_DeleteTravel(t *testing.T) {
 			name:     "DeleteでRepositoryエラー",
 			travelID: "1",
 			userID:   1,
-			repository: &mockrepo.MockTravelRepository{
+			repository: &mock.MockTravelRepository{
 				FindByIDFunc: func(id uint) (*model.Travel, error) {
 					return &model.Travel{
 						ID:     1,
@@ -98,7 +98,7 @@ func TestHandler_DeleteTravel(t *testing.T) {
 			name:       "travel_idが不正",
 			travelID:   "abc",
 			userID:     1,
-			repository: &mockrepo.MockTravelRepository{},
+			repository: &mock.MockTravelRepository{},
 			wantStatus: http.StatusBadRequest,
 		},
 	}

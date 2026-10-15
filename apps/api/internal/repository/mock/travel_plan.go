@@ -1,4 +1,4 @@
-package mockrepo
+package mock
 
 import (
 	"github.com/HisakeyT/backpacker-platform/internal/model"

@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/HisakeyT/backpacker-platform/internal/model"
-	mockrepo "github.com/HisakeyT/backpacker-platform/internal/repository/mock"
+	mock "github.com/HisakeyT/backpacker-platform/internal/repository/mock"
 )
 
 func TestUsecase_GetTravels(t *testing.T) {
@@ -46,7 +46,7 @@ func TestUsecase_GetTravels(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			repository := &mockrepo.MockTravelRepository{
+			repository := &mock.MockTravelRepository{
 				FindByUserIDFunc: func(userID uint) ([]*model.Travel, error) {
 					return tt.repository, tt.repositoryError
 				},

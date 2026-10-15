@@ -10,7 +10,7 @@ import (
 )
 
 func TestUserUsecase_Me(t *testing.T) {
-	repo := &mockrepo.MockUserRepository{
+	repo := &mock.MockUserRepository{
 		FindByIDFunc: func(id uint) (*model.User, error) {
 			return &model.User{
 				ID:       1,
@@ -34,7 +34,7 @@ func TestUserUsecase_Me(t *testing.T) {
 }
 
 func TestUserUsecase_Me_UserNotFound(t *testing.T) {
-	repo := &mockrepo.MockUserRepository{
+	repo := &mock.MockUserRepository{
 		FindByIDFunc: func(id uint) (*model.User, error) {
 			return nil, model.ErrUserNotFound
 		},

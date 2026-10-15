@@ -7,7 +7,7 @@ import (
 
 	"github.com/HisakeyT/backpacker-platform/internal/model"
 	"github.com/HisakeyT/backpacker-platform/internal/repository"
-	mockrepo "github.com/HisakeyT/backpacker-platform/internal/repository/mock"
+	mock "github.com/HisakeyT/backpacker-platform/internal/repository/mock"
 )
 
 func TestUsecase_GetPublicTravels(t *testing.T) {
@@ -19,7 +19,7 @@ func TestUsecase_GetPublicTravels(t *testing.T) {
 	}{
 		{
 			name: "公開Travelを複数取得できる",
-			repository: &mockrepo.MockTravelRepository{
+			repository: &mock.MockTravelRepository{
 				FindPublicTravelsFunc: func() ([]*model.PublicTravel, error) {
 					return []*model.PublicTravel{
 						{
@@ -54,7 +54,7 @@ func TestUsecase_GetPublicTravels(t *testing.T) {
 		},
 		{
 			name: "公開Travelが0件",
-			repository: &mockrepo.MockTravelRepository{
+			repository: &mock.MockTravelRepository{
 				FindPublicTravelsFunc: func() ([]*model.PublicTravel, error) {
 					return []*model.PublicTravel{}, nil
 				},
@@ -63,7 +63,7 @@ func TestUsecase_GetPublicTravels(t *testing.T) {
 		},
 		{
 			name: "Repositoryエラー",
-			repository: &mockrepo.MockTravelRepository{
+			repository: &mock.MockTravelRepository{
 				FindPublicTravelsFunc: func() ([]*model.PublicTravel, error) {
 					return nil, errors.New("repository error")
 				},

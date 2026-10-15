@@ -20,15 +20,15 @@ func TestHandler_GetTravelPlans(t *testing.T) {
 		name            string
 		userID          uint
 		travelID        string
-		setupRepository func() (*mockrepo.MockTravelRepository, *mockrepo.MockTravelPlanRepository)
+		setupRepository func() (*mock.MockTravelRepository, *mock.MockTravelPlanRepository)
 		wantStatus      int
 	}{
 		{
 			name:     "正常に取得できる",
 			userID:   1,
 			travelID: "10",
-			setupRepository: func() (*mockrepo.MockTravelRepository, *mockrepo.MockTravelPlanRepository) {
-				travelRepository := &mockrepo.MockTravelRepository{
+			setupRepository: func() (*mock.MockTravelRepository, *mock.MockTravelPlanRepository) {
+				travelRepository := &mock.MockTravelRepository{
 					FindByIDFunc: func(id uint) (*model.Travel, error) {
 						return &model.Travel{
 							ID:     10,
@@ -37,7 +37,7 @@ func TestHandler_GetTravelPlans(t *testing.T) {
 					},
 				}
 
-				travelPlanRepository := &mockrepo.MockTravelPlanRepository{
+				travelPlanRepository := &mock.MockTravelPlanRepository{
 					FindByTravelIDFunc: func(id uint) ([]model.TravelPlan, error) {
 						return []model.TravelPlan{
 							{
@@ -66,8 +66,8 @@ func TestHandler_GetTravelPlans(t *testing.T) {
 			name:     "TravelPlanが0件でも取得できる",
 			userID:   1,
 			travelID: "10",
-			setupRepository: func() (*mockrepo.MockTravelRepository, *mockrepo.MockTravelPlanRepository) {
-				travelRepository := &mockrepo.MockTravelRepository{
+			setupRepository: func() (*mock.MockTravelRepository, *mock.MockTravelPlanRepository) {
+				travelRepository := &mock.MockTravelRepository{
 					FindByIDFunc: func(id uint) (*model.Travel, error) {
 						return &model.Travel{
 							ID:     10,
@@ -76,7 +76,7 @@ func TestHandler_GetTravelPlans(t *testing.T) {
 					},
 				}
 
-				travelPlanRepository := &mockrepo.MockTravelPlanRepository{
+				travelPlanRepository := &mock.MockTravelPlanRepository{
 					FindByTravelIDFunc: func(id uint) ([]model.TravelPlan, error) {
 						return []model.TravelPlan{}, nil
 					},
@@ -90,14 +90,14 @@ func TestHandler_GetTravelPlans(t *testing.T) {
 			name:     "旅行が存在しない",
 			userID:   1,
 			travelID: "999",
-			setupRepository: func() (*mockrepo.MockTravelRepository, *mockrepo.MockTravelPlanRepository) {
-				travelRepository := &mockrepo.MockTravelRepository{
+			setupRepository: func() (*mock.MockTravelRepository, *mock.MockTravelPlanRepository) {
+				travelRepository := &mock.MockTravelRepository{
 					FindByIDFunc: func(id uint) (*model.Travel, error) {
 						return nil, gorm.ErrRecordNotFound
 					},
 				}
 
-				travelPlanRepository := &mockrepo.MockTravelPlanRepository{}
+				travelPlanRepository := &mock.MockTravelPlanRepository{}
 
 				return travelRepository, travelPlanRepository
 			},
@@ -107,8 +107,8 @@ func TestHandler_GetTravelPlans(t *testing.T) {
 			name:     "他人の旅行は取得できない",
 			userID:   1,
 			travelID: "10",
-			setupRepository: func() (*mockrepo.MockTravelRepository, *mockrepo.MockTravelPlanRepository) {
-				travelRepository := &mockrepo.MockTravelRepository{
+			setupRepository: func() (*mock.MockTravelRepository, *mock.MockTravelPlanRepository) {
+				travelRepository := &mock.MockTravelRepository{
 					FindByIDFunc: func(id uint) (*model.Travel, error) {
 						return &model.Travel{
 							ID:     10,
@@ -117,7 +117,7 @@ func TestHandler_GetTravelPlans(t *testing.T) {
 					},
 				}
 
-				travelPlanRepository := &mockrepo.MockTravelPlanRepository{}
+				travelPlanRepository := &mock.MockTravelPlanRepository{}
 
 				return travelRepository, travelPlanRepository
 			},
@@ -127,8 +127,8 @@ func TestHandler_GetTravelPlans(t *testing.T) {
 			name:     "travel_idが不正",
 			userID:   1,
 			travelID: "abc",
-			setupRepository: func() (*mockrepo.MockTravelRepository, *mockrepo.MockTravelPlanRepository) {
-				return &mockrepo.MockTravelRepository{}, &mockrepo.MockTravelPlanRepository{}
+			setupRepository: func() (*mock.MockTravelRepository, *mock.MockTravelPlanRepository) {
+				return &mock.MockTravelRepository{}, &mock.MockTravelPlanRepository{}
 			},
 			wantStatus: http.StatusBadRequest,
 		},

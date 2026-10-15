@@ -13,7 +13,7 @@ import (
 func TestUserUsecase_Register(t *testing.T) {
 	email := "taro@example.com"
 
-	repository := &mockrepo.MockUserRepository{
+	repository := &mock.MockUserRepository{
 		FindByEmailFunc: func(email string) (*model.User, error) {
 			return nil, model.ErrUserNotFound
 		},
@@ -63,7 +63,7 @@ func TestUserUsecase_Register(t *testing.T) {
 }
 
 func TestUserUsecase_Register_PasswordMismatch(t *testing.T) {
-	repository := &mockrepo.MockUserRepository{
+	repository := &mock.MockUserRepository{
 		FindByEmailFunc: func(email string) (*model.User, error) {
 			return nil, model.ErrUserNotFound
 		},
@@ -92,7 +92,7 @@ func TestUserUsecase_Register_PasswordMismatch(t *testing.T) {
 func TestUserUsecase_Register_EmailAlreadyUsed(t *testing.T) {
 	email := "taro@example.com"
 
-	repository := &mockrepo.MockUserRepository{
+	repository := &mock.MockUserRepository{
 		FindByEmailFunc: func(email string) (*model.User, error) {
 			return &model.User{
 				ID:    1,
@@ -126,7 +126,7 @@ func TestUserUsecase_Register_FindByEmailError(t *testing.T) {
 	email := "taro@example.com"
 	expectedErr := errors.New("database error")
 
-	repository := &mockrepo.MockUserRepository{
+	repository := &mock.MockUserRepository{
 		FindByEmailFunc: func(email string) (*model.User, error) {
 			return nil, expectedErr
 		},

@@ -8,7 +8,7 @@ import (
 
 	"github.com/HisakeyT/backpacker-platform/internal/model"
 	"github.com/HisakeyT/backpacker-platform/internal/repository"
-	mockrepo "github.com/HisakeyT/backpacker-platform/internal/repository/mock"
+	mock "github.com/HisakeyT/backpacker-platform/internal/repository/mock"
 )
 
 func TestUsecase_DeleteTravel(t *testing.T) {
@@ -23,7 +23,7 @@ func TestUsecase_DeleteTravel(t *testing.T) {
 			name:     "自分のTravelを削除できる",
 			userID:   1,
 			travelID: 10,
-			repository: &mockrepo.MockTravelRepository{
+			repository: &mock.MockTravelRepository{
 				FindByIDFunc: func(id uint) (*model.Travel, error) {
 					return &model.Travel{
 						ID:     10,
@@ -40,7 +40,7 @@ func TestUsecase_DeleteTravel(t *testing.T) {
 			name:     "Travelが存在しない",
 			userID:   1,
 			travelID: 10,
-			repository: &mockrepo.MockTravelRepository{
+			repository: &mock.MockTravelRepository{
 				FindByIDFunc: func(id uint) (*model.Travel, error) {
 					return nil, gorm.ErrRecordNotFound
 				},
@@ -54,7 +54,7 @@ func TestUsecase_DeleteTravel(t *testing.T) {
 			name:     "他ユーザーのTravel",
 			userID:   1,
 			travelID: 10,
-			repository: &mockrepo.MockTravelRepository{
+			repository: &mock.MockTravelRepository{
 				FindByIDFunc: func(id uint) (*model.Travel, error) {
 					return &model.Travel{
 						ID:     10,
@@ -71,7 +71,7 @@ func TestUsecase_DeleteTravel(t *testing.T) {
 			name:     "FindByIDでRepositoryエラー",
 			userID:   1,
 			travelID: 10,
-			repository: &mockrepo.MockTravelRepository{
+			repository: &mock.MockTravelRepository{
 				FindByIDFunc: func(id uint) (*model.Travel, error) {
 					return nil, errors.New("database error")
 				},
@@ -85,7 +85,7 @@ func TestUsecase_DeleteTravel(t *testing.T) {
 			name:     "DeleteでRepositoryエラー",
 			userID:   1,
 			travelID: 10,
-			repository: &mockrepo.MockTravelRepository{
+			repository: &mock.MockTravelRepository{
 				FindByIDFunc: func(id uint) (*model.Travel, error) {
 					return &model.Travel{
 						ID:     10,

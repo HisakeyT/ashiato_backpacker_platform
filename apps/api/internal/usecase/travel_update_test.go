@@ -88,7 +88,7 @@ func TestUsecase_UpdateTravel(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			repository := &mockrepo.MockTravelRepository{
+			repository := &mock.MockTravelRepository{
 				FindByIDFunc: func(id uint) (*model.Travel, error) {
 					return &model.Travel{
 						ID:        travelID,
@@ -189,7 +189,7 @@ func TestUsecase_UpdateTravel_Error(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			repository := &mockrepo.MockTravelRepository{
+			repository := &mock.MockTravelRepository{
 				FindByIDFunc: func(id uint) (*model.Travel, error) {
 					if tt.repositoryErr != nil {
 						return nil, tt.repositoryErr

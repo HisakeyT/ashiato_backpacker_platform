@@ -32,7 +32,7 @@ func TestHandler_UpdateTravel(t *testing.T) {
 			name:     "正常に更新できる",
 			travelID: "1",
 			request:  `{"title":"新しいタイトル"}`,
-			repository: &mockrepo.MockTravelRepository{
+			repository: &mock.MockTravelRepository{
 				FindByIDFunc: func(id uint) (*model.Travel, error) {
 					return &model.Travel{
 						ID:        1,
@@ -53,21 +53,21 @@ func TestHandler_UpdateTravel(t *testing.T) {
 			name:       "不正なJSON",
 			travelID:   "1",
 			request:    `{"title":}`,
-			repository: &mockrepo.MockTravelRepository{},
+			repository: &mock.MockTravelRepository{},
 			wantStatus: http.StatusBadRequest,
 		},
 		{
 			name:       "travel_idが不正",
 			travelID:   "abc",
 			request:    `{"title":"新しいタイトル"}`,
-			repository: &mockrepo.MockTravelRepository{},
+			repository: &mock.MockTravelRepository{},
 			wantStatus: http.StatusBadRequest,
 		},
 		{
 			name:     "開始日が不正",
 			travelID: "1",
 			request:  `{"start_date":"2026-99-99"}`,
-			repository: &mockrepo.MockTravelRepository{
+			repository: &mock.MockTravelRepository{
 				FindByIDFunc: func(id uint) (*model.Travel, error) {
 					return &model.Travel{
 						ID:     1,
@@ -81,7 +81,7 @@ func TestHandler_UpdateTravel(t *testing.T) {
 			name:     "終了日が不正",
 			travelID: "1",
 			request:  `{"end_date":"2026-99-99"}`,
-			repository: &mockrepo.MockTravelRepository{
+			repository: &mock.MockTravelRepository{
 				FindByIDFunc: func(id uint) (*model.Travel, error) {
 					return &model.Travel{
 						ID:     1,
@@ -95,7 +95,7 @@ func TestHandler_UpdateTravel(t *testing.T) {
 			name:     "Travelが存在しない",
 			travelID: "1",
 			request:  `{"title":"新しいタイトル"}`,
-			repository: &mockrepo.MockTravelRepository{
+			repository: &mock.MockTravelRepository{
 				FindByIDFunc: func(id uint) (*model.Travel, error) {
 					return nil, gorm.ErrRecordNotFound
 				},
@@ -106,7 +106,7 @@ func TestHandler_UpdateTravel(t *testing.T) {
 			name:     "他人のTravelを更新しようとする",
 			travelID: "1",
 			request:  `{"title":"新しいタイトル"}`,
-			repository: &mockrepo.MockTravelRepository{
+			repository: &mock.MockTravelRepository{
 				FindByIDFunc: func(id uint) (*model.Travel, error) {
 					return &model.Travel{
 						ID:     1,
@@ -120,7 +120,7 @@ func TestHandler_UpdateTravel(t *testing.T) {
 			name:     "開始日が終了日より後",
 			travelID: "1",
 			request:  `{"start_date":"2026-10-10"}`,
-			repository: &mockrepo.MockTravelRepository{
+			repository: &mock.MockTravelRepository{
 				FindByIDFunc: func(id uint) (*model.Travel, error) {
 					return &model.Travel{
 						ID:        1,
@@ -136,7 +136,7 @@ func TestHandler_UpdateTravel(t *testing.T) {
 			name:     "Repositoryでエラーが発生する",
 			travelID: "1",
 			request:  `{"title":"新しいタイトル"}`,
-			repository: &mockrepo.MockTravelRepository{
+			repository: &mock.MockTravelRepository{
 				FindByIDFunc: func(id uint) (*model.Travel, error) {
 					return nil, databaseError
 				},

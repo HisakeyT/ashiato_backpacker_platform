@@ -29,13 +29,13 @@ func TestUsecase_CreateTravelPlan(t *testing.T) {
 			UserID: userID,
 		}
 
-		travelRepository := &mockrepo.MockTravelRepository{
+		travelRepository := &mock.MockTravelRepository{
 			FindByIDFunc: func(id uint) (*model.Travel, error) {
 				return travelData, nil
 			},
 		}
 
-		travelPlanRepository := &mockrepo.MockTravelPlanRepository{
+		travelPlanRepository := &mock.MockTravelPlanRepository{
 			CreateFunc: func(travelPlan *model.TravelPlan) error {
 				return nil
 			},
@@ -105,13 +105,13 @@ func TestUsecase_CreateTravelPlan_Invalid(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			travelRepository := &mockrepo.MockTravelRepository{
+			travelRepository := &mock.MockTravelRepository{
 				FindByIDFunc: func(id uint) (*model.Travel, error) {
 					return tt.travelData, tt.findByIDErr
 				},
 			}
 
-			travelPlanRepository := &mockrepo.MockTravelPlanRepository{
+			travelPlanRepository := &mock.MockTravelPlanRepository{
 				CreateFunc: func(travelPlan *model.TravelPlan) error {
 					t.Fatal("Create should not be called")
 					return nil

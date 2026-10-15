@@ -23,7 +23,7 @@ func TestHandler_GetTravel(t *testing.T) {
 	}{
 		{
 			name: "自分の旅行を複数件取得できる",
-			repository: &mockrepo.MockTravelRepository{
+			repository: &mock.MockTravelRepository{
 				FindByUserIDFunc: func(userID uint) ([]*model.Travel, error) {
 					return []*model.Travel{
 						{
@@ -43,7 +43,7 @@ func TestHandler_GetTravel(t *testing.T) {
 		},
 		{
 			name: "自分の旅行が0件でも正常に取得できる",
-			repository: &mockrepo.MockTravelRepository{
+			repository: &mock.MockTravelRepository{
 				FindByUserIDFunc: func(userID uint) ([]*model.Travel, error) {
 					return []*model.Travel{}, nil
 				},
@@ -52,7 +52,7 @@ func TestHandler_GetTravel(t *testing.T) {
 		},
 		{
 			name: "Repositoryでエラーが発生した場合",
-			repository: &mockrepo.MockTravelRepository{
+			repository: &mock.MockTravelRepository{
 				FindByUserIDFunc: func(userID uint) ([]*model.Travel, error) {
 					return nil, errors.New("database error")
 				},

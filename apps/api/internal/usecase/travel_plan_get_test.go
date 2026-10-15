@@ -57,13 +57,13 @@ func TestUsecase_GetTravelPlans(t *testing.T) {
 					UserID: userID,
 				}
 
-				travelRepository := &mockrepo.MockTravelRepository{
+				travelRepository := &mock.MockTravelRepository{
 					FindByIDFunc: func(id uint) (*model.Travel, error) {
 						return travelData, nil
 					},
 				}
 
-				travelPlanRepository := &mockrepo.MockTravelPlanRepository{
+				travelPlanRepository := &mock.MockTravelPlanRepository{
 					FindByTravelIDFunc: func(id uint) ([]model.TravelPlan, error) {
 						return tt.travelPlans, nil
 					},
@@ -118,13 +118,13 @@ func TestUsecase_GetTravelPlans(t *testing.T) {
 		for _, tt := range tests {
 			t.Run(tt.name, func(t *testing.T) {
 				// Arrange
-				travelRepository := &mockrepo.MockTravelRepository{
+				travelRepository := &mock.MockTravelRepository{
 					FindByIDFunc: func(id uint) (*model.Travel, error) {
 						return tt.travelData, tt.findByIDError
 					},
 				}
 
-				travelPlanRepository := &mockrepo.MockTravelPlanRepository{}
+				travelPlanRepository := &mock.MockTravelPlanRepository{}
 
 				useCase := NewTravelPlanUsecase(
 					travelRepository,

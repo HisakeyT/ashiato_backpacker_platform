@@ -23,7 +23,7 @@ func TestHandler_GetPublicTravels(t *testing.T) {
 	}{
 		{
 			name: "公開Travelを複数取得できる",
-			repository: &mockrepo.MockTravelRepository{
+			repository: &mock.MockTravelRepository{
 				FindPublicTravelsFunc: func() ([]*model.PublicTravel, error) {
 					return []*model.PublicTravel{
 						{
@@ -45,7 +45,7 @@ func TestHandler_GetPublicTravels(t *testing.T) {
 		},
 		{
 			name: "公開Travelが0件",
-			repository: &mockrepo.MockTravelRepository{
+			repository: &mock.MockTravelRepository{
 				FindPublicTravelsFunc: func() ([]*model.PublicTravel, error) {
 					return []*model.PublicTravel{}, nil
 				},
@@ -54,7 +54,7 @@ func TestHandler_GetPublicTravels(t *testing.T) {
 		},
 		{
 			name: "Usecaseでエラーが発生する",
-			repository: &mockrepo.MockTravelRepository{
+			repository: &mock.MockTravelRepository{
 				FindPublicTravelsFunc: func() ([]*model.PublicTravel, error) {
 					return nil, errors.New("repository error")
 				},
