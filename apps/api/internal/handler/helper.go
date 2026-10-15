@@ -3,7 +3,25 @@ package handler
 import (
 	"github.com/gin-gonic/gin"
 	"strconv"
+	"time"
 )
+
+const dateLayout = "2006-01-02"
+
+func parseDate(s string) (time.Time, error) {
+	return time.Parse(dateLayout, s)
+}
+
+func parseOptionalDate(v *string) (*time.Time, error) {
+	if v == nil {
+		return nil, nil
+	}
+	t, err := parseDate(*v)
+	if err != nil {
+		return nil, err
+	}
+	return &t, nil
+}
 
 func parseUintParam(c *gin.Context, name string) (uint, error) {
 	v, err := strconv.ParseUint(c.Param(name), 10, 64)

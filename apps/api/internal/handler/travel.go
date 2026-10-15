@@ -3,7 +3,6 @@ package handler
 import (
 	"errors"
 	"net/http"
-	"time"
 
 	"github.com/HisakeyT/backpacker-platform/internal/model"
 	"github.com/HisakeyT/backpacker-platform/internal/usecase"
@@ -76,10 +75,6 @@ func (h *TravelHandler) CreateTravel(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, toTravelResponse(travel))
-}
-
-func parseDate(dateStr string) (time.Time, error) {
-	return time.Parse("2006-01-02", dateStr)
 }
 
 func (h *TravelHandler) GetTravels(c *gin.Context) {
@@ -214,19 +209,6 @@ func (h *TravelHandler) UpdateTravel(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, toTravelResponse(travel))
-}
-
-func parseOptionalDate(value *string) (*time.Time, error) {
-	if value == nil {
-		return nil, nil
-	}
-
-	parsed, err := parseDate(*value)
-	if err != nil {
-		return nil, err
-	}
-
-	return &parsed, nil
 }
 
 func (h *TravelHandler) DeleteTravel(c *gin.Context) {

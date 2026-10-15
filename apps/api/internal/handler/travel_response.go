@@ -5,8 +5,6 @@ import (
 	"time"
 )
 
-const dateLayout = "2006-01-02"
-
 type TravelResponse struct {
 	ID        uint      `json:"id"`
 	UserID    uint      `json:"user_id"`
