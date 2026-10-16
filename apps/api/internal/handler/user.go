@@ -8,12 +8,12 @@ import (
 )
 
 type Handler struct {
-	useCase *usecase.UserUsecase
+	userUsecase *usecase.UserUsecase
 }
 
-func NewHandler(useCase *usecase.UserUsecase) *Handler {
+func NewHandler(userUsecase *usecase.UserUsecase) *Handler {
 	return &Handler{
-		useCase: useCase,
+		userUsecase: userUsecase,
 	}
 }
 
@@ -52,7 +52,7 @@ func (h *Handler) Register(c *gin.Context) {
 		PasswordConfirmation: req.PasswordConfirmation,
 	}
 
-	u, err := h.useCase.Register(input)
+	u, err := h.userUsecase.Register(input)
 	if err != nil {
 		responseUsecaseError(c, err)
 		return
@@ -75,7 +75,7 @@ func (h *Handler) Login(c *gin.Context) {
 		return
 	}
 
-	result, err := h.useCase.Login(input)
+	result, err := h.userUsecase.Login(input)
 	if err != nil {
 		responseUsecaseError(c, err)
 		return
@@ -94,7 +94,7 @@ func (h *Handler) Login(c *gin.Context) {
 func (h *Handler) Me(c *gin.Context) {
 	userID, _ := c.Get("userID")
 
-	user, err := h.useCase.Me(userID.(uint))
+	user, err := h.userUsecase.Me(userID.(uint))
 	if err != nil {
 		responseUsecaseError(c, err)
 		return
@@ -119,7 +119,7 @@ func (h *Handler) UpdateMe(c *gin.Context) {
 
 	userID, _ := c.Get("userID")
 
-	user, err := h.useCase.UpdateMe(userID.(uint), input)
+	user, err := h.userUsecase.UpdateMe(userID.(uint), input)
 	if err != nil {
 		responseUsecaseError(c, err)
 		return

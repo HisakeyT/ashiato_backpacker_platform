@@ -8,11 +8,11 @@ import (
 )
 
 type TravelHandler struct {
-	useCase *usecase.TravelUsecase
+	travelUsecase *usecase.TravelUsecase
 }
 
-func NewTravelHandler(useCase *usecase.TravelUsecase) *TravelHandler {
-	return &TravelHandler{useCase: useCase}
+func NewTravelHandler(travelUsecase *usecase.TravelUsecase) *TravelHandler {
+	return &TravelHandler{travelUsecase: travelUsecase}
 }
 
 type CreateTravelRequest struct {
@@ -57,7 +57,7 @@ func (h *TravelHandler) CreateTravel(c *gin.Context) {
 		IsPublic:  req.IsPublic,
 	}
 
-	travel, err := h.useCase.CreateTravel(userID, input)
+	travel, err := h.travelUsecase.CreateTravel(userID, input)
 	if err != nil {
 		responseUsecaseError(c, err)
 		return
@@ -69,11 +69,9 @@ func (h *TravelHandler) CreateTravel(c *gin.Context) {
 func (h *TravelHandler) GetTravels(c *gin.Context) {
 	userID := c.MustGet("userID").(uint)
 
-	travels, err := h.useCase.GetTravels(userID)
+	travels, err := h.travelUsecase.GetTravels(userID)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
-		})
+		responseUsecaseError(c, err)
 		return
 	}
 
@@ -91,7 +89,7 @@ func (h *TravelHandler) GetTravel(c *gin.Context) {
 		return
 	}
 
-	travelDetail, err := h.useCase.GetTravel(userID, travelID)
+	travelDetail, err := h.travelUsecase.GetTravel(userID, travelID)
 	if err != nil {
 		responseUsecaseError(c, err)
 		return
@@ -150,7 +148,7 @@ func (h *TravelHandler) UpdateTravel(c *gin.Context) {
 		IsPublic:  updateReq.IsPublic,
 	}
 
-	travel, err := h.useCase.UpdateTravel(userID, travelID, input)
+	travel, err := h.travelUsecase.UpdateTravel(userID, travelID, input)
 	if err != nil {
 		responseUsecaseError(c, err)
 		return
@@ -170,7 +168,7 @@ func (h *TravelHandler) DeleteTravel(c *gin.Context) {
 		return
 	}
 
-	if err := h.useCase.DeleteTravel(userID, travelID); err != nil {
+	if err := h.travelUsecase.DeleteTravel(userID, travelID); err != nil {
 		responseUsecaseError(c, err)
 		return
 	}
@@ -179,11 +177,9 @@ func (h *TravelHandler) DeleteTravel(c *gin.Context) {
 }
 
 func (h *TravelHandler) GetPublicTravels(c *gin.Context) {
-	travels, err := h.useCase.GetPublicTravels()
+	travels, err := h.travelUsecase.GetPublicTravels()
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "failed to get public travels",
-		})
+		responseUsecaseError(c, err)
 		return
 	}
 
@@ -200,7 +196,7 @@ func (h *TravelHandler) GetPublicTravel(c *gin.Context) {
 		return
 	}
 
-	travel, err := h.useCase.GetPublicTravel(travelID)
+	travel, err := h.travelUsecase.GetPublicTravel(travelID)
 	if err != nil {
 		responseUsecaseError(c, err)
 		return
@@ -220,7 +216,7 @@ func (h *TravelHandler) CopyTravel(c *gin.Context) {
 		return
 	}
 
-	travel, err := h.useCase.CopyTravel(userID, travelID)
+	travel, err := h.travelUsecase.CopyTravel(userID, travelID)
 	if err != nil {
 		responseUsecaseError(c, err)
 		return

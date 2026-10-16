@@ -69,7 +69,7 @@ func TestHandler_GetPublicTravels(t *testing.T) {
 			c, _ := gin.CreateTestContext(w)
 
 			handler := &TravelHandler{
-				useCase: usecase.NewTravelUsecase(tt.repository),
+				travelUsecase: usecase.NewTravelUsecase(tt.repository),
 			}
 
 			handler.GetPublicTravels(c)

@@ -11,12 +11,12 @@ import (
 )
 
 type TravelPlanHandler struct {
-	useCase *usecase.TravelPlanUsecase
+	travelPlanUsecase *usecase.TravelPlanUsecase
 }
 
-func NewTravelPlanHandler(useCase *usecase.TravelPlanUsecase) *TravelPlanHandler {
+func NewTravelPlanHandler(travelPlanUsecase *usecase.TravelPlanUsecase) *TravelPlanHandler {
 	return &TravelPlanHandler{
-		useCase: useCase,
+		travelPlanUsecase: travelPlanUsecase,
 	}
 }
 
@@ -85,7 +85,7 @@ func (h *TravelPlanHandler) CreateTravelPlan(c *gin.Context) {
 		SortOrder: req.SortOrder,
 	}
 
-	travelPlan, err := h.useCase.CreateTravelPlan(
+	travelPlan, err := h.travelPlanUsecase.CreateTravelPlan(
 		userID,
 		travelID,
 		input,
@@ -186,7 +186,7 @@ func (h *TravelPlanHandler) UpdateTravelPlan(c *gin.Context) {
 		SortOrder: updateReq.SortOrder,
 	}
 
-	travelPlan, err := h.useCase.UpdateTravelPlan(userID, travelID, travelPlanID, updateInput)
+	travelPlan, err := h.travelPlanUsecase.UpdateTravelPlan(userID, travelID, travelPlanID, updateInput)
 	if err != nil {
 		responseUsecaseError(c, err)
 		return
@@ -220,7 +220,7 @@ func (h *TravelPlanHandler) GetTravelPlans(c *gin.Context) {
 		return
 	}
 
-	travelPlans, err := h.useCase.GetTravelPlans(userID, travelID)
+	travelPlans, err := h.travelPlanUsecase.GetTravelPlans(userID, travelID)
 	if err != nil {
 		responseUsecaseError(c, err)
 		return
@@ -248,7 +248,7 @@ func (h *TravelPlanHandler) DeleteTravelPlan(c *gin.Context) {
 		return
 	}
 
-	err = h.useCase.DeleteTravelPlan(userID, travelID, travelPlanID)
+	err = h.travelPlanUsecase.DeleteTravelPlan(userID, travelID, travelPlanID)
 	if err != nil {
 		responseUsecaseError(c, err)
 		return
@@ -266,7 +266,7 @@ func (h *TravelPlanHandler) GetPublicTravelPlan(c *gin.Context) {
 		return
 	}
 
-	travelPlans, err := h.useCase.GetPulicTravelPlan(uint(travelID))
+	travelPlans, err := h.travelPlanUsecase.GetPulicTravelPlan(uint(travelID))
 	if err != nil {
 		responseUsecaseError(c, err)
 		return
