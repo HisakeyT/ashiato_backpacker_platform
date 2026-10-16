@@ -19,19 +19,6 @@ func NewTravelPlanHandler(travelPlanUsecase *usecase.TravelPlanUsecase) *TravelP
 	}
 }
 
-type CreateTravelPlanRequest struct {
-	StartDate string   `json:"start_date" binding:"required"`
-	EndDate   *string  `json:"end_date"`
-	Place     string   `json:"place" binding:"required"`
-	Country   *string  `json:"country"`
-	State     *string  `json:"state"`
-	City      *string  `json:"city"`
-	Latitude  *float64 `json:"latitude"`
-	Longitude *float64 `json:"longitude"`
-	Content   string   `json:"content" binding:"required"`
-	SortOrder int      `json:"sort_order"`
-}
-
 func (h *TravelPlanHandler) CreateTravelPlan(c *gin.Context) {
 	userID := c.GetUint("userID")
 
@@ -91,19 +78,6 @@ func (h *TravelPlanHandler) CreateTravelPlan(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, toTravelPlanResponse(*travelPlan))
-}
-
-type UpdateTravelPlanRequest struct {
-	StartDate *string  `json:"start_date"`
-	EndDate   *string  `json:"end_date"`
-	Place     *string  `json:"place"`
-	Country   *string  `json:"country"`
-	State     *string  `json:"state"`
-	City      *string  `json:"city"`
-	Latitude  *float64 `json:"latitude"`
-	Longitude *float64 `json:"longitude"`
-	Content   *string  `json:"content"`
-	SortOrder *int     `json:"sort_order"`
 }
 
 func (h *TravelPlanHandler) UpdateTravelPlan(c *gin.Context) {
@@ -176,20 +150,6 @@ func (h *TravelPlanHandler) UpdateTravelPlan(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, toTravelPlanResponse(*travelPlan))
-}
-
-func (r UpdateTravelPlanRequest) location() *model.Location {
-	if r.Country == nil && r.State == nil && r.City == nil &&
-		r.Latitude == nil && r.Longitude == nil {
-		return nil
-	}
-	return &model.Location{
-		Country:   r.Country,
-		State:     r.State,
-		City:      r.City,
-		Latitude:  r.Latitude,
-		Longitude: r.Longitude,
-	}
 }
 
 func (h *TravelPlanHandler) GetTravelPlans(c *gin.Context) {

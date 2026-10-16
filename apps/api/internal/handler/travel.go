@@ -15,13 +15,6 @@ func NewTravelHandler(travelUsecase *usecase.TravelUsecase) *TravelHandler {
 	return &TravelHandler{travelUsecase: travelUsecase}
 }
 
-type CreateTravelRequest struct {
-	Title     string `json:"title" binding:"required"`
-	StartDate string `json:"start_date" binding:"required"`
-	EndDate   string `json:"end_date" binding:"required"`
-	IsPublic  bool   `json:"is_public"`
-}
-
 func (h *TravelHandler) CreateTravel(c *gin.Context) {
 	var req CreateTravelRequest
 
@@ -96,13 +89,6 @@ func (h *TravelHandler) GetTravel(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, toTravelDetailResponse(travelDetail))
-}
-
-type UpdateTravelRequest struct {
-	Title     *string `json:"title"`
-	StartDate *string `json:"start_date"`
-	EndDate   *string `json:"end_date"`
-	IsPublic  *bool   `json:"is_public"`
 }
 
 func (h *TravelHandler) UpdateTravel(c *gin.Context) {
