@@ -1,7 +1,7 @@
 package gormrepo
 
 import (
-	"time"
+	"errors"
 
 	"gorm.io/gorm"
 
@@ -106,53 +106,35 @@ func (r *TravelRepository) FindCopySource(sourceTravelID uint) (*model.CopySourc
 	return &copySource, nil
 }
 
-func (r *TravelRepository) CopyTravel(originalTravel *model.Travel, newUserID uint) (*model.Travel, error) {
-	var createdTravel model.Travel
-
-	err := r.db.Transaction(func(tx *gorm.DB) error {
-		createdTravel = model.Travel{
-			UserID:             newUserID,
-			Title:              originalTravel.Title,
-			StartDate:          originalTravel.StartDate,
-			EndDate:            originalTravel.EndDate,
-			CopiedFromTravelID: &originalTravel.ID,
-		}
-		if err := tx.Create(&createdTravel).Error; err != nil {
-			return err
-		}
-
-		var travelPlans []model.TravelPlan
-		if err := tx.Where("travel_id = ?", originalTravel.ID).Find(&travelPlans).Error; err != nil {
-			return err
-		}
-		if len(travelPlans) == 0 {
-			return nil
-		}
-
-		copiedPlans := make([]model.TravelPlan, len(travelPlans))
-		for i, plan := range travelPlans {
-			var endDate *time.Time
-			if plan.EndDate != nil {
-				e := *plan.EndDate
-				endDate = &e
-			}
-			copiedPlans[i] = model.TravelPlan{
-				TravelID:  createdTravel.ID,
-				StartDate: plan.StartDate,
-				EndDate:   endDate,
-				Place:     plan.Place,
-				Location:  plan.Location,
-				Content:   plan.Content,
-				SortOrder: plan.SortOrder,
-			}
-		}
-		return tx.Create(&copiedPlans).Error
-	})
+func (r *TravelRepository) FindByIDWithPlans(id uint) (*model.Travel, error) {
+	var travel model.Travel
+	err := r.db.
+		Preload("Plans", func(db *gorm.DB) *gorm.DB {
+			return db.Order("sort_order ASC, id ASC")
+		}).
+		First(&travel, id).Error
 	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, model.ErrTravelNotFound
+		}
 		return nil, err
 	}
+	return &travel, nil
+}
 
-	return &createdTravel, nil
+func (r *TravelRepository) CreateWithPlans(travel *model.Travel) error {
+	return r.db.Transaction(func(tx *gorm.DB) error {
+		if err := tx.Omit("Plans").Create(travel).Error; err != nil {
+			return err
+		}
+		if len(travel.Plans) == 0 {
+			return nil
+		}
+		for i := range travel.Plans {
+			travel.Plans[i].TravelID = travel.ID
+		}
+		return tx.Create(&travel.Plans).Error
+	})
 }
 
 var _ repository.TravelRepository = (*TravelRepository)(nil)

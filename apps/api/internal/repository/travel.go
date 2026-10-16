@@ -13,5 +13,6 @@ type TravelRepository interface {
 	FindPublicByID(id uint) (*model.PublicTravel, error)
 	FindCopySource(sourceTravelID uint) (*model.CopySource, error)
 	Delete(id uint) error
-	CopyTravel(originalTravel *model.Travel, newUserID uint) (*model.Travel, error)
+	FindByIDWithPlans(id uint) (*model.Travel, error)
+	CreateWithPlans(src *model.Travel) error
 }

@@ -13,7 +13,8 @@ type MockTravelRepository struct {
 	FindPublicByIDFunc    func(id uint) (*model.PublicTravel, error)
 	FindCopySourceFunc    func(sourceTravelID uint) (*model.CopySource, error)
 	DeleteFunc            func(id uint) error
-	CopyTravelFunc        func(originalTravel *model.Travel, newUserID uint) (*model.Travel, error)
+	FindByIDWithPlansFunc func(id uint) (*model.Travel, error)
+	CreateWithPlansFunc   func(src *model.Travel) error
 }
 
 func (m *MockTravelRepository) Create(travel *model.Travel) error {
@@ -78,10 +79,18 @@ func (m *MockTravelRepository) Delete(id uint) error {
 	return nil
 }
 
-func (m *MockTravelRepository) CopyTravel(originalTravel *model.Travel, newUserID uint) (*model.Travel, error) {
-	if m.CopyTravelFunc != nil {
-		return m.CopyTravelFunc(originalTravel, newUserID)
+func (m *MockTravelRepository) FindByIDWithPlans(id uint) (*model.Travel, error) {
+	if m.FindByIDWithPlansFunc != nil {
+		return m.FindByIDWithPlansFunc(id)
 	}
 
 	return nil, nil
+}
+
+func (m *MockTravelRepository) CreateWithPlans(src *model.Travel) error {
+	if m.CreateWithPlansFunc != nil {
+		return m.CreateWithPlansFunc(src)
+	}
+
+	return nil
 }
