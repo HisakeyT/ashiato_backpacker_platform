@@ -173,12 +173,9 @@ func (u *TravelUsecase) DeleteTravel(userID uint, travelID uint) error {
 }
 
 func (uc *TravelUsecase) CopyTravel(userID, travelID uint) (*model.Travel, error) {
-	originalTravel, err := uc.repository.FindByID(travelID)
+	originalTravel, err := uc.repository.FindByIDWithPlans(travelID)
 	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, model.ErrTravelNotFound
-		}
-		return nil, err
+		return nil, err // NotFound は gormrepo 側で model.ErrTravelNotFound に変換済み
 	}
 
 	// 非公開かつ他人の旅行は存在しない扱い
@@ -186,5 +183,9 @@ func (uc *TravelUsecase) CopyTravel(userID, travelID uint) (*model.Travel, error
 		return nil, model.ErrTravelNotFound
 	}
 
-	return uc.repository.CopyTravel(originalTravel, userID)
+	copiedTravel := originalTravel.Copy(userID)
+	if err := uc.repository.CreateWithPlans(copiedTravel); err != nil {
+		return nil, err
+	}
+	return copiedTravel, nil
 }
