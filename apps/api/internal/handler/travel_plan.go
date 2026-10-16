@@ -3,7 +3,6 @@ package handler
 import (
 	"net/http"
 	"strings"
-	"time"
 
 	"github.com/HisakeyT/backpacker-platform/internal/model"
 	"github.com/HisakeyT/backpacker-platform/internal/usecase"
@@ -52,22 +51,18 @@ func (h *TravelPlanHandler) CreateTravelPlan(c *gin.Context) {
 		return
 	}
 
-	startDate, err := time.Parse("2006-01-02", req.StartDate)
+	startDate, err := parseDate(req.StartDate)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "invalid start_date",
-		})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid start_date"})
 		return
 	}
 
-	var endDate *time.Time
-	if req.EndDate != nil && *req.EndDate != "" {
-		parsed, err := time.Parse("2006-01-02", *req.EndDate)
-		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid end_date"})
-			return
-		}
-		endDate = &parsed
+	endDate, err := parseOptionalDate(req.EndDate)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "invalid end_date",
+		})
+		return
 	}
 
 	input := usecase.CreateTravelPlanInput{
@@ -152,29 +147,17 @@ func (h *TravelPlanHandler) UpdateTravelPlan(c *gin.Context) {
 		return
 	}
 
-	var startDate *time.Time
-	if updateReq.StartDate != nil {
-		parsed, err := time.Parse("2006-01-02", *updateReq.StartDate)
-		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"error": "invalid start_date",
-			})
-			return
-		}
-
-		startDate = &parsed
+	// 置き換え後
+	startDate, err := parseOptionalDate(updateReq.StartDate)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid start_date"})
+		return
 	}
 
-	var endDate *time.Time
-	if updateReq.EndDate != nil {
-		parsed, err := time.Parse("2006-01-02", *updateReq.EndDate)
-		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"error": "invalid end_date",
-			})
-			return
-		}
-		endDate = &parsed
+	endDate, err := parseOptionalDate(updateReq.EndDate)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid end_date"})
+		return
 	}
 
 	updateInput := usecase.UpdateTravelPlanInput{

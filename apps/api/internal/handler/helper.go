@@ -13,7 +13,7 @@ func parseDate(s string) (time.Time, error) {
 }
 
 func parseOptionalDate(v *string) (*time.Time, error) {
-	if v == nil {
+	if v == nil || *v == "" {
 		return nil, nil
 	}
 	t, err := parseDate(*v)
