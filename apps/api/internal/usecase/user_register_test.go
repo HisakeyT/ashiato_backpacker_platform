@@ -84,7 +84,7 @@ func TestUserUsecase_Register_PasswordMismatch(t *testing.T) {
 
 	_, err := useCase.Register(input)
 
-	if !errors.Is(err, ErrPasswordMismatch) {
+	if !errors.Is(err, model.ErrPasswordMismatch) {
 		t.Fatalf("expected ErrPasswordMismatch, got %v", err)
 	}
 }
@@ -117,7 +117,7 @@ func TestUserUsecase_Register_EmailAlreadyUsed(t *testing.T) {
 
 	_, err := useCase.Register(input)
 
-	if !errors.Is(err, ErrEmailAlreadyUsed) {
+	if !errors.Is(err, model.ErrEmailAlreadyUsed) {
 		t.Fatalf("expected ErrEmailAlreadyUsed, got %v", err)
 	}
 }

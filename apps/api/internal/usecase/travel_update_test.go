@@ -183,7 +183,7 @@ func TestUsecase_UpdateTravel_Error(t *testing.T) {
 				StartDate: startDate,
 				EndDate:   endDate,
 			},
-			wantErr: ErrInvalidDateRange,
+			wantErr: model.ErrInvalidDateRange,
 		},
 	}
 

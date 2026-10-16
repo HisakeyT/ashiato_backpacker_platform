@@ -206,7 +206,7 @@ func applyTravelPlanUpdates(travelPlan *model.TravelPlan, input UpdateTravelPlan
 	}
 }
 
-func (uc *TravelPlanUsecase) GetPulicTravelPlan(travelID uint) ([]model.TravelPlan, error) {
+func (uc *TravelPlanUsecase) GetPublicTravelPlan(travelID uint) ([]model.TravelPlan, error) {
 	travelData, err := uc.travelRepository.FindByID(travelID)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {

@@ -5,7 +5,6 @@ import (
 	"net/http"
 
 	"github.com/HisakeyT/backpacker-platform/internal/model"
-	"github.com/HisakeyT/backpacker-platform/internal/usecase"
 	"github.com/gin-gonic/gin"
 )
 
@@ -16,13 +15,13 @@ type errorStatus struct {
 
 var errorStatuses = []errorStatus{
 	// 400
-	{usecase.ErrInvalidDateRange, http.StatusBadRequest},
-	{usecase.ErrPasswordMismatch, http.StatusBadRequest},
+	{model.ErrInvalidDateRange, http.StatusBadRequest},
+	{model.ErrPasswordMismatch, http.StatusBadRequest},
 	{model.ErrInvalidCoordinates, http.StatusBadRequest},
 	{model.ErrTravelPlanNotBelongToTravel, http.StatusBadRequest},
 
 	// 401
-	{usecase.ErrInvalidCredentials, http.StatusUnauthorized},
+	{model.ErrInvalidCredentials, http.StatusUnauthorized},
 
 	// 403
 	{model.ErrUserNotAuthorized, http.StatusForbidden},
@@ -33,7 +32,7 @@ var errorStatuses = []errorStatus{
 	{model.ErrUserNotFound, http.StatusNotFound},
 
 	// 409
-	{usecase.ErrEmailAlreadyUsed, http.StatusConflict},
+	{model.ErrEmailAlreadyUsed, http.StatusConflict},
 }
 
 // responseUsecaseError は usecase のエラーを HTTP レスポンスに変換する。

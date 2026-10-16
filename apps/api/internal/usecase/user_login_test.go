@@ -97,7 +97,7 @@ func TestLogin_UserNotFound(t *testing.T) {
 		Password: "password123",
 	})
 
-	if !errors.Is(err, ErrInvalidCredentials) {
+	if !errors.Is(err, model.ErrInvalidCredentials) {
 		t.Fatalf("expected ErrInvalidCredentials, got %v", err)
 	}
 }
@@ -130,7 +130,7 @@ func TestLogin_WrongPassword(t *testing.T) {
 		Password: "wrong-password",
 	})
 
-	if !errors.Is(err, ErrInvalidCredentials) {
+	if !errors.Is(err, model.ErrInvalidCredentials) {
 		t.Fatalf("expected ErrInvalidCredentials, got %v", err)
 	}
 }

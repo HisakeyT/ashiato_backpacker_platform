@@ -9,8 +9,6 @@ import (
 	"github.com/HisakeyT/backpacker-platform/internal/repository"
 )
 
-var ErrInvalidDateRange = errors.New("start date must not be after end date")
-
 type TravelUsecase struct {
 	repository repository.TravelRepository
 }
@@ -51,7 +49,7 @@ func (u *TravelUsecase) CreateTravel(userID uint, input CreateTravelInput) (*mod
 
 func validateDateRange(startDate, endDate time.Time) error {
 	if startDate.After(endDate) {
-		return ErrInvalidDateRange
+		return model.ErrInvalidDateRange
 	}
 
 	return nil

@@ -159,7 +159,7 @@ func (h *TravelHandler) DeleteTravel(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusNoContent, gin.H{})
+	c.Status(http.StatusNoContent)
 }
 
 func (h *TravelHandler) GetPublicTravels(c *gin.Context) {

@@ -6,6 +6,7 @@ import (
 )
 
 var ErrTravelNotFound = errors.New("travel not found")
+var ErrInvalidDateRange = errors.New("start date must not be after end date")
 
 type Travel struct {
 	ID                 uint      `gorm:"primaryKey"`

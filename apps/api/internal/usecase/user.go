@@ -28,20 +28,14 @@ type RegisterInput struct {
 	PasswordConfirmation string
 }
 
-var (
-	ErrPasswordMismatch   = errors.New("password and password confirmation do not match")
-	ErrEmailAlreadyUsed   = errors.New("email is already used")
-	ErrInvalidCredentials = errors.New("invalid credentials")
-)
-
 func (u *UserUsecase) Register(input RegisterInput) (*model.User, error) {
 	if input.Password != input.PasswordConfirmation {
-		return nil, ErrPasswordMismatch
+		return nil, model.ErrPasswordMismatch
 	}
 
 	existingUser, err := u.repository.FindByEmail(input.Email)
 	if err == nil && existingUser != nil {
-		return nil, ErrEmailAlreadyUsed
+		return nil, model.ErrEmailAlreadyUsed
 	}
 
 	if !errors.Is(err, model.ErrUserNotFound) && err != nil {
@@ -83,7 +77,7 @@ func (u *UserUsecase) Login(input LoginInput) (*LoginOutput, error) {
 	user, err := u.repository.FindByEmail(input.Email)
 	if err != nil {
 		if errors.Is(err, model.ErrUserNotFound) {
-			return nil, ErrInvalidCredentials
+			return nil, model.ErrInvalidCredentials
 		}
 
 		return nil, err
@@ -91,7 +85,7 @@ func (u *UserUsecase) Login(input LoginInput) (*LoginOutput, error) {
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(input.Password))
 	if err != nil {
-		return nil, ErrInvalidCredentials
+		return nil, model.ErrInvalidCredentials
 	}
 
 	token, err := u.jwtManager.GenerateToken(user.ID)

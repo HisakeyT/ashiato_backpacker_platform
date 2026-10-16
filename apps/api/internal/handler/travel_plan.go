@@ -209,7 +209,7 @@ func (h *TravelPlanHandler) GetPublicTravelPlan(c *gin.Context) {
 		return
 	}
 
-	travelPlans, err := h.travelPlanUsecase.GetPulicTravelPlan(uint(travelID))
+	travelPlans, err := h.travelPlanUsecase.GetPublicTravelPlan(travelID)
 	if err != nil {
 		responseUsecaseError(c, err)
 		return
