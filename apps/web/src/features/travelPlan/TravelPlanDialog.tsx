@@ -42,13 +42,37 @@ export const TravelPlanDialog = ({
     setIsSubmitting(true);
     setError(null);
     try {
-      const { endDate: formEndDate, ...rest } = value;
+      const {
+        endDate: formEndDate,
+        country,
+        state,
+        city,
+        latitude,
+        longitude,
+        ...rest
+      } = value;
+
       const periodInput = formEndDate ? { endDate: formEndDate } : {};
+      const locationInput = {
+        ...(country ? { country } : {}),
+        ...(state ? { state } : {}),
+        ...(city ? { city } : {}),
+        ...(latitude != null && longitude != null ? { latitude, longitude } : {}),
+      };
 
       if (plan) {
-        await updateTravelPlan(token, travelId, plan.id, { ...rest, ...periodInput });
+        await updateTravelPlan(token, travelId, plan.id, {
+          ...rest,
+          ...periodInput,
+          ...locationInput,
+        });
       } else {
-        await createTravelPlan(token, travelId, { ...rest, ...periodInput, sortOrder: 0 });
+        await createTravelPlan(token, travelId, {
+          ...rest,
+          ...periodInput,
+          ...locationInput,
+          sortOrder: 0,
+        });
       }
       onSaved(isEdit ? "updated" : "created");
       onClose();
@@ -75,7 +99,12 @@ export const TravelPlanDialog = ({
               startDate: plan.startDate,
               endDate: plan.endDate ?? "",
               place: plan.place,
-              content: plan.content
+              country: plan.country ?? "",
+              state: plan.state ?? "",
+              city: plan.city ?? "",
+              latitude: plan.latitude,
+              longitude: plan.longitude,
+              content: plan.content,
             }
             : undefined
         }
