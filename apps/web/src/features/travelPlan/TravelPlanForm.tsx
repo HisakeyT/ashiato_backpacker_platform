@@ -136,7 +136,7 @@ export const TravelPlanForm = ({
 
         <FormField label="場所" htmlFor="plan-place" required>
           <Stack spacing={1}>
-            <Box sx={{ display: "flex", gap: 1 }}>
+            <Box sx={{ display: "flex", alignItems: "flex-start", gap: 1 }}>
               <TextField
                 id="plan-place"
                 value={place}
@@ -148,7 +148,8 @@ export const TravelPlanForm = ({
                     void handleSearch();
                   }
                 }}
-                placeholder="例：アンコールワット"
+                placeholder="例：アンコール・ワット"
+                helperText="国名や市名を足す、または別の表記(カタカナ・英語名など)で検索できます"
                 required
                 fullWidth
               />
@@ -156,7 +157,7 @@ export const TravelPlanForm = ({
                 variant="outlined"
                 onClick={() => void handleSearch()}
                 disabled={isSearching || !place.trim()}
-                sx={{ whiteSpace: "nowrap" }}
+                sx={{ whiteSpace: "nowrap", height: 56, flexShrink: 0 }}
               >
                 {isSearching ? "検索中..." : "検索"}
               </Button>
@@ -164,7 +165,10 @@ export const TravelPlanForm = ({
 
             {searchError && <Alert severity="error">{searchError}</Alert>}
             {searched && candidates.length === 0 && !searchError && (
-              <Alert severity="info">候補が見つかりませんでした。手入力のまま保存できます。</Alert>
+              <Alert severity="info">
+                候補が見つかりませんでした。国名や市名を足す、または別の表記(カタカナ・英語名など)で試せます。
+                検索せずに、このまま手入力で保存することもできます。
+              </Alert>
             )}
             {candidates.length > 0 && (
               <List dense disablePadding sx={{ border: 1, borderColor: "divider", borderRadius: 1 }}>
