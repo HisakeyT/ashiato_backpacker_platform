@@ -91,7 +91,7 @@ func (h *TravelPlanHandler) CreateTravelPlan(c *gin.Context) {
 		input,
 	)
 	if err != nil {
-		respondUsecaseError(c, err)
+		responseUsecaseError(c, err)
 		return
 	}
 
@@ -188,7 +188,7 @@ func (h *TravelPlanHandler) UpdateTravelPlan(c *gin.Context) {
 
 	travelPlan, err := h.useCase.UpdateTravelPlan(userID, travelID, travelPlanID, updateInput)
 	if err != nil {
-		respondUsecaseError(c, err)
+		responseUsecaseError(c, err)
 		return
 	}
 
@@ -222,7 +222,7 @@ func (h *TravelPlanHandler) GetTravelPlans(c *gin.Context) {
 
 	travelPlans, err := h.useCase.GetTravelPlans(userID, travelID)
 	if err != nil {
-		respondUsecaseError(c, err)
+		responseUsecaseError(c, err)
 		return
 	}
 
@@ -250,7 +250,7 @@ func (h *TravelPlanHandler) DeleteTravelPlan(c *gin.Context) {
 
 	err = h.useCase.DeleteTravelPlan(userID, travelID, travelPlanID)
 	if err != nil {
-		respondUsecaseError(c, err)
+		responseUsecaseError(c, err)
 		return
 	}
 
@@ -268,7 +268,7 @@ func (h *TravelPlanHandler) GetPublicTravelPlan(c *gin.Context) {
 
 	travelPlans, err := h.useCase.GetPulicTravelPlan(uint(travelID))
 	if err != nil {
-		respondUsecaseError(c, err)
+		responseUsecaseError(c, err)
 		return
 	}
 

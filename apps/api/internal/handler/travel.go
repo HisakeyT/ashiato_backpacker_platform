@@ -59,7 +59,7 @@ func (h *TravelHandler) CreateTravel(c *gin.Context) {
 
 	travel, err := h.useCase.CreateTravel(userID, input)
 	if err != nil {
-		respondUsecaseError(c, err)
+		responseUsecaseError(c, err)
 		return
 	}
 
@@ -93,7 +93,7 @@ func (h *TravelHandler) GetTravel(c *gin.Context) {
 
 	travelDetail, err := h.useCase.GetTravel(userID, travelID)
 	if err != nil {
-		respondUsecaseError(c, err)
+		responseUsecaseError(c, err)
 		return
 	}
 
@@ -152,7 +152,7 @@ func (h *TravelHandler) UpdateTravel(c *gin.Context) {
 
 	travel, err := h.useCase.UpdateTravel(userID, travelID, input)
 	if err != nil {
-		respondUsecaseError(c, err)
+		responseUsecaseError(c, err)
 		return
 	}
 
@@ -171,7 +171,7 @@ func (h *TravelHandler) DeleteTravel(c *gin.Context) {
 	}
 
 	if err := h.useCase.DeleteTravel(userID, travelID); err != nil {
-		respondUsecaseError(c, err)
+		responseUsecaseError(c, err)
 		return
 	}
 
@@ -202,7 +202,7 @@ func (h *TravelHandler) GetPublicTravel(c *gin.Context) {
 
 	travel, err := h.useCase.GetPublicTravel(travelID)
 	if err != nil {
-		respondUsecaseError(c, err)
+		responseUsecaseError(c, err)
 		return
 	}
 
@@ -222,7 +222,7 @@ func (h *TravelHandler) CopyTravel(c *gin.Context) {
 
 	travel, err := h.useCase.CopyTravel(userID, travelID)
 	if err != nil {
-		respondUsecaseError(c, err)
+		responseUsecaseError(c, err)
 		return
 	}
 

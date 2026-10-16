@@ -54,7 +54,7 @@ func (h *Handler) Register(c *gin.Context) {
 
 	u, err := h.useCase.Register(input)
 	if err != nil {
-		respondUsecaseError(c, err)
+		responseUsecaseError(c, err)
 		return
 	}
 
@@ -77,7 +77,7 @@ func (h *Handler) Login(c *gin.Context) {
 
 	result, err := h.useCase.Login(input)
 	if err != nil {
-		respondUsecaseError(c, err)
+		responseUsecaseError(c, err)
 		return
 	}
 
@@ -96,7 +96,7 @@ func (h *Handler) Me(c *gin.Context) {
 
 	user, err := h.useCase.Me(userID.(uint))
 	if err != nil {
-		respondUsecaseError(c, err)
+		responseUsecaseError(c, err)
 		return
 	}
 
@@ -121,7 +121,7 @@ func (h *Handler) UpdateMe(c *gin.Context) {
 
 	user, err := h.useCase.UpdateMe(userID.(uint), input)
 	if err != nil {
-		respondUsecaseError(c, err)
+		responseUsecaseError(c, err)
 		return
 	}
 
