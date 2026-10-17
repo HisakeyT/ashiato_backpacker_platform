@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"encoding/json"
 	"errors"
 	"net/http"
 	"net/http/httptest"
@@ -20,6 +21,7 @@ func TestHandler_GetTravels(t *testing.T) {
 		name       string
 		repository repository.TravelRepository
 		wantStatus int
+		wantIDs    []uint
 	}{
 		{
 			name: "自分の旅行を複数件取得できる",
@@ -40,6 +42,7 @@ func TestHandler_GetTravels(t *testing.T) {
 				},
 			},
 			wantStatus: http.StatusOK,
+			wantIDs:    []uint{1, 2},
 		},
 		{
 			name: "自分の旅行が0件でも正常に取得できる",
@@ -49,6 +52,7 @@ func TestHandler_GetTravels(t *testing.T) {
 				},
 			},
 			wantStatus: http.StatusOK,
+			wantIDs:    []uint{},
 		},
 		{
 			name: "Repositoryでエラーが発生した場合",
@@ -89,6 +93,20 @@ func TestHandler_GetTravels(t *testing.T) {
 					tt.wantStatus,
 					rec.Code,
 				)
+			}
+			if tt.wantStatus == http.StatusOK {
+				var response []TravelResponse
+				if err := json.Unmarshal(rec.Body.Bytes(), &response); err != nil {
+					t.Fatal(err)
+				}
+				if len(response) != len(tt.wantIDs) {
+					t.Fatalf("response count = %d, want %d", len(response), len(tt.wantIDs))
+				}
+				for index, travel := range response {
+					if travel.ID != tt.wantIDs[index] || travel.Title == "" {
+						t.Fatalf("unexpected travel response: %+v", travel)
+					}
+				}
 			}
 		})
 	}

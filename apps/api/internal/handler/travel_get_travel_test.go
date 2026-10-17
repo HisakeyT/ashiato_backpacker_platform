@@ -1,13 +1,12 @@
 package handler
 
 import (
-	"errors"
+	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
 	"github.com/HisakeyT/backpacker-platform/internal/model"
-	"github.com/HisakeyT/backpacker-platform/internal/repository"
 	"github.com/HisakeyT/backpacker-platform/internal/repository/mock"
 	"github.com/HisakeyT/backpacker-platform/internal/usecase"
 	"github.com/gin-gonic/gin"
@@ -15,80 +14,55 @@ import (
 
 func TestHandler_GetTravel(t *testing.T) {
 	gin.SetMode(gin.TestMode)
-
 	tests := []struct {
 		name       string
-		repository repository.TravelRepository
+		path       string
+		travel     *model.Travel
+		findError  error
 		wantStatus int
+		wantID     uint
+		wantTitle  string
 	}{
-		{
-			name: "自分の旅行を複数件取得できる",
-			repository: &mock.MockTravelRepository{
-				FindByUserIDFunc: func(userID uint) ([]*model.Travel, error) {
-					return []*model.Travel{
-						{
-							ID:     1,
-							UserID: userID,
-							Title:  "旅行1",
-						},
-						{
-							ID:     2,
-							UserID: userID,
-							Title:  "旅行2",
-						},
-					}, nil
-				},
-			},
-			wantStatus: http.StatusOK,
-		},
-		{
-			name: "自分の旅行が0件でも正常に取得できる",
-			repository: &mock.MockTravelRepository{
-				FindByUserIDFunc: func(userID uint) ([]*model.Travel, error) {
-					return []*model.Travel{}, nil
-				},
-			},
-			wantStatus: http.StatusOK,
-		},
-		{
-			name: "Repositoryでエラーが発生した場合",
-			repository: &mock.MockTravelRepository{
-				FindByUserIDFunc: func(userID uint) ([]*model.Travel, error) {
-					return nil, errors.New("database error")
-				},
-			},
-			wantStatus: http.StatusInternalServerError,
-		},
+		{"own travel", "/travels/10", &model.Travel{ID: 10, UserID: 1, Title: "タイ旅行"}, nil, http.StatusOK, 10, "タイ旅行"},
+		{"missing travel", "/travels/99", nil, model.ErrTravelNotFound, http.StatusNotFound, 0, ""},
+		{"other user's travel", "/travels/10", &model.Travel{ID: 10, UserID: 2}, nil, http.StatusForbidden, 0, ""},
+		{"invalid ID", "/travels/invalid", nil, nil, http.StatusBadRequest, 0, ""},
 	}
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			repository := &mock.MockTravelRepository{
+				FindByIDFunc: func(id uint) (*model.Travel, error) { return test.travel, test.findError },
+			}
 			router := gin.New()
-
-			useCase := usecase.NewTravelUsecase(tt.repository)
-			handler := NewTravelHandler(useCase)
-
-			router.GET("/travels", func(c *gin.Context) {
+			handler := NewTravelHandler(usecase.NewTravelUsecase(repository))
+			router.GET("/travels/:travel_id", func(c *gin.Context) {
 				c.Set("userID", uint(1))
-				handler.GetTravels(c)
+				handler.GetTravel(c)
 			})
-
-			req := httptest.NewRequest(
-				http.MethodGet,
-				"/travels",
-				nil,
-			)
-
-			rec := httptest.NewRecorder()
-
-			router.ServeHTTP(rec, req)
-
-			if rec.Code != tt.wantStatus {
-				t.Fatalf(
-					"expected status %d, got %d",
-					tt.wantStatus,
-					rec.Code,
-				)
+			recorder := httptest.NewRecorder()
+			router.ServeHTTP(recorder, httptest.NewRequest(http.MethodGet, test.path, nil))
+			if recorder.Code != test.wantStatus {
+				t.Fatalf("status = %d, want %d: %s", recorder.Code, test.wantStatus, recorder.Body.String())
+			}
+			if test.wantStatus != http.StatusOK {
+				var response struct {
+					Error string `json:"error"`
+				}
+				if err := json.Unmarshal(recorder.Body.Bytes(), &response); err != nil {
+					t.Fatal(err)
+				}
+				if response.Error == "" {
+					t.Fatal("missing error in response")
+				}
+				return
+			}
+			var response TravelDetailResponse
+			if err := json.Unmarshal(recorder.Body.Bytes(), &response); err != nil {
+				t.Fatal(err)
+			}
+			if response.ID != test.wantID || response.Title != test.wantTitle {
+				t.Fatalf("response = %+v", response)
 			}
 		})
 	}
