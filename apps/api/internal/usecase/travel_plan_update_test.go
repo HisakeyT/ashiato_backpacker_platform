@@ -254,3 +254,89 @@ func TestUsecase_UpdateTravelPlan(t *testing.T) {
 		}
 	})
 }
+
+func TestUsecase_UpdateTravelPlan_InvalidLocation(t *testing.T) {
+	tests := []struct {
+		name     string
+		location model.Location
+	}{
+		{
+			name: "緯度だけが指定されている",
+			location: model.Location{
+				Latitude: float64Ptr(35),
+			},
+		},
+		{
+			name: "緯度が範囲外",
+			location: model.Location{
+				Latitude:  float64Ptr(91),
+				Longitude: float64Ptr(135),
+			},
+		},
+		{
+			name: "経度が範囲外",
+			location: model.Location{
+				Latitude:  float64Ptr(35),
+				Longitude: float64Ptr(181),
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			travelRepository := &mock.MockTravelRepository{
+				FindByIDFunc: func(id uint) (*model.Travel, error) {
+					return &model.Travel{
+						ID:     10,
+						UserID: 1,
+					}, nil
+				},
+			}
+
+			updateCalled := false
+			travelPlanRepository := &mock.MockTravelPlanRepository{
+				FindByIDFunc: func(id uint) (*model.TravelPlan, error) {
+					return &model.TravelPlan{
+						ID:        20,
+						TravelID:  10,
+						StartDate: time.Date(2026, 10, 1, 0, 0, 0, 0, time.UTC),
+					}, nil
+				},
+				UpdateFunc: func(plan *model.TravelPlan) error {
+					updateCalled = true
+					return nil
+				},
+			}
+
+			uc := NewTravelPlanUsecase(
+				travelRepository,
+				travelPlanRepository,
+			)
+
+			got, err := uc.UpdateTravelPlan(
+				1,
+				10,
+				20,
+				UpdateTravelPlanInput{
+					Location: &tt.location,
+				},
+			)
+
+			if !errors.Is(err, model.ErrInvalidCoordinates) {
+				t.Fatalf("expected ErrInvalidCoordinates, got %v", err)
+			}
+
+			if got != nil {
+				t.Fatalf("expected nil result, got %+v", got)
+			}
+
+			if updateCalled {
+				t.Fatal("Update must not be called for invalid location")
+			}
+		})
+	}
+}
+
+func float64Ptr(value float64) *float64 {
+	return &value
+}
