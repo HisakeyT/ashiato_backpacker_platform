@@ -1,4 +1,3 @@
-import React from "react";
 import { useState } from "react";
 import { useAuth } from "../../app/providers/useAuth";
 import { BaseDialog } from "../../components/BaseDialog";

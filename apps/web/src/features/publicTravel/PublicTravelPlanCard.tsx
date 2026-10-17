@@ -1,4 +1,3 @@
-import React from "react";
 import { Card, CardContent, Typography } from "@mui/material";
 import type { TravelPlan } from "../travelPlan/types";
 import { formatPeriod } from "../travelPlan/format";

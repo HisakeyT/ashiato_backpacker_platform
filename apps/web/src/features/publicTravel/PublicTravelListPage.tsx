@@ -1,4 +1,3 @@
-import React from "react";
 import { useEffect, useState } from "react";
 import { Box, Typography } from "@mui/material";
 import { getPublicTravels } from "../travel/repository";

@@ -1,4 +1,3 @@
-import React from "react";
 import { useEffect, useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import { useAuth } from "../../app/providers/useAuth";

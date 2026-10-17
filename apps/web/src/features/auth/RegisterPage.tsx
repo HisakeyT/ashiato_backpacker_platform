@@ -1,5 +1,4 @@
-import React from "react";
-import { useState } from "react";
+import { type FormEvent, useState } from "react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { Link, Alert, Box, Button, TextField, Typography } from "@mui/material";
 import { useFlash } from "../../app/providers/useFlash";
@@ -18,7 +17,7 @@ export function RegisterPage() {
 
   const navigate = useNavigate();
 
-  const handleSubmit = async (event: React.FormEvent) => {
+  const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     setError(null);
 
