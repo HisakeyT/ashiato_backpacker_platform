@@ -13,7 +13,6 @@ import (
 	"github.com/HisakeyT/backpacker-platform/internal/repository/mock"
 	"github.com/HisakeyT/backpacker-platform/internal/usecase"
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 )
 
 func TestHandler_UpdateTravel(t *testing.T) {
@@ -97,7 +96,7 @@ func TestHandler_UpdateTravel(t *testing.T) {
 			request:  `{"title":"新しいタイトル"}`,
 			repository: &mock.MockTravelRepository{
 				FindByIDFunc: func(id uint) (*model.Travel, error) {
-					return nil, gorm.ErrRecordNotFound
+					return nil, model.ErrTravelNotFound
 				},
 			},
 			wantStatus: http.StatusNotFound,

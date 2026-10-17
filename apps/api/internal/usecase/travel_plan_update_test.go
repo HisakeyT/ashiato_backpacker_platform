@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"errors"
-	"gorm.io/gorm"
 	"reflect"
 	"testing"
 	"time"
@@ -154,7 +153,7 @@ func TestUsecase_UpdateTravelPlan(t *testing.T) {
 		}{
 			{
 				name:                "Travelが存在しない",
-				travelRepositoryErr: gorm.ErrRecordNotFound,
+				travelRepositoryErr: model.ErrTravelNotFound,
 				wantErr:             model.ErrTravelNotFound,
 			},
 			{
@@ -176,7 +175,7 @@ func TestUsecase_UpdateTravelPlan(t *testing.T) {
 					ID:     travelID,
 					UserID: userID,
 				},
-				travelPlanRepositoryErr: gorm.ErrRecordNotFound,
+				travelPlanRepositoryErr: model.ErrTravelPlanNotFound,
 				wantErr:                 model.ErrTravelPlanNotFound,
 			},
 			{

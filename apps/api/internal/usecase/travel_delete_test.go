@@ -4,8 +4,6 @@ import (
 	"errors"
 	"testing"
 
-	"gorm.io/gorm"
-
 	"github.com/HisakeyT/backpacker-platform/internal/model"
 	"github.com/HisakeyT/backpacker-platform/internal/repository"
 	mock "github.com/HisakeyT/backpacker-platform/internal/repository/mock"
@@ -42,7 +40,7 @@ func TestUsecase_DeleteTravel(t *testing.T) {
 			travelID: 10,
 			repository: &mock.MockTravelRepository{
 				FindByIDFunc: func(id uint) (*model.Travel, error) {
-					return nil, gorm.ErrRecordNotFound
+					return nil, model.ErrTravelNotFound
 				},
 				DeleteFunc: func(id uint) error {
 					return nil

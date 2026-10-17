@@ -1,6 +1,8 @@
 package gormrepo
 
 import (
+	"errors"
+
 	"github.com/HisakeyT/backpacker-platform/internal/model"
 	"gorm.io/gorm"
 )
@@ -30,6 +32,9 @@ func (r *GormPlanRepository) FindByID(id uint) (*model.TravelPlan, error) {
 
 	result := r.db.First(&travelPlan, id)
 	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return nil, model.ErrTravelPlanNotFound
+		}
 		return nil, result.Error
 	}
 

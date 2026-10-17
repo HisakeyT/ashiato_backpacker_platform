@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"errors"
-	"gorm.io/gorm"
 	"testing"
 	"time"
 
@@ -102,7 +101,7 @@ func TestUsecase_GetTravelPlans(t *testing.T) {
 		}{
 			{
 				name:          "Travelが存在しない",
-				findByIDError: gorm.ErrRecordNotFound,
+				findByIDError: model.ErrTravelNotFound,
 				expectedError: model.ErrTravelNotFound,
 			},
 			{

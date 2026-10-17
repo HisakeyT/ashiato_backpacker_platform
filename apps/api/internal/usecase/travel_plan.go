@@ -1,12 +1,10 @@
 package usecase
 
 import (
-	"errors"
 	"time"
 
 	"github.com/HisakeyT/backpacker-platform/internal/model"
 	"github.com/HisakeyT/backpacker-platform/internal/repository"
-	"gorm.io/gorm"
 )
 
 type TravelRepository interface {
@@ -95,10 +93,6 @@ func (uc *TravelPlanUsecase) UpdateTravelPlan(userID, travelID, travelPlanID uin
 
 	travelPlan, err := uc.travelPlanRepository.FindByID(travelPlanID)
 	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, model.ErrTravelPlanNotFound
-		}
-
 		return nil, err
 	}
 
@@ -160,9 +154,6 @@ func (uc *TravelPlanUsecase) DeleteTravelPlan(userID, travelID, travelPlanID uin
 
 	travelPlan, err := uc.travelPlanRepository.FindByID(travelPlanID)
 	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return model.ErrTravelPlanNotFound
-		}
 		return err
 	}
 

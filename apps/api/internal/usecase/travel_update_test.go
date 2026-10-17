@@ -8,7 +8,6 @@ import (
 
 	"github.com/HisakeyT/backpacker-platform/internal/model"
 	"github.com/HisakeyT/backpacker-platform/internal/repository/mock"
-	"gorm.io/gorm"
 )
 
 func TestUsecase_UpdateTravel(t *testing.T) {
@@ -149,7 +148,7 @@ func TestUsecase_UpdateTravel_Error(t *testing.T) {
 	}{
 		{
 			name:          "Travelが存在しない",
-			repositoryErr: gorm.ErrRecordNotFound,
+			repositoryErr: model.ErrTravelNotFound,
 			wantErr:       model.ErrTravelNotFound,
 		},
 		{

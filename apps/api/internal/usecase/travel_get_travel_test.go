@@ -5,8 +5,6 @@ import (
 	"reflect"
 	"testing"
 
-	"gorm.io/gorm"
-
 	"github.com/HisakeyT/backpacker-platform/internal/model"
 	mock "github.com/HisakeyT/backpacker-platform/internal/repository/mock"
 )
@@ -82,7 +80,7 @@ func TestUsecase_GetTravel(t *testing.T) {
 		{
 			name:            "旅行が存在しない",
 			travelID:        999,
-			repositoryError: gorm.ErrRecordNotFound,
+			repositoryError: model.ErrTravelNotFound,
 			wantErr:         model.ErrTravelNotFound,
 		},
 		{

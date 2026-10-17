@@ -10,7 +10,6 @@ import (
 	"github.com/HisakeyT/backpacker-platform/internal/usecase"
 
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 )
 
 func TestHandler_GetTravelPlans(t *testing.T) {
@@ -93,7 +92,7 @@ func TestHandler_GetTravelPlans(t *testing.T) {
 			setupRepository: func() (*mock.MockTravelRepository, *mock.MockTravelPlanRepository) {
 				travelRepository := &mock.MockTravelRepository{
 					FindByIDFunc: func(id uint) (*model.Travel, error) {
-						return nil, gorm.ErrRecordNotFound
+						return nil, model.ErrTravelNotFound
 					},
 				}
 

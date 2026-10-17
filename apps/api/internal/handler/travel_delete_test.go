@@ -2,7 +2,6 @@ package handler
 
 import (
 	"errors"
-	"gorm.io/gorm"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -47,7 +46,7 @@ func TestHandler_DeleteTravel(t *testing.T) {
 			userID:   1,
 			repository: &mock.MockTravelRepository{
 				FindByIDFunc: func(id uint) (*model.Travel, error) {
-					return nil, gorm.ErrRecordNotFound
+					return nil, model.ErrTravelNotFound
 				},
 			},
 			wantStatus: http.StatusNotFound,
