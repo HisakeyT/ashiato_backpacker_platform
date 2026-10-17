@@ -3,21 +3,24 @@ package usecase
 import (
 	"errors"
 
-	"github.com/HisakeyT/backpacker-platform/internal/auth"
 	"github.com/HisakeyT/backpacker-platform/internal/model"
 	"github.com/HisakeyT/backpacker-platform/internal/repository"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type UserUsecase struct {
-	repository repository.UserRepository
-	jwtManager *auth.JWTManager
+	repository     repository.UserRepository
+	tokenGenerator TokenGenerator
 }
 
-func NewUserUsecase(repository repository.UserRepository, jwtManager *auth.JWTManager) *UserUsecase {
+type TokenGenerator interface {
+	GenerateToken(userID uint) (string, error)
+}
+
+func NewUserUsecase(repository repository.UserRepository, tokenGenerator TokenGenerator) *UserUsecase {
 	return &UserUsecase{
-		repository: repository,
-		jwtManager: jwtManager,
+		repository:     repository,
+		tokenGenerator: tokenGenerator,
 	}
 }
 
@@ -88,7 +91,7 @@ func (u *UserUsecase) Login(input LoginInput) (*LoginOutput, error) {
 		return nil, model.ErrInvalidCredentials
 	}
 
-	token, err := u.jwtManager.GenerateToken(user.ID)
+	token, err := u.tokenGenerator.GenerateToken(user.ID)
 	if err != nil {
 		return nil, err
 	}

@@ -11,6 +11,39 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+type stubTokenGenerator struct {
+	userID uint
+	err    error
+}
+
+func (generator *stubTokenGenerator) GenerateToken(userID uint) (string, error) {
+	generator.userID = userID
+	return "test-token", generator.err
+}
+
+func TestLogin_UsesTokenGenerator(t *testing.T) {
+	hash, err := bcrypt.GenerateFromPassword([]byte("password123"), bcrypt.DefaultCost)
+	if err != nil {
+		t.Fatal(err)
+	}
+	repository := &mock.MockUserRepository{
+		FindByEmailFunc: func(email string) (*model.User, error) {
+			return &model.User{ID: 42, PasswordHash: string(hash)}, nil
+		},
+	}
+	generator := &stubTokenGenerator{}
+	output, err := NewUserUsecase(repository, generator).Login(LoginInput{Email: "test@example.com", Password: "password123"})
+	if err != nil || output == nil || generator.userID != 42 || output.Token != "test-token" {
+		t.Fatalf("output = %+v, error = %v, generated user ID = %d", output, err, generator.userID)
+	}
+
+	generator.err = errors.New("token error")
+	output, err = NewUserUsecase(repository, generator).Login(LoginInput{Email: "test@example.com", Password: "password123"})
+	if !errors.Is(err, generator.err) || output != nil {
+		t.Fatalf("output = %+v, error = %v", output, err)
+	}
+}
+
 func TestLogin_Success(t *testing.T) {
 	email := "test@example.com"
 
