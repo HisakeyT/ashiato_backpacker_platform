@@ -14,6 +14,8 @@
     "react/react-in-jsx-scope": "off",
     "import/no-unassigned-import": "error",
     "sort-imports": ["error", { "ignoreDeclarationSort": true }],
+    "func-style": ["error", "declaration", { "allowArrowFunctions": true }],
+    "prefer-arrow-callback": "error",
     "max-lines-per-function": "error",
     "max-statements": "error",
     "max-params": "error",
