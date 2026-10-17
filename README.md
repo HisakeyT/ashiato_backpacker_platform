@@ -76,4 +76,4 @@ Oxlint の実行方法、自動修正オプション、整形とビルドの手�
 
 ### API
 
-`apps/api` で `mise install` を実行し、`mise exec -- golangci-lint run ./...` で lint を実行します。整形は `mise exec -- golangci-lint fmt ./...`、差分の確認は `mise exec -- golangci-lint fmt --diff ./...` で行います。設定は `apps/api/.golangci.yml` にあります。
+起動、マイグレーション、テスト、lint、整形の手順は [API README](apps/api/README.md) を参照してください。
