@@ -10,24 +10,17 @@ export const FlashProvider = ({ children }: { children: ReactNode }) => {
   const [flash, setFlash] = useState<Flash | null>(null);
   const [open, setOpen] = useState(false);
 
-  const showFlash = useCallback(
-    (message: string, severity: AlertColor = "success") => {
-      setFlash({ message, severity });
-      setOpen(true);
-    },
-    [],
-  );
+  const showFlash = useCallback((message: string, severity: AlertColor = "success") => {
+    setFlash({ message, severity });
+    setOpen(true);
+  }, []);
 
   const value = useMemo(() => ({ showFlash }), [showFlash]);
 
   return (
     <FlashContext.Provider value={value}>
       {children}
-      <FlashMessage
-        open={open}
-        severity={flash?.severity}
-        onClose={() => setOpen(false)}
-      >
+      <FlashMessage open={open} severity={flash?.severity} onClose={() => setOpen(false)}>
         {flash?.message}
       </FlashMessage>
     </FlashContext.Provider>

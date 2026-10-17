@@ -1,13 +1,5 @@
 import { useState, type SubmitEvent } from "react";
-import {
-  Alert,
-  Box,
-  Button,
-  FormControlLabel,
-  Stack,
-  Switch,
-  TextField,
-} from "@mui/material";
+import { Alert, Box, Button, FormControlLabel, Stack, Switch, TextField } from "@mui/material";
 import type { CreateTravelInput } from "./types";
 import { FormField } from "../../components/FormField";
 
@@ -25,6 +17,71 @@ const emptyValue: CreateTravelInput = {
   endDate: "",
   isPublic: false,
 };
+
+const TravelDateFields = ({
+  startDate,
+  endDate,
+  onStartDateChange,
+  onEndDateChange,
+}: {
+  startDate: string;
+  endDate: string;
+  onStartDateChange: (value: string) => void;
+  onEndDateChange: (value: string) => void;
+}) => (
+  <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
+    <FormField label="開始日" htmlFor="travel-start-date" required>
+      <TextField
+        id="travel-start-date"
+        type="date"
+        value={startDate}
+        onChange={(e) => onStartDateChange(e.target.value)}
+        required
+        fullWidth
+      />
+    </FormField>
+    <FormField label="終了日" htmlFor="travel-end-date" required>
+      <TextField
+        id="travel-end-date"
+        type="date"
+        value={endDate}
+        onChange={(e) => onEndDateChange(e.target.value)}
+        required
+        fullWidth
+        slotProps={{ htmlInput: { min: startDate || undefined } }}
+      />
+    </FormField>
+  </Stack>
+);
+
+const TravelVisibilityField = ({
+  isPublic,
+  onChange,
+}: {
+  isPublic: boolean;
+  onChange: (value: boolean) => void;
+}) => (
+  <FormField label="公開設定" htmlFor="travel-is-public">
+    <FormControlLabel
+      control={
+        <Switch
+          id="travel-is-public"
+          checked={isPublic}
+          onChange={(e) => onChange(e.target.checked)}
+        />
+      }
+      label={isPublic ? "公開（誰でも見られます）" : "非公開（自分だけが見られます）"}
+    />
+  </FormField>
+);
+
+const TravelSubmitButton = ({ isSubmitting, label }: { isSubmitting: boolean; label: string }) => (
+  <Box>
+    <Button type="submit" variant="contained" color="primary" disabled={isSubmitting}>
+      {isSubmitting ? "送信中..." : label}
+    </Button>
+  </Box>
+);
 
 export const TravelForm = ({
   initialValue = emptyValue,
@@ -45,12 +102,7 @@ export const TravelForm = ({
   };
 
   return (
-    <Box
-      className="TravelForm"
-      component="form"
-      onSubmit={handleSubmit}
-      sx={{ maxWidth: 560 }}
-    >
+    <Box className="TravelForm" component="form" onSubmit={handleSubmit} sx={{ maxWidth: 560 }}>
       <Stack spacing={3}>
         {error && <Alert severity="error">{error}</Alert>}
 
@@ -65,48 +117,15 @@ export const TravelForm = ({
           />
         </FormField>
 
-        <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
-          <FormField label="開始日" htmlFor="travel-start-date" required>
-            <TextField
-              id="travel-start-date"
-              type="date"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-              required
-              fullWidth
-            />
-          </FormField>
-          <FormField label="終了日" htmlFor="travel-end-date" required>
-            <TextField
-              id="travel-end-date"
-              type="date"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-              required
-              fullWidth
-              slotProps={{ htmlInput: { min: startDate || undefined } }}
-            />
-          </FormField>
-        </Stack>
+        <TravelDateFields
+          startDate={startDate}
+          endDate={endDate}
+          onStartDateChange={setStartDate}
+          onEndDateChange={setEndDate}
+        />
+        <TravelVisibilityField isPublic={isPublic} onChange={setIsPublic} />
 
-        <FormField label="公開設定" htmlFor="travel-is-public">
-          <FormControlLabel
-            control={
-              <Switch
-                id="travel-is-public"
-                checked={isPublic}
-                onChange={(e) => setIsPublic(e.target.checked)}
-              />
-            }
-            label={isPublic ? "公開（誰でも見られます）" : "非公開（自分だけが見られます）"}
-          />
-        </FormField>
-
-        <Box>
-          <Button type="submit" variant="contained" color="primary" disabled={isSubmitting}>
-            {isSubmitting ? "送信中..." : submitLabel}
-          </Button>
-        </Box>
+        <TravelSubmitButton isSubmitting={isSubmitting} label={submitLabel} />
       </Stack>
     </Box>
   );

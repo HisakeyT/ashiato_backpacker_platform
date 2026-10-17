@@ -5,6 +5,51 @@ import { PageContainer } from "../../components/layout/PageContainer";
 import { useAuth } from "../../app/providers/useAuth";
 import type { LoginLocationState } from "./types";
 
+type LoginFormProps = {
+  email: string;
+  password: string;
+  onEmailChange: (value: string) => void;
+  onPasswordChange: (value: string) => void;
+  onSubmit: () => void;
+};
+
+const LoginForm = ({
+  email,
+  password,
+  onEmailChange,
+  onPasswordChange,
+  onSubmit,
+}: LoginFormProps) => (
+  <>
+    <TextField
+      label="Email"
+      type="email"
+      value={email}
+      onChange={(event) => onEmailChange(event.target.value)}
+      fullWidth
+    />
+    <TextField
+      label="Password"
+      type="password"
+      value={password}
+      onChange={(event) => onPasswordChange(event.target.value)}
+      fullWidth
+    />
+    <Button variant="contained" type="button" fullWidth onClick={onSubmit}>
+      Login
+    </Button>
+  </>
+);
+
+const RegistrationLink = () => (
+  <Typography variant="body2" color="text.secondary" align="center">
+    アカウントをお持ちでない方は{" "}
+    <Link component={RouterLink} to="/register">
+      新規登録
+    </Link>
+  </Typography>
+);
+
 export function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -39,37 +84,15 @@ export function LoginPage() {
           Login
         </Typography>
 
-        <TextField
-          label="Email"
-          type="email"
-          value={email}
-          onChange={(event) => setEmail(event.target.value)}
-          fullWidth
+        <LoginForm
+          email={email}
+          password={password}
+          onEmailChange={setEmail}
+          onPasswordChange={setPassword}
+          onSubmit={handleSubmit}
         />
 
-        <TextField
-          label="Password"
-          type="password"
-          value={password}
-          onChange={(event) => setPassword(event.target.value)}
-          fullWidth
-        />
-
-        <Button
-          variant="contained"
-          type="button"
-          fullWidth
-          onClick={handleSubmit}
-        >
-          Login
-        </Button>
-
-        <Typography variant="body2" color="text.secondary" align="center">
-          アカウントをお持ちでない方は{" "}
-          <Link component={RouterLink} to="/register">
-            新規登録
-          </Link>
-        </Typography>
+        <RegistrationLink />
       </Box>
     </PageContainer>
   );

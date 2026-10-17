@@ -1,4 +1,4 @@
-import { createContext } from 'react';
+import { createContext } from "react";
 import type { User } from "../../features/auth/types";
 
 type AuthContextValue = {
@@ -11,4 +11,3 @@ type AuthContextValue = {
 };
 
 export const AuthContext = createContext<AuthContextValue | undefined>(undefined);
-

@@ -32,10 +32,7 @@ export const TravelCreatePage = () => {
   return (
     <Box className="TravelCreatePage">
       <PageBreadcrumbs
-        items={[
-          { label: "旅行一覧", to: "/travels" },
-          { label: "新しい旅行を作る" },
-        ]}
+        items={[{ label: "旅行一覧", to: "/travels" }, { label: "新しい旅行を作る" }]}
       />
       <Typography
         variant="h4"

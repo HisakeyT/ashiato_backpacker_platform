@@ -9,7 +9,6 @@ type TravelPlanListProps = {
   onDelete: (plan: TravelPlan) => void;
 };
 
-
 export const TravelPlanList = ({ plans, onEdit, onDelete }: TravelPlanListProps) => {
   if (plans.length === 0) {
     return <Typography color="text.secondary">まだ予定がありません</Typography>;

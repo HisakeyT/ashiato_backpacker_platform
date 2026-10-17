@@ -40,12 +40,7 @@ export const ConfirmDialog = ({
         <Button color="inherit" onClick={onClose} disabled={busy}>
           {cancelLabel}
         </Button>
-        <Button
-          variant="contained"
-          color={confirmColor}
-          onClick={onConfirm}
-          disabled={busy}
-        >
+        <Button variant="contained" color={confirmColor} onClick={onConfirm} disabled={busy}>
           {busy && busyLabel ? busyLabel : confirmLabel}
         </Button>
       </>
@@ -66,5 +61,5 @@ export const ConfirmDialog = ({
     >
       {description}
     </DialogContentText>
-  </BaseDialog >
+  </BaseDialog>
 );

@@ -9,11 +9,7 @@ type Props = {
 export const TravelCard = ({ travel }: Props) => {
   return (
     <Card className="TravelCard" sx={{ height: "100%" }}>
-      <CardActionArea
-        component={RouterLink}
-        to={`/travels/${travel.id}`}
-        sx={{ height: "100%" }}
-      >
+      <CardActionArea component={RouterLink} to={`/travels/${travel.id}`} sx={{ height: "100%" }}>
         <CardContent>
           <Typography variant="h6" gutterBottom>
             {travel.title}

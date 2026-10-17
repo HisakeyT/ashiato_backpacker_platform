@@ -19,12 +19,7 @@ export const FormField = ({
   return (
     <Box className="FormField" sx={{ width: "100%" }}>
       <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 0.5 }}>
-        <Typography
-          component="label"
-          htmlFor={htmlFor}
-          variant="body2"
-          sx={{ fontWeight: 600 }}
-        >
+        <Typography component="label" htmlFor={htmlFor} variant="body2" sx={{ fontWeight: 600 }}>
           {label}
         </Typography>
         {required && (

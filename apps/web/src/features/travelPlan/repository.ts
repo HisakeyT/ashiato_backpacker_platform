@@ -1,10 +1,7 @@
 import { apiFetch } from "../../lib/apiFetch";
 import type { TravelPlan, CreateTravelPlanInput, UpdateTravelPlanInput } from "./types";
 
-export const getTravelPlans = async (
-  token: string,
-  travelId: number,
-): Promise<TravelPlan[]> => {
+export const getTravelPlans = async (token: string, travelId: number): Promise<TravelPlan[]> => {
   return apiFetch<TravelPlan[]>(`/api/travels/${travelId}/plans`, { token, method: "GET" });
 };
 
@@ -22,11 +19,10 @@ export const createTravelPlan = async (
 
 export const updateTravelPlan = async (
   token: string,
-  travelId: number,
-  planId: number,
+  ids: { travelId: number; planId: number },
   input: UpdateTravelPlanInput,
 ): Promise<TravelPlan> => {
-  return apiFetch<TravelPlan>(`/api/travels/${travelId}/plans/${planId}`, {
+  return apiFetch<TravelPlan>(`/api/travels/${ids.travelId}/plans/${ids.planId}`, {
     method: "PATCH",
     token,
     body: input,
@@ -44,11 +40,6 @@ export const deleteTravelPlan = async (
   });
 };
 
-export const getPublicTravelPlans = async (
-  travelId: number,
-): Promise<TravelPlan[]> => {
-  return apiFetch<TravelPlan[]>(
-    `/api/travels/public/${travelId}/plans`,
-    { method: "GET" },
-  );
+export const getPublicTravelPlans = async (travelId: number): Promise<TravelPlan[]> => {
+  return apiFetch<TravelPlan[]>(`/api/travels/public/${travelId}/plans`, { method: "GET" });
 };

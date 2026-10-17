@@ -5,10 +5,8 @@ import { Footer } from "../components/layout/Footer";
 import { Header } from "../components/layout/Header";
 
 export function AppLayout() {
-
   const pathname = useLocation();
   const isFullScreen = pathname.pathname === "/";
-
 
   return (
     <Box

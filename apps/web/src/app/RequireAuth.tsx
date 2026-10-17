@@ -5,7 +5,7 @@ export const RequireAuth = () => {
   const { isAuthenticated, isLoading } = useAuth();
 
   if (isLoading) {
-    return null
+    return null;
   }
 
   if (!isAuthenticated) {
@@ -13,4 +13,4 @@ export const RequireAuth = () => {
   }
 
   return <Outlet />;
-}
+};

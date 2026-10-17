@@ -1,10 +1,5 @@
 // src/components/BaseDialog.tsx
-import {
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-} from "@mui/material";
+import { Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
 import type { DialogProps } from "@mui/material";
 import type { ReactNode } from "react";
 

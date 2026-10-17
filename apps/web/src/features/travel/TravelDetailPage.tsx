@@ -1,291 +1,43 @@
 import { useEffect, useState } from "react";
-import { useNavigate, Link as RouterLink, useParams } from "react-router-dom";
-import { Link, Box, Button, Chip, Typography } from "@mui/material";
+import { useParams } from "react-router-dom";
+import { Box, Typography } from "@mui/material";
 import { useAuth } from "../../app/providers/useAuth";
-import { useFlash } from "../../app/providers/useFlash";
-import { ConfirmDialog } from "../../components/ConfirmDialog";
 import { PageBreadcrumbs } from "../../components/PageBreadcrumbs";
-import { TravelPlanList } from "../travelPlan/TravelPlanList";
-import { TravelPlanDialog } from "../travelPlan/TravelPlanDialog";
-import { getTravel, deleteTravel } from "./repository";
+import { getTravel } from "./repository";
 import type { TravelDetail } from "./types";
-import { getTravelPlans, deleteTravelPlan } from "../travelPlan/repository";
-import type { TravelPlan } from "../travelPlan/types";
+import { TravelDetailHeader } from "./TravelDetailHeader";
+import { TravelPlansSection } from "./TravelPlansSection";
 
 export const TravelDetailPage = () => {
   const { token } = useAuth();
-  const { showFlash } = useFlash();
   const { travelId } = useParams();
   const [travel, setTravel] = useState<TravelDetail | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const navigate = useNavigate();
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [deleteError, setDeleteError] = useState<string | null>(null);
-
-  const [isPlanDialogOpen, setIsPlanDialogOpen] = useState(false);
-
-  const [plans, setPlans] = useState<TravelPlan[]>([]);
-  const [plansError, setPlansError] = useState<string | null>(null);
-  const [editingPlan, setEditingPlan] = useState<TravelPlan | null>(null);
-  const [deletingPlan, setDeletingPlan] = useState<TravelPlan | null>(null);
-  const [isDeletingPlan, setIsDeletingPlan] = useState(false);
-  const [deletePlanError, setDeletePlanError] = useState<string | null>(null);
-
   useEffect(() => {
     if (!token || !travelId) return;
-
-    let cancelled = false;
-    void getTravelPlans(token, Number(travelId)).then(
-      (nextPlans) => {
-        if (cancelled) return;
-        setPlans(nextPlans);
-        setPlansError(null);
-      },
-      () => {
-        if (!cancelled) setPlansError("予定の取得に失敗しました");
-      },
-    );
-
-    return () => {
-      cancelled = true;
-    };
-  }, [token, travelId]);
-
-  const refreshPlans = async () => {
-    if (!token || !travelId) return;
-    try {
-      setPlans(await getTravelPlans(token, Number(travelId)));
-      setPlansError(null);
-    } catch {
-      setPlansError("予定の取得に失敗しました");
-    }
-  };
-
-  const handlePlanSaved = (result: "created" | "updated") => {
-    refreshPlans();
-    showFlash(result === "created" ? "プランを追加しました" : "プランを更新しました");
-  };
-
-  const handleCloseDeletePlan = () => {
-    if (isDeletingPlan) return;
-    setDeletePlanError(null);
-    setDeletingPlan(null);
-  };
-
-  const handleConfirmDeletePlan = async () => {
-    if (!token || !travel || !deletingPlan) return;
-    setIsDeletingPlan(true);
-    setDeletePlanError(null);
-    try {
-      await deleteTravelPlan(token, travel.id, deletingPlan.id);
-      setDeletingPlan(null);
-      refreshPlans();
-      showFlash("プランを削除しました");
-    } catch {
-      setDeletePlanError("プランの削除に失敗しました");
-    } finally {
-      setIsDeletingPlan(false);
-    }
-  };
-
-  useEffect(() => {
-    if (!token || !travelId) return;
-
     const fetchTravel = async () => {
       try {
-        const data = await getTravel(token, Number(travelId));
-        setTravel(data);
+        setTravel(await getTravel(token, Number(travelId)));
       } catch {
         setError("旅行が見つかりませんでした");
       } finally {
         setIsLoading(false);
       }
     };
-
-    fetchTravel();
+    void fetchTravel();
   }, [token, travelId]);
-
-  const handleOpenDialog = () => {
-    setDeleteError(null);
-    setIsDialogOpen(true);
-  };
-
-  const handleDelete = async () => {
-    if (!token || !travel) return;
-    setIsDeleting(true);
-    setDeleteError(null);
-    try {
-      await deleteTravel(token, travel.id);
-      showFlash("旅行を削除しました");
-      navigate("/travels");
-    } catch {
-      setDeleteError("旅行の削除に失敗しました");
-      setIsDeleting(false);
-    }
-  };
-
 
   if (isLoading) return <Typography>Loading...</Typography>;
   if (error || !travel) {
-    return (
-      <Typography color="error">
-        {error ?? "旅行が見つかりませんでした"}
-      </Typography>
-    );
+    return <Typography color="error">{error ?? "旅行が見つかりませんでした"}</Typography>;
   }
-
-  const lastPlanDate = plans
-    .map((p) => p.endDate ?? p.startDate)
-    .reduce((a, b) => (a > b ? a : b), travel.startDate);
-
-  // travel の終了日を超えないように丸める
-  const defaultPlanDate = lastPlanDate > travel.endDate ? travel.endDate : lastPlanDate;
-
-
   return (
     <Box className="TravelDetailPage">
-      <PageBreadcrumbs
-        items={[
-          { label: "旅行一覧", to: "/travels" },
-          { label: travel.title },
-        ]}
-      />
-
-      <Box
-        className="TravelDetailPage__header"
-        sx={{
-          display: "flex",
-          alignItems: "flex-start",
-          justifyContent: "space-between",
-          flexWrap: "wrap",
-          gap: 2,
-          mb: 1,
-        }}
-      >
-        <Typography
-          variant="h4"
-          component="h1"
-          sx={{
-            fontSize: { xs: "1.5rem", sm: "2.125rem" },
-            wordBreak: "break-word",
-          }}
-        >
-          {travel.title}
-        </Typography>
-
-        <Box sx={{ display: "flex", gap: 1 }}>
-          <Button
-            component={RouterLink}
-            to={`/travels/${travel.id}/edit`}
-            variant="outlined"
-            color="primary"
-          >
-            編集する
-          </Button>
-          <Button variant="outlined" color="error" onClick={handleOpenDialog}>
-            削除する
-          </Button>
-        </Box>
-      </Box>
-
-      <Typography color="text.secondary" gutterBottom>
-        {travel.startDate} 〜 {travel.endDate}
-      </Typography>
-      <Chip
-        size="small"
-        label={travel.isPublic ? "公開" : "非公開"}
-        color={travel.isPublic ? "primary" : "default"}
-      />
-
-      {travel.copiedFrom && (
-        <Typography variant="body2" color="text.secondary" sx={{ mt: 1.5 }}>
-          <Link
-            component={RouterLink}
-            to={`/public/travels/${travel.copiedFrom.travelId}`}
-          >
-            {travel.copiedFrom.authorNickname}さんの旅行
-          </Link>
-          を参考にしました
-        </Typography>
-      )}
-
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          flexWrap: "wrap",
-          gap: 2,
-          mt: 4,
-          mb: 2,
-        }}
-      >
-        <Typography variant="h5" component="h2">
-          旅のプラン
-        </Typography>
-        <Button variant="contained" onClick={() => setIsPlanDialogOpen(true)}>
-          プランを追加
-        </Button>
-      </Box>
-
-      {plansError ? (
-        <Typography color="error">{plansError}</Typography>
-      ) : (
-        <TravelPlanList plans={plans} onEdit={setEditingPlan} onDelete={setDeletingPlan} />
-      )}
-
-      <ConfirmDialog
-        open={isDialogOpen}
-        heading="旅行を削除しますか？"
-        description={`「${travel.title}」と、その旅のプランがすべて削除されます。この操作は取り消せません。`}
-        error={deleteError}
-        busy={isDeleting}
-        confirmLabel="削除する"
-        busyLabel="削除中..."
-        confirmColor="error"
-        onClose={() => setIsDialogOpen(false)}
-        onConfirm={handleDelete}
-      />
-
-      <TravelPlanDialog
-        open={isPlanDialogOpen}
-        travelId={travel.id}
-        defaultDate={defaultPlanDate}
-        startDate={travel.startDate}
-        endDate={travel.endDate}
-        onClose={() => setIsPlanDialogOpen(false)}
-        onSaved={handlePlanSaved}
-      />
-
-      {editingPlan && (
-        <TravelPlanDialog
-          open
-          travelId={travel.id}
-          startDate={travel.startDate}
-          endDate={travel.endDate}
-          plan={editingPlan}
-          onClose={() => setEditingPlan(null)}
-          onSaved={handlePlanSaved}
-        />
-      )}
-
-      {deletingPlan && (
-        <ConfirmDialog
-          open
-          heading="プランを削除しますか？"
-          description={`「${deletingPlan.place}」のプランが削除されます。この操作は取り消せません。`}
-          error={deletePlanError}
-          busy={isDeletingPlan}
-          confirmLabel="削除する"
-          busyLabel="削除中..."
-          confirmColor="error"
-          onClose={handleCloseDeletePlan}
-          onConfirm={handleConfirmDeletePlan}
-        />
-      )}
+      <PageBreadcrumbs items={[{ label: "旅行一覧", to: "/travels" }, { label: travel.title }]} />
+      <TravelDetailHeader travel={travel} />
+      <TravelPlansSection key={travel.id} travel={travel} />
     </Box>
   );
 };

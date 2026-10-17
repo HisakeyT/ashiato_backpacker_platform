@@ -6,12 +6,112 @@ import { ApiError } from "../../lib/apiFetch";
 import { PageContainer } from "../../components/layout/PageContainer";
 import { register } from "./repository";
 
+const registrationError = (error: unknown): string => {
+  if (error instanceof ApiError && error.status === 409)
+    return "このメールアドレスは既に使われています";
+  if (error instanceof ApiError && error.status === 400) return "入力内容を確認してください";
+  return "登録に失敗しました";
+};
+
+type RegistrationFieldsProps = {
+  values: { nickname: string; email: string; password: string; passwordConfirmation: string };
+  onChange: (field: keyof RegistrationFieldsProps["values"], value: string) => void;
+};
+
+const RegistrationFields = ({ values, onChange }: RegistrationFieldsProps) => (
+  <>
+    <TextField
+      label="Nickname"
+      value={values.nickname}
+      onChange={(e) => onChange("nickname", e.target.value)}
+      required
+      fullWidth
+    />
+    <TextField
+      label="Email"
+      type="email"
+      value={values.email}
+      onChange={(e) => onChange("email", e.target.value)}
+      required
+      fullWidth
+    />
+    <TextField
+      label="Password"
+      type="password"
+      value={values.password}
+      onChange={(e) => onChange("password", e.target.value)}
+      required
+      fullWidth
+    />
+    <TextField
+      label="Password (confirm)"
+      type="password"
+      value={values.passwordConfirmation}
+      onChange={(e) => onChange("passwordConfirmation", e.target.value)}
+      required
+      fullWidth
+    />
+  </>
+);
+
+const LoginLink = () => (
+  <Typography variant="body2" color="text.secondary" align="center">
+    アカウントをお持ちの方は{" "}
+    <Link component={RouterLink} to="/login">
+      ログイン
+    </Link>
+  </Typography>
+);
+
+const validatePasswords = (
+  values: RegistrationFieldsProps["values"],
+  setError: (message: string) => void,
+): boolean => {
+  if (values.password === values.passwordConfirmation) return true;
+  setError("パスワードが一致しません");
+  return false;
+};
+
+type RegistrationFormProps = RegistrationFieldsProps & {
+  error: string | null;
+  isSubmitting: boolean;
+  onSubmit: (event: FormEvent) => void;
+};
+
+const RegistrationForm = ({
+  values,
+  onChange,
+  error,
+  isSubmitting,
+  onSubmit,
+}: RegistrationFormProps) => (
+  <PageContainer>
+    <Box
+      component="form"
+      onSubmit={onSubmit}
+      sx={{ maxWidth: 480, mx: "auto", display: "flex", flexDirection: "column", gap: 2 }}
+    >
+      <Typography variant="h4" component="h1">
+        Register
+      </Typography>
+      {error && <Alert severity="error">{error}</Alert>}
+      <RegistrationFields values={values} onChange={onChange} />
+      <Button type="submit" variant="contained" fullWidth disabled={isSubmitting}>
+        登録する
+      </Button>
+      <LoginLink />
+    </Box>
+  </PageContainer>
+);
+
 export function RegisterPage() {
   const { showFlash } = useFlash();
-  const [nickname, setNickname] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [passwordConfirmation, setPasswordConfirmation] = useState("");
+  const [values, setValues] = useState({
+    nickname: "",
+    email: "",
+    password: "",
+    passwordConfirmation: "",
+  });
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -21,96 +121,27 @@ export function RegisterPage() {
     event.preventDefault();
     setError(null);
 
-    if (password !== passwordConfirmation) {
-      setError("パスワードが一致しません");
-      return;
-    }
+    if (!validatePasswords(values, setError)) return;
 
     setIsSubmitting(true);
     try {
-      await register({ nickname, email, password, passwordConfirmation });
+      await register(values);
       showFlash("登録が完了しました。ログインしてください");
       navigate("/login");
     } catch (e) {
-      if (e instanceof ApiError && e.status === 409) {
-        setError("このメールアドレスは既に使われています");
-      } else if (e instanceof ApiError && e.status === 400) {
-        setError("入力内容を確認してください");
-      } else {
-        setError("登録に失敗しました");
-      }
+      setError(registrationError(e));
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <PageContainer>
-      <Box
-        component="form"
-        onSubmit={handleSubmit}
-        sx={{
-          maxWidth: 480,
-          mx: "auto",
-          display: "flex",
-          flexDirection: "column",
-          gap: 2,
-        }}
-      >
-        <Typography variant="h4" component="h1">
-          Register
-        </Typography>
-
-        {error && <Alert severity="error">{error}</Alert>}
-
-        <TextField
-          label="Nickname"
-          value={nickname}
-          onChange={(e) => setNickname(e.target.value)}
-          required
-          fullWidth
-        />
-        <TextField
-          label="Email"
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          fullWidth
-        />
-        <TextField
-          label="Password"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          fullWidth
-        />
-        <TextField
-          label="Password (confirm)"
-          type="password"
-          value={passwordConfirmation}
-          onChange={(e) => setPasswordConfirmation(e.target.value)}
-          required
-          fullWidth
-        />
-
-        <Button
-          type="submit"
-          variant="contained"
-          fullWidth
-          disabled={isSubmitting}
-        >
-          登録する
-        </Button>
-
-        <Typography variant="body2" color="text.secondary" align="center">
-          アカウントをお持ちの方は{" "}
-          <Link component={RouterLink} to="/login">
-            ログイン
-          </Link>
-        </Typography>
-      </Box>
-    </PageContainer>
+    <RegistrationForm
+      values={values}
+      onChange={(field, value) => setValues((current) => ({ ...current, [field]: value }))}
+      error={error}
+      isSubmitting={isSubmitting}
+      onSubmit={handleSubmit}
+    />
   );
 }

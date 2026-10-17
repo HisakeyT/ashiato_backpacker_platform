@@ -17,7 +17,7 @@ export type TravelPlan = {
 
 export type CreateTravelPlanInput = {
   startDate: string; // YYYY-MM-DD
-  endDate?: string;  // YYYY-MM-DD。省略可(省略 = 同日)
+  endDate?: string; // YYYY-MM-DD。省略可(省略 = 同日)
   place: string;
   country?: string;
   state?: string;
@@ -30,7 +30,7 @@ export type CreateTravelPlanInput = {
 
 export type UpdateTravelPlanInput = {
   startDate?: string; // YYYY-MM-DD
-  endDate?: string;   // YYYY-MM-DD
+  endDate?: string; // YYYY-MM-DD
   place?: string;
   country?: string;
   state?: string;

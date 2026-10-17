@@ -1,7 +1,6 @@
 import camelcaseKeys from "camelcase-keys";
 import snakecaseKeys from "snakecase-keys";
 
-
 type HTTPMethod = "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
 
 type ApiFetchOptions = {
@@ -24,23 +23,19 @@ export class ApiError extends Error {
   }
 }
 
-export const apiFetch = async <T>(
-  path: string,
-  options: ApiFetchOptions,
-): Promise<T> => {
-  const { method, token, body } = options;
-
+const createHeaders = ({ token, body }: ApiFetchOptions): Record<string, string> => {
   const headers: Record<string, string> = {};
-  if (token) {
-    headers.Authorization = `Bearer ${token}`;
-  }
-  if (body) {
-    headers["Content-Type"] = "application/json";
-  }
+  if (token) headers.Authorization = `Bearer ${token}`;
+  if (body) headers["Content-Type"] = "application/json";
+  return headers;
+};
+
+export const apiFetch = async <T>(path: string, options: ApiFetchOptions): Promise<T> => {
+  const { method, body } = options;
 
   const response = await fetch(path, {
     method,
-    headers,
+    headers: createHeaders(options),
     body: body ? JSON.stringify(snakecaseKeys(body, { deep: true })) : undefined,
   });
 

@@ -1,6 +1,6 @@
 export type PlaceCandidate = {
   label: string; // display_name。候補リストの表示専用(保存しない)
-  name: string;  // place の初期値
+  name: string; // place の初期値
   country: string | null;
   state: string | null;
   city: string | null;
@@ -45,15 +45,7 @@ const pick = (address: NominatimAddress, keys: string[]): string | null => {
   return null;
 };
 
-const CITY_KEYS = [
-  "city",
-  "town",
-  "village",
-  "municipality",
-  "city_district",
-  "suburb",
-  "county",
-];
+const CITY_KEYS = ["city", "town", "village", "municipality", "city_district", "suburb", "county"];
 const STATE_KEYS = ["state", "province", "region"];
 
 const toCandidate = (r: NominatimResult): PlaceCandidate => {
@@ -69,6 +61,27 @@ const toCandidate = (r: NominatimResult): PlaceCandidate => {
   };
 };
 
+const reserveRequestSlot = async (signal?: AbortSignal) => {
+  const startAt = Math.max(Date.now(), lastRequestAt + MIN_INTERVAL_MS);
+  lastRequestAt = startAt;
+  const wait = startAt - Date.now();
+  if (wait > 0) await sleep(wait, signal);
+};
+
+const fetchCandidates = async (query: string, signal?: AbortSignal): Promise<PlaceCandidate[]> => {
+  const params = new URLSearchParams({
+    q: query,
+    format: "jsonv2",
+    addressdetails: "1",
+    limit: "5",
+    "accept-language": "ja",
+  });
+  const res = await fetch(`${ENDPOINT}?${params}`, { signal });
+  if (!res.ok) throw new Error(`Nominatim error: ${res.status}`);
+  const data: NominatimResult[] = await res.json();
+  return data.map(toCandidate);
+};
+
 export const searchPlaces = async (
   query: string,
   signal?: AbortSignal,
@@ -81,24 +94,8 @@ export const searchPlaces = async (
   if (cached) return cached;
 
   // 前回の送信から 1 秒以上空ける(同時に呼ばれても順番に枠を確保する)
-  const startAt = Math.max(Date.now(), lastRequestAt + MIN_INTERVAL_MS);
-  lastRequestAt = startAt;
-  const wait = startAt - Date.now();
-  if (wait > 0) await sleep(wait, signal);
-
-  const params = new URLSearchParams({
-    q,
-    format: "jsonv2",
-    addressdetails: "1",
-    limit: "5",
-    "accept-language": "ja",
-  });
-
-  const res = await fetch(`${ENDPOINT}?${params}`, { signal });
-  if (!res.ok) throw new Error(`Nominatim error: ${res.status}`);
-
-  const data: NominatimResult[] = await res.json();
-  const result = data.map(toCandidate);
+  await reserveRequestSlot(signal);
+  const result = await fetchCandidates(q, signal);
   cache.set(key, result); // 成功したものだけキャッシュ
   return result;
 };

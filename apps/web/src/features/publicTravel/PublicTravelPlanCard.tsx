@@ -13,7 +13,7 @@ export const PublicTravelPlanCard = ({ plan }: PublicTravelPlanCardProps) => {
       sx={{ height: "100%", display: "flex", flexDirection: "column" }}
     >
       <CardContent sx={{ flexGrow: 1 }}>
-        <Typography variant="caption" color="text.secondary" >
+        <Typography variant="caption" color="text.secondary">
           {formatPeriod(plan.startDate, plan.endDate)}
         </Typography>
         <Typography variant="h6" gutterBottom>

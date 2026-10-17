@@ -16,107 +16,104 @@ type TravelPlanDialogProps = {
   onSaved: (result: "created" | "updated") => void;
 };
 
-export const TravelPlanDialog = ({
+const toPlanInput = (value: TravelPlanFormValue) => {
+  const { endDate, country, state, city, latitude, longitude, ...rest } = value;
+  return {
+    ...rest,
+    ...(endDate ? { endDate } : {}),
+    ...(country ? { country } : {}),
+    ...(state ? { state } : {}),
+    ...(city ? { city } : {}),
+    ...(latitude != null && longitude != null ? { latitude, longitude } : {}),
+  };
+};
+
+const initialFormValue = (plan?: TravelPlan | null): TravelPlanFormValue | undefined =>
+  plan
+    ? {
+        startDate: plan.startDate,
+        endDate: plan.endDate ?? "",
+        place: plan.place,
+        country: plan.country ?? "",
+        state: plan.state ?? "",
+        city: plan.city ?? "",
+        latitude: plan.latitude,
+        longitude: plan.longitude,
+        content: plan.content,
+      }
+    : undefined;
+
+type DialogViewProps = TravelPlanDialogProps & {
+  error: string | null;
+  isSubmitting: boolean;
+  onSubmit: (value: TravelPlanFormValue) => Promise<void>;
+};
+
+const DialogView = ({
   open,
-  travelId,
+  plan,
   defaultDate,
   startDate,
   endDate,
-  plan,
+  error,
+  isSubmitting,
   onClose,
-  onSaved,
-}: TravelPlanDialogProps) => {
+  onSubmit,
+}: DialogViewProps) => (
+  <BaseDialog
+    className="TravelPlanDialog"
+    open={open}
+    onClose={onClose}
+    title={plan ? "プランを編集" : "プランを追加"}
+    busy={isSubmitting}
+    maxWidth="sm"
+  >
+    <TravelPlanForm
+      initialValue={initialFormValue(plan)}
+      defaultDate={defaultDate ?? startDate}
+      minDate={startDate}
+      maxDate={endDate}
+      submitLabel={plan ? "保存する" : "追加する"}
+      error={error}
+      isSubmitting={isSubmitting}
+      onCancel={onClose}
+      onSubmit={onSubmit}
+    />
+  </BaseDialog>
+);
+
+export const TravelPlanDialog = (props: TravelPlanDialogProps) => {
+  const { travelId, plan, onClose, onSaved } = props;
   const { token } = useAuth();
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const isEdit = plan != null;
-
   const handleClose = () => {
     if (isSubmitting) return;
     setError(null);
     onClose();
   };
-
   const handleSubmit = async (value: TravelPlanFormValue) => {
     if (!token) return;
     setIsSubmitting(true);
     setError(null);
     try {
-      const {
-        endDate: formEndDate,
-        country,
-        state,
-        city,
-        latitude,
-        longitude,
-        ...rest
-      } = value;
-
-      const periodInput = formEndDate ? { endDate: formEndDate } : {};
-      const locationInput = {
-        ...(country ? { country } : {}),
-        ...(state ? { state } : {}),
-        ...(city ? { city } : {}),
-        ...(latitude != null && longitude != null ? { latitude, longitude } : {}),
-      };
-
-      if (plan) {
-        await updateTravelPlan(token, travelId, plan.id, {
-          ...rest,
-          ...periodInput,
-          ...locationInput,
-        });
-      } else {
-        await createTravelPlan(token, travelId, {
-          ...rest,
-          ...periodInput,
-          ...locationInput,
-          sortOrder: 0,
-        });
-      }
-      onSaved(isEdit ? "updated" : "created");
+      if (plan) await updateTravelPlan(token, { travelId, planId: plan.id }, toPlanInput(value));
+      else await createTravelPlan(token, travelId, { ...toPlanInput(value), sortOrder: 0 });
+      onSaved(plan ? "updated" : "created");
       onClose();
     } catch {
-      setError(isEdit ? "プランの更新に失敗しました" : "プランの追加に失敗しました");
+      setError(plan ? "プランの更新に失敗しました" : "プランの追加に失敗しました");
     } finally {
       setIsSubmitting(false);
     }
   };
-
   return (
-    <BaseDialog
-      className="TravelPlanDialog"
-      open={open}
+    <DialogView
+      {...props}
       onClose={handleClose}
-      title={isEdit ? "プランを編集" : "プランを追加"}
-      busy={isSubmitting}
-      maxWidth="sm"
-    >
-      <TravelPlanForm
-        initialValue={
-          plan
-            ? {
-              startDate: plan.startDate,
-              endDate: plan.endDate ?? "",
-              place: plan.place,
-              country: plan.country ?? "",
-              state: plan.state ?? "",
-              city: plan.city ?? "",
-              latitude: plan.latitude,
-              longitude: plan.longitude,
-              content: plan.content,
-            }
-            : undefined
-        }
-        defaultDate={defaultDate ?? startDate}
-        minDate={startDate}
-        maxDate={endDate}
-        submitLabel={isEdit ? "保存する" : "追加する"}
-        error={error}
-        isSubmitting={isSubmitting}
-        onCancel={handleClose}
-        onSubmit={handleSubmit}
-      />
-    </BaseDialog>
+      error={error}
+      isSubmitting={isSubmitting}
+      onSubmit={handleSubmit}
+    />
   );
 };

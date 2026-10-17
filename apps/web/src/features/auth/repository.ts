@@ -16,5 +16,5 @@ export const login = async (input: LoginRequest): Promise<LoginResponse> => {
 };
 
 export const getMe = async (token: string): Promise<User> => {
-  return apiFetch<User>("/api/users/me", { token, method: "GET" })
+  return apiFetch<User>("/api/users/me", { token, method: "GET" });
 };

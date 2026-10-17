@@ -1,4 +1,4 @@
-import type { TravelPlan } from './types';
+import type { TravelPlan } from "./types";
 
 export const sortPlans = (plans: TravelPlan[]): TravelPlan[] => {
   return [...plans].sort((a, b) => {
