@@ -135,12 +135,13 @@ func (h *TravelPlanHandler) UpdateTravelPlan(c *gin.Context) {
 	}
 
 	updateInput := usecase.UpdateTravelPlanInput{
-		StartDate: startDate,
-		EndDate:   endDate,
-		Place:     updateReq.Place,
-		Location:  updateReq.location(),
-		Content:   updateReq.Content,
-		SortOrder: updateReq.SortOrder,
+		StartDate:  startDate,
+		EndDate:    endDate,
+		EndDateSet: true,
+		Place:      updateReq.Place,
+		Location:   updateReq.location(),
+		Content:    updateReq.Content,
+		SortOrder:  updateReq.SortOrder,
 	}
 
 	travelPlan, err := h.travelPlanUsecase.UpdateTravelPlan(userID, travelID, travelPlanID, updateInput)

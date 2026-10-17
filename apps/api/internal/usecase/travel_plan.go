@@ -73,12 +73,13 @@ func (uc *TravelPlanUsecase) CreateTravelPlan(userID, travelID uint, input Creat
 }
 
 type UpdateTravelPlanInput struct {
-	StartDate *time.Time
-	EndDate   *time.Time
-	Place     *string
-	Location  *model.Location
-	Content   *string
-	SortOrder *int
+	StartDate  *time.Time
+	EndDate    *time.Time
+	EndDateSet bool
+	Place      *string
+	Location   *model.Location
+	Content    *string
+	SortOrder  *int
 }
 
 func (uc *TravelPlanUsecase) UpdateTravelPlan(userID, travelID, travelPlanID uint, input UpdateTravelPlanInput) (*model.TravelPlan, error) {
@@ -169,7 +170,7 @@ func applyTravelPlanUpdates(travelPlan *model.TravelPlan, input UpdateTravelPlan
 		travelPlan.StartDate = *input.StartDate
 	}
 
-	if input.EndDate != nil {
+	if input.EndDateSet || input.EndDate != nil {
 		travelPlan.EndDate = input.EndDate
 	}
 

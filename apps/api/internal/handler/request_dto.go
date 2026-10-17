@@ -55,10 +55,6 @@ type UpdateTravelPlanRequest struct {
 }
 
 func (r UpdateTravelPlanRequest) location() *model.Location {
-	if r.Country == nil && r.State == nil && r.City == nil &&
-		r.Latitude == nil && r.Longitude == nil {
-		return nil
-	}
 	return &model.Location{
 		Country:   r.Country,
 		State:     r.State,
