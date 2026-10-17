@@ -1,32 +1,33 @@
-# React + TypeScript + Vite
+# Web
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+React・TypeScript・Vite で構成したフロントエンドです。
 
-Currently, two official plugins are available:
+## 開発
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+以下のコマンドはリポジトリのルートで実行します。初回と `apps/web/package*.json` を変更した後は、web イメージをビルドしてください。
 
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```sh
+docker compose build web
+docker compose up web
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+## コードの確認と修正
+
+| コマンド | 用途 |
+| --- | --- |
+| `docker compose run --rm web npm run lint` | Oxlint で問題を確認する |
+| `docker compose run --rm web npm run lint -- --fix` | Oxlint が安全に自動修正できる問題を修正する |
+| `docker compose run --rm web npm run format` | Oxfmt で `src` を整形する |
+| `docker compose run --rm web npm run format:check` | 整形が必要なファイルがないか確認する |
+| `docker compose run --rm web npm run build` | TypeScript の型チェックと本番ビルドを行う |
+
+Oxlint の設定は [`.oxlintrc.json`](./.oxlintrc.json) にあります。正しさ・疑わしいコードに関するルールと、React、TypeScript、import、JSX のアクセシビリティに関するルールを有効にしています。`max-lines-per-function`、`max-statements`、`max-params`、`max-lines` は Oxlint の既定上限を使用します。
+
+通常の `--fix` で残る指摘は内容を確認して手動で修正してください。Oxlint には `--fix-suggestions` と `--fix-dangerously` もありますが、これらはプログラムの動作を変える可能性があります。必要な場合だけ変更差分を確認しながら使ってください。
+
+```sh
+docker compose run --rm web npm run lint -- --fix-suggestions
+docker compose run --rm web npm run lint -- --fix-dangerously
+```
+
+修正後は `docker compose run --rm web npm run lint`、`docker compose run --rm web npm run format:check`、`docker compose run --rm web npm run build` を実行します。

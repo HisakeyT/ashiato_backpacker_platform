@@ -69,3 +69,7 @@ user
 ## 開発
 
 起動手順(Docker Compose、マイグレーション、環境変数)をここに書く。
+
+### Web
+
+Oxlint の実行方法、自動修正オプション、整形とビルドの手順は [Web README](apps/web/README.md) を参照してください。
