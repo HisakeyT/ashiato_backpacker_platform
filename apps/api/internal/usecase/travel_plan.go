@@ -54,6 +54,12 @@ func (uc *TravelPlanUsecase) CreateTravelPlan(userID, travelID uint, input Creat
 		return nil, err
 	}
 
+	input.Location.Normalize()
+
+	if err := input.Location.Validate(); err != nil {
+		return nil, err
+	}
+
 	travelPlan := &model.TravelPlan{
 		TravelID:  travelID,
 		StartDate: input.StartDate,
