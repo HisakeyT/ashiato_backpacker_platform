@@ -2,6 +2,7 @@ import { Card, CardActionArea, CardContent, Typography } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 
 import type { PublicTravel } from "../travel/types";
+import { formatPeriod } from "../travelPlan/format";
 
 type Props = {
   publicTravel: PublicTravel;
@@ -16,7 +17,7 @@ export const PublicTravelCard = ({ publicTravel }: Props) => {
             {publicTravel.title}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            {publicTravel.startDate} 〜 {publicTravel.endDate}
+            {formatPeriod(publicTravel.startDate, publicTravel.endDate)}
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
             by {publicTravel.authorNickname}

@@ -1,6 +1,7 @@
 import { Card, CardActionArea, CardContent, Chip, Typography } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 
+import { formatPeriod } from "../travelPlan/format";
 import type { Travel } from "./types";
 
 type Props = {
@@ -16,7 +17,7 @@ export const TravelCard = ({ travel }: Props) => {
             {travel.title}
           </Typography>
           <Typography variant="body2" color="text.secondary" gutterBottom>
-            {travel.startDate} 〜 {travel.endDate}
+            {formatPeriod(travel.startDate, travel.endDate)}
           </Typography>
           <Chip
             size="small"
