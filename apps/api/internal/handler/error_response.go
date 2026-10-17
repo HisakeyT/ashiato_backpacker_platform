@@ -16,6 +16,7 @@ type errorStatus struct {
 var errorStatuses = []errorStatus{
 	// 400
 	{model.ErrInvalidDateRange, http.StatusBadRequest},
+	{model.ErrTravelPlanOutsideTravelDates, http.StatusBadRequest},
 	{model.ErrPasswordMismatch, http.StatusBadRequest},
 	{model.ErrInvalidCoordinates, http.StatusBadRequest},
 	{model.ErrInvalidTravelPlanText, http.StatusBadRequest},

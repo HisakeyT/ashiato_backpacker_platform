@@ -156,8 +156,10 @@ func TestHandler_UpdateTravelPlan(t *testing.T) {
 			travelRepository := &mock.MockTravelRepository{
 				FindByIDFunc: func(id uint) (*model.Travel, error) {
 					return &model.Travel{
-						ID:     1,
-						UserID: 1,
+						ID:        1,
+						UserID:    1,
+						StartDate: time.Date(2026, 10, 1, 0, 0, 0, 0, time.UTC),
+						EndDate:   time.Date(2026, 10, 31, 0, 0, 0, 0, time.UTC),
 					}, nil
 				},
 			}

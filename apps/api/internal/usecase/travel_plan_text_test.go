@@ -16,7 +16,9 @@ func TestTravelPlanTextValidation(t *testing.T) {
 			t.Run(operation+"/"+field, func(t *testing.T) {
 				written := false
 				travelRepository := &mock.MockTravelRepository{
-					FindByIDFunc: func(id uint) (*model.Travel, error) { return &model.Travel{ID: 1, UserID: 1}, nil },
+					FindByIDFunc: func(id uint) (*model.Travel, error) {
+						return &model.Travel{ID: 1, UserID: 1, StartDate: time.Date(2026, 10, 1, 0, 0, 0, 0, time.UTC), EndDate: time.Date(2026, 10, 31, 0, 0, 0, 0, time.UTC)}, nil
+					},
 				}
 				planRepository := &mock.MockTravelPlanRepository{
 					FindByIDFunc: func(id uint) (*model.TravelPlan, error) {

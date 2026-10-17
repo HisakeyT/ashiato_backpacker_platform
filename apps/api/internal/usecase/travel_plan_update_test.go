@@ -112,8 +112,10 @@ func TestUsecase_UpdateTravelPlan(t *testing.T) {
 				travelRepository := &mock.MockTravelRepository{
 					FindByIDFunc: func(id uint) (*model.Travel, error) {
 						return &model.Travel{
-							ID:     travelID,
-							UserID: userID,
+							ID:        travelID,
+							UserID:    userID,
+							StartDate: time.Date(2026, 10, 1, 0, 0, 0, 0, time.UTC),
+							EndDate:   time.Date(2026, 10, 31, 0, 0, 0, 0, time.UTC),
 						}, nil
 					},
 				}
@@ -288,8 +290,10 @@ func TestUsecase_UpdateTravelPlan_InvalidLocation(t *testing.T) {
 			travelRepository := &mock.MockTravelRepository{
 				FindByIDFunc: func(id uint) (*model.Travel, error) {
 					return &model.Travel{
-						ID:     10,
-						UserID: 1,
+						ID:        10,
+						UserID:    1,
+						StartDate: time.Date(2026, 10, 1, 0, 0, 0, 0, time.UTC),
+						EndDate:   time.Date(2026, 10, 31, 0, 0, 0, 0, time.UTC),
 					}, nil
 				},
 			}

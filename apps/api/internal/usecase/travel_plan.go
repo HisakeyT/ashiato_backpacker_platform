@@ -46,7 +46,7 @@ func (uc *TravelPlanUsecase) CreateTravelPlan(userID, travelID uint, input Creat
 		return nil, model.ErrUserNotAuthorized
 	}
 
-	if err := validatePlanDates(input.StartDate, input.EndDate); err != nil {
+	if err := validatePlanDates(input.StartDate, input.EndDate, travelData); err != nil {
 		return nil, err
 	}
 
@@ -107,7 +107,7 @@ func (uc *TravelPlanUsecase) UpdateTravelPlan(userID, travelID, travelPlanID uin
 
 	applyTravelPlanUpdates(travelPlan, input)
 
-	if err := validatePlanDates(travelPlan.StartDate, travelPlan.EndDate); err != nil {
+	if err := validatePlanDates(travelPlan.StartDate, travelPlan.EndDate, travelData); err != nil {
 		return nil, err
 	}
 
@@ -125,11 +125,18 @@ func (uc *TravelPlanUsecase) UpdateTravelPlan(userID, travelID, travelPlanID uin
 	return travelPlan, nil
 }
 
-func validatePlanDates(start time.Time, end *time.Time) error {
-	if end == nil {
-		return nil
+func validatePlanDates(start time.Time, end *time.Time, travel *model.Travel) error {
+	lastDay := start
+	if end != nil {
+		lastDay = *end
 	}
-	return validateDateRange(start, *end)
+	if err := validateDateRange(start, lastDay); err != nil {
+		return err
+	}
+	if start.Before(travel.StartDate) || lastDay.After(travel.EndDate) {
+		return model.ErrTravelPlanOutsideTravelDates
+	}
+	return nil
 }
 
 func validatePlanText(place, content string) error {
