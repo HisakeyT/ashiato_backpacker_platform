@@ -1,3 +1,4 @@
+import React from "react";
 // src/components/ConfirmDialog.tsx
 import { Alert, Button, DialogContentText } from "@mui/material";
 import { BaseDialog } from "./BaseDialog";

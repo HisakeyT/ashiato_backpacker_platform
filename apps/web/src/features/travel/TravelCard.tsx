@@ -1,3 +1,4 @@
+import React from "react";
 import { Card, CardActionArea, CardContent, Chip, Typography } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 import type { Travel } from "./types";
