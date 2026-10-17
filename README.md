@@ -1,79 +1,48 @@
-# Backpacker Travel Sharing Platform(Ashiato)
+# Ashiato（Backpacker Travel Sharing Platform）
 
-バックパッカー向けの旅行共有プラットフォーム。
+Ashiato は、バックパッカーが旅を記録・共有し、ほかの人の旅を自分の旅行計画に活かせるサービスです。旅行ごとに滞在期間や場所をまとめ、公開された旅を参考にしながら、自分の旅を作れます。
 
-自分の旅を記録して公開し、他のバックパッカーの旅を参考にできます。公開された旅はコピーして、自分の旅行計画として編集できます。旅行前の計画にも、旅行後の振り返りにも使えます。
+## 現在の機能
 
-## 主な機能
-
-- ユーザー登録・ログイン・プロフィール
-- 旅の作成・編集
-  - 滞在(どの国・都市・街に、いつからいつまでいたか)
-  - 宿泊・食事・観光・その他・移動の記録
-  - 費用の記録と合計表示
-  - 旅行記
-- 旅の公開・非公開
-- 公開された旅の閲覧
-- 他人の旅のコピー・編集(費用は引き継がない)
+- ニックネーム・メールアドレス・パスワードによるユーザー登録とログイン
+- 自分の旅行の作成・一覧表示・編集・削除（タイトル、期間、公開状態）
+- 旅行内のプランの作成・編集・削除（滞在期間、場所、内容、表示順）
+- Nominatim を使った場所検索と、国・州／県・都市・座標の登録
+- 公開旅行の一覧・詳細の閲覧（ログイン不要）
+- 公開旅行を自分の非公開旅行としてコピーし、編集する機能
 
 ## 技術スタック
 
-| 分類 | 技術 |
+| 領域 | 技術 |
 | --- | --- |
-| Backend | Go / Gin / GORM / MySQL |
-| 認証 | JWT / bcrypt |
-| Migration | goose |
-| Frontend | React / TypeScript / Vite |
-| 開発環境 | Docker / Docker Compose / Air |
-| その他 | GitHub |
+| Web | React、TypeScript、Vite、React Router、MUI |
+| API | Go、Gin、GORM |
+| データベース・マイグレーション | MySQL、goose |
+| 認証 | JWT、bcrypt |
+| 場所検索 | Nominatim（OpenStreetMap） |
+| ローカル開発 | Docker Compose、Air |
 
-## 構成
+## リポジトリ構成
 
-Backend は Handler → UseCase → Repository の層構造で、API サーバーと SPA を分離した構成です。
+Web と API を同じリポジトリで管理するモノレポです。ローカル開発では Docker Compose で Web・API・MySQL を起動し、Web からの `/api/*` を Vite が API に転送します。
 
-## 設計
-
-### データモデル
-
-```
-user
- └ travel(一つの旅行)
-    ├ travel_plan(どこにいたか: 期間 start_date〜end_date)
-    │   ├ stays          宿泊
-    │   ├ meals          食事(朝昼晩は meal_type 列)
-    │   ├ sightseeings   観光
-    │   └ others         その他
-    └ transfers(plan と plan を結ぶ移動)
+```text
+.
+├── apps/
+│   ├── web/              # React の SPA
+│   └── api/              # Go の API と DB マイグレーション
+├── compose.yml           # ローカル開発用のサービス定義
+├── ARCHITECTURE.md       # 各アプリの設計とコードの配置
+└── PRODUCT_BACKLOG.md    # 実装状況と開発順序
 ```
 
-- `travel_plan` は「予定」ではなく「どこにいたか」の単位。期間は `start_date`〜`end_date`(NULL は同日)で表す
-- 宿泊・食事・観光・その他は plan の子テーブル(`travel_plan_id` が外部キー)として追加予定
-- 移動は plan 同士を結ぶ `transfers` として追加予定(出発・到着の plan を持つ。NULL は旅行の外)
-- 費用は各記録に `cost`(NULL 可)を持たせ、合計を表示する予定
+各アプリの起動・開発手順は [Web README](apps/web/README.md) と [API README](apps/api/README.md) を参照してください。設計の詳細は [アーキテクチャ](ARCHITECTURE.md) にまとめています。
 
-### 設計判断
+## 今後の開発予定
 
-- plan に `type` は持たせない(plan と宿泊・食事は粒度が違うため)
-- 種別ごとにテーブルを分ける(固有の列が後から増えても影響しないようにするため)
-- 予実管理はしない(plan を編集すればそれが実績になる)
-- `CopyTravel` は旅行と plan の日付・場所情報を引き継ぐ。今後追加する plan の子と transfers もコピーするが、`cost` は引き継がず、transfers は新旧 plan id の対応表で付け替える
+1. 旅行・プランの期間表示と検証を整え、滞在場所を地図に表示する
+2. 観光・宿泊・食事などの記録と、滞在場所を結ぶ移動を追加する
+3. 費用の入力・集計、写真、旅行記を追加する
+4. アカウント設定や公開旅行の検索を整え、MVP を完成させる
 
-### 開発の進め方
-
-1機能ごとに DB → Go(model → repository → usecase → handler → response、テスト)→ フロントの順で進め、各ステップで build / test と commit を挟みます。DB の変更は goose の新規マイグレーションで行い、既存のマイグレーションは編集しません。
-
-### 今後の予定
-
-実装状況と作業順序は [プロダクトバックログ](PRODUCT_BACKLOG.md) を参照してください。地図を先に完成させ、その後に観光・宿泊・食事・その他、移動、費用とまとめ表示、写真、アカウント設定の順に進めます。
-
-## 開発
-
-起動手順(Docker Compose、マイグレーション、環境変数)をここに書く。
-
-### Web
-
-Oxlint の実行方法、自動修正オプション、整形とビルドの手順は [Web README](apps/web/README.md) を参照してください。
-
-### API
-
-起動、マイグレーション、テスト、lint、整形の手順は [API README](apps/api/README.md) を参照してください。
+詳細な作業順序と進捗は [プロダクトバックログ](PRODUCT_BACKLOG.md) を参照してください。
