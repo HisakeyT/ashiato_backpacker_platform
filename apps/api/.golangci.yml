@@ -1,0 +1,29 @@
+version: "2"
+
+linters:
+  default: standard
+  enable:
+    - funlen
+    - lll
+    - modernize
+    - revive
+  settings:
+    lll:
+      line-length: 140
+    revive:
+      rules:
+        - name: file-length-limit
+          arguments:
+            - max: 400
+              skip-comments: true
+              skip-blank-lines: true
+  exclusions:
+    rules:
+      - path: '_test\.go$'
+        linters:
+          - funlen
+
+formatters:
+  enable:
+    - gci
+    - gofmt

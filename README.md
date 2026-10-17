@@ -73,3 +73,7 @@ user
 ### Web
 
 Oxlint の実行方法、自動修正オプション、整形とビルドの手順は [Web README](apps/web/README.md) を参照してください。
+
+### API
+
+`apps/api` で `mise install` を実行し、`mise exec -- golangci-lint run ./...` で lint を実行します。整形は `mise exec -- golangci-lint fmt ./...`、差分の確認は `mise exec -- golangci-lint fmt --diff ./...` で行います。設定は `apps/api/.golangci.yml` にあります。
