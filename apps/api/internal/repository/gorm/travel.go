@@ -3,10 +3,9 @@ package gormrepo
 import (
 	"errors"
 
-	"gorm.io/gorm"
-
 	"github.com/HisakeyT/backpacker-platform/internal/model"
 	"github.com/HisakeyT/backpacker-platform/internal/repository"
+	"gorm.io/gorm"
 )
 
 type TravelRepository struct {

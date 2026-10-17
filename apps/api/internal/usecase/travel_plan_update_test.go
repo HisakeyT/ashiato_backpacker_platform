@@ -264,21 +264,21 @@ func TestUsecase_UpdateTravelPlan_InvalidLocation(t *testing.T) {
 		{
 			name: "緯度だけが指定されている",
 			location: model.Location{
-				Latitude: float64Ptr(35),
+				Latitude: new(35.0),
 			},
 		},
 		{
 			name: "緯度が範囲外",
 			location: model.Location{
-				Latitude:  float64Ptr(91),
-				Longitude: float64Ptr(135),
+				Latitude:  new(91.0),
+				Longitude: new(135.0),
 			},
 		},
 		{
 			name: "経度が範囲外",
 			location: model.Location{
-				Latitude:  float64Ptr(35),
-				Longitude: float64Ptr(181),
+				Latitude:  new(35.0),
+				Longitude: new(181.0),
 			},
 		},
 	}
@@ -336,8 +336,4 @@ func TestUsecase_UpdateTravelPlan_InvalidLocation(t *testing.T) {
 			}
 		})
 	}
-}
-
-func float64Ptr(value float64) *float64 {
-	return &value
 }

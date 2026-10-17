@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"errors"
-
 	"testing"
 
 	"github.com/HisakeyT/backpacker-platform/internal/auth"

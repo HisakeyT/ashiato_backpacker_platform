@@ -20,7 +20,7 @@ func TestJWTManager_GenerateToken(t *testing.T) {
 
 	token, err := jwt.Parse(
 		tokenString,
-		func(token *jwt.Token) (interface{}, error) {
+		func(token *jwt.Token) (any, error) {
 			return []byte("test-secret"), nil
 		},
 	)

@@ -92,7 +92,7 @@ func TestLogin_Success(t *testing.T) {
 
 	token, err := jwt.Parse(
 		result.Token,
-		func(token *jwt.Token) (interface{}, error) {
+		func(token *jwt.Token) (any, error) {
 			return []byte("test-secret"), nil
 		},
 	)

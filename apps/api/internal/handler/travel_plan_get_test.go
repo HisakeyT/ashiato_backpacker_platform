@@ -8,7 +8,6 @@ import (
 	"github.com/HisakeyT/backpacker-platform/internal/model"
 	"github.com/HisakeyT/backpacker-platform/internal/repository/mock"
 	"github.com/HisakeyT/backpacker-platform/internal/usecase"
-
 	"github.com/gin-gonic/gin"
 )
 

@@ -4,13 +4,12 @@ import (
 	"log"
 	"os"
 
-	"github.com/gin-gonic/gin"
-
 	"github.com/HisakeyT/backpacker-platform/internal/auth"
 	"github.com/HisakeyT/backpacker-platform/internal/database"
 	"github.com/HisakeyT/backpacker-platform/internal/handler"
 	"github.com/HisakeyT/backpacker-platform/internal/repository/gorm"
 	"github.com/HisakeyT/backpacker-platform/internal/usecase"
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
