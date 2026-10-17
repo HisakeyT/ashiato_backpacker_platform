@@ -28,8 +28,8 @@ export function AuthProvider({ children }: Props) {
       }
 
       try {
-        const user = await getMe(savedToken);
-        setUser(user);
+        const restoredUser = await getMe(savedToken);
+        setUser(restoredUser);
       } catch {
         localStorage.removeItem("token");
         setToken(null);

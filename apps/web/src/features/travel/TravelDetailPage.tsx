@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, Link as RouterLink, useParams } from "react-router-dom";
 import { Link, Box, Button, Chip, Typography } from "@mui/material";
 import { useAuth } from "../../app/providers/useAuth";
@@ -34,7 +34,27 @@ export const TravelDetailPage = () => {
   const [isDeletingPlan, setIsDeletingPlan] = useState(false);
   const [deletePlanError, setDeletePlanError] = useState<string | null>(null);
 
-  const fetchPlans = useCallback(async () => {
+  useEffect(() => {
+    if (!token || !travelId) return;
+
+    let cancelled = false;
+    void getTravelPlans(token, Number(travelId)).then(
+      (nextPlans) => {
+        if (cancelled) return;
+        setPlans(nextPlans);
+        setPlansError(null);
+      },
+      () => {
+        if (!cancelled) setPlansError("予定の取得に失敗しました");
+      },
+    );
+
+    return () => {
+      cancelled = true;
+    };
+  }, [token, travelId]);
+
+  const refreshPlans = async () => {
     if (!token || !travelId) return;
     try {
       setPlans(await getTravelPlans(token, Number(travelId)));
@@ -42,14 +62,10 @@ export const TravelDetailPage = () => {
     } catch {
       setPlansError("予定の取得に失敗しました");
     }
-  }, [token, travelId]);
-
-  useEffect(() => {
-    fetchPlans();
-  }, [fetchPlans]);
+  };
 
   const handlePlanSaved = (result: "created" | "updated") => {
-    fetchPlans();
+    refreshPlans();
     showFlash(result === "created" ? "プランを追加しました" : "プランを更新しました");
   };
 
@@ -66,7 +82,7 @@ export const TravelDetailPage = () => {
     try {
       await deleteTravelPlan(token, travel.id, deletingPlan.id);
       setDeletingPlan(null);
-      fetchPlans();
+      refreshPlans();
       showFlash("プランを削除しました");
     } catch {
       setDeletePlanError("プランの削除に失敗しました");
