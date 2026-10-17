@@ -38,7 +38,7 @@ Backend は Handler → UseCase → Repository の層構造で、API サーバ�
 ```
 user
  └ travel(一つの旅行)
-    ├ travel_plan(どこにいたか: 期間 date〜end_date)
+    ├ travel_plan(どこにいたか: 期間 start_date〜end_date)
     │   ├ stays          宿泊
     │   ├ meals          食事(朝昼晩は meal_type 列)
     │   ├ sightseeings   観光
@@ -46,17 +46,17 @@ user
     └ transfers(plan と plan を結ぶ移動)
 ```
 
-- `travel_plan` は「予定」ではなく「どこにいたか」の単位。期間は `date`〜`end_date`(NULL は同日)で表す
-- 宿泊・食事・観光・その他は plan の子テーブル(`travel_plan_id` が外部キー)
-- 移動は plan 同士を結ぶ `transfers`(出発・到着の plan を持つ。NULL は旅行の外)
-- 各テーブルは `cost`(NULL 可)を持ち、合計は全テーブルを合算して出す
+- `travel_plan` は「予定」ではなく「どこにいたか」の単位。期間は `start_date`〜`end_date`(NULL は同日)で表す
+- 宿泊・食事・観光・その他は plan の子テーブル(`travel_plan_id` が外部キー)として追加予定
+- 移動は plan 同士を結ぶ `transfers` として追加予定(出発・到着の plan を持つ。NULL は旅行の外)
+- 費用は各記録に `cost`(NULL 可)を持たせ、合計を表示する予定
 
 ### 設計判断
 
 - plan に `type` は持たせない(plan と宿泊・食事は粒度が違うため)
 - 種別ごとにテーブルを分ける(固有の列が後から増えても影響しないようにするため)
 - 予実管理はしない(plan を編集すればそれが実績になる)
-- `CopyTravel` は `cost` を引き継がない。plan の子と transfers はコピーし、transfers は新旧 plan id の対応表で付け替える
+- `CopyTravel` は旅行と plan の日付・場所情報を引き継ぐ。今後追加する plan の子と transfers もコピーするが、`cost` は引き継がず、transfers は新旧 plan id の対応表で付け替える
 
 ### 開発の進め方
 
@@ -64,7 +64,7 @@ user
 
 ### 今後の予定
 
-`end_date` の追加 → 観光 → 宿泊・食事・その他 → 移動 → 費用の合計表示 → まとめ表示 → 写真・地図、の順に進めます。
+実装状況と作業順序は [プロダクトバックログ](PRODUCT_BACKLOG.md) を参照してください。地図を先に完成させ、その後に観光・宿泊・食事・その他、移動、費用とまとめ表示、写真、アカウント設定の順に進めます。
 
 ## 開発
 
