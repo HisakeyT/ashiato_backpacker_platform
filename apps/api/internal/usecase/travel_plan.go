@@ -112,7 +112,7 @@ func (uc *TravelPlanUsecase) UpdateTravelPlan(userID, travelID, travelPlanID uin
 		return nil, err
 	}
 
-	if travelPlan.Location.Validate() != nil {
+	if err := travelPlan.Location.Validate(); err != nil {
 		return nil, err
 	}
 
