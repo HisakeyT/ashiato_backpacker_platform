@@ -1,5 +1,5 @@
 import { apiFetch } from "../../lib/apiFetch";
-import type { RegisterRequest, LoginRequest, LoginResponse, User } from "./types";
+import type { LoginRequest, LoginResponse, RegisterRequest, User } from "./types";
 
 export const register = async (input: RegisterRequest): Promise<User> => {
   return apiFetch<User>("/api/register", {

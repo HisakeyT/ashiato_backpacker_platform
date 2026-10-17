@@ -1,16 +1,16 @@
 import { createBrowserRouter } from "react-router-dom";
 
-import { AppLayout } from "./AppLayout";
-import { HomePage } from "../features/home/HomePage";
-import { RegisterPage } from "../features/auth/RegisterPage";
 import { LoginPage } from "../features/auth/LoginPage";
-import { RequireAuth } from "./RequireAuth";
-import { TravelListPage } from "../features/travel/TravelListPage";
-import { TravelDetailPage } from "../features/travel/TravelDetailPage";
-import { TravelCreatePage } from "../features/travel/TravelCreatePage";
-import { TravelEditPage } from "../features/travel/TravelEditPage";
-import { PublicTravelListPage } from "../features/publicTravel/PublicTravelListPage";
+import { RegisterPage } from "../features/auth/RegisterPage";
+import { HomePage } from "../features/home/HomePage";
 import { PublicTravelDetailPage } from "../features/publicTravel/PublicTravelDetailPage";
+import { PublicTravelListPage } from "../features/publicTravel/PublicTravelListPage";
+import { TravelCreatePage } from "../features/travel/TravelCreatePage";
+import { TravelDetailPage } from "../features/travel/TravelDetailPage";
+import { TravelEditPage } from "../features/travel/TravelEditPage";
+import { TravelListPage } from "../features/travel/TravelListPage";
+import { AppLayout } from "./AppLayout";
+import { RequireAuth } from "./RequireAuth";
 
 export const router = createBrowserRouter([
   {

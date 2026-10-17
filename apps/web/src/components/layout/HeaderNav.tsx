@@ -1,6 +1,6 @@
-import { useState } from "react";
-import { Box, Button, IconButton, Menu, MenuItem, Typography } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
+import { Box, Button, IconButton, Menu, MenuItem, Typography } from "@mui/material";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
 type NavLink = { label: string; to: string };

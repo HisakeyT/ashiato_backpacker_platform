@@ -1,12 +1,13 @@
-import { Link as RouterLink } from "react-router-dom";
-import { Button, Box, Card, CardContent, Container, Typography } from "@mui/material";
-import { useAuth } from "../../app/providers/useAuth";
 import EditNoteIcon from "@mui/icons-material/EditNote";
-import PublicIcon from "@mui/icons-material/Public";
 import ExploreIcon from "@mui/icons-material/Explore";
-import { SERVICE_NAME } from "../../constants/site.ts";
-import heroImage from "../../assets/hero.webp";
+import PublicIcon from "@mui/icons-material/Public";
+import { Box, Button, Card, CardContent, Container, Typography } from "@mui/material";
+import { Link as RouterLink } from "react-router-dom";
+
+import { useAuth } from "../../app/providers/useAuth";
 import ctaImage from "../../assets/ctaImage.webp";
+import heroImage from "../../assets/hero.webp";
+import { SERVICE_NAME } from "../../constants/site.ts";
 
 type Cta = { label: string; to: string };
 

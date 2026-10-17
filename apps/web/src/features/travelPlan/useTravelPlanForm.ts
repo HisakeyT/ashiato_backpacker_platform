@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { searchPlaces, type PlaceCandidate } from "./searchPlaces";
+
+import { type PlaceCandidate, searchPlaces } from "./searchPlaces";
 import type { TravelPlanFormValue } from "./TravelPlanForm";
 
 export const usePlanDetails = (initialValue?: TravelPlanFormValue, defaultDate = "") => {

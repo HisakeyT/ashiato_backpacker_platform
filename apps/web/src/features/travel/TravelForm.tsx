@@ -1,7 +1,9 @@
-import { useState, type SubmitEvent } from "react";
 import { Alert, Box, Button, FormControlLabel, Stack, Switch, TextField } from "@mui/material";
-import type { CreateTravelInput } from "./types";
+import { type SubmitEvent, useState } from "react";
+
 import { FormField } from "../../components/FormField";
+
+import type { CreateTravelInput } from "./types";
 
 type TravelFormProps = {
   initialValue?: CreateTravelInput;

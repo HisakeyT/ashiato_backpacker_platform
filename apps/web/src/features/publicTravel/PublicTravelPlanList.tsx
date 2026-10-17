@@ -1,6 +1,7 @@
 import { Box, Typography } from "@mui/material";
-import type { TravelPlan } from "../travelPlan/types";
+
 import { sortPlans } from "../travelPlan/sortPlans";
+import type { TravelPlan } from "../travelPlan/types";
 import { PublicTravelPlanCard } from "./PublicTravelPlanCard";
 
 type Props = {

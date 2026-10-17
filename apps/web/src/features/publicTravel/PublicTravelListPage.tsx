@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
 import { Box, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
+
 import { getPublicTravels } from "../travel/repository";
 import type { PublicTravel } from "../travel/types";
 import { PublicTravelCard } from "./PublicTravelCard";

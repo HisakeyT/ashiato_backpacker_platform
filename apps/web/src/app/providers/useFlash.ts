@@ -1,4 +1,5 @@
 import { useContext } from "react";
+
 import { FlashContext } from "./FlashContext";
 
 export const useFlash = () => {

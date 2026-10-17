@@ -1,6 +1,7 @@
-import { type ReactNode, useState, useEffect } from "react";
-import type { User } from "../../features/auth/types";
+import { type ReactNode, useEffect, useState } from "react";
+
 import { getMe, login as loginApi } from "../../features/auth/repository";
+import type { User } from "../../features/auth/types";
 import { AuthContext } from "./AuthContext";
 
 type Props = {

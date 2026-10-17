@@ -1,9 +1,11 @@
+import { Box, Typography } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, Typography } from "@mui/material";
+
+import { PageBreadcrumbs } from "../../components/PageBreadcrumbs";
+
 import { useAuth } from "../../app/providers/useAuth.ts";
 import { useFlash } from "../../app/providers/useFlash.ts";
-import { PageBreadcrumbs } from "../../components/PageBreadcrumbs";
 import { createTravel } from "./repository";
 import { TravelForm } from "./TravelForm";
 import type { CreateTravelInput } from "./types";

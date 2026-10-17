@@ -1,7 +1,8 @@
 import { Box, Typography } from "@mui/material";
-import type { TravelPlan } from "./types";
+
 import { sortPlans } from "./sortPlans";
 import { TravelPlanCard } from "./TravelPlanCard";
+import type { TravelPlan } from "./types";
 
 type TravelPlanListProps = {
   plans: TravelPlan[];

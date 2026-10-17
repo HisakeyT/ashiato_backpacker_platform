@@ -1,5 +1,6 @@
-import type { SubmitEvent } from "react";
 import { Alert, Box, Stack } from "@mui/material";
+import type { SubmitEvent } from "react";
+
 import {
   PlanActions,
   PlanContent,
@@ -7,7 +8,7 @@ import {
   PlanLocation,
   PlanPlace,
 } from "./TravelPlanFormFields";
-import { usePlanDetails, usePlaceSearch, type PlanDetails } from "./useTravelPlanForm";
+import { type PlanDetails, usePlaceSearch, usePlanDetails } from "./useTravelPlanForm";
 
 export type TravelPlanFormValue = {
   startDate: string;

@@ -1,7 +1,9 @@
+import type { AlertColor } from "@mui/material";
 import { useCallback, useMemo, useState } from "react";
 import type { ReactNode } from "react";
-import type { AlertColor } from "@mui/material";
+
 import { FlashMessage } from "../../components/FlashMessage";
+
 import { FlashContext } from "./FlashContext";
 
 type Flash = { message: string; severity: AlertColor };

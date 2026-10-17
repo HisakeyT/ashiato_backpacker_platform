@@ -1,9 +1,11 @@
+import { Box, Button, Chip, Link, Typography } from "@mui/material";
 import { useState } from "react";
-import { useNavigate, Link as RouterLink } from "react-router-dom";
-import { Link, Box, Button, Chip, Typography } from "@mui/material";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
+
+import { ConfirmDialog } from "../../components/ConfirmDialog";
+
 import { useAuth } from "../../app/providers/useAuth";
 import { useFlash } from "../../app/providers/useFlash";
-import { ConfirmDialog } from "../../components/ConfirmDialog";
 import { deleteTravel } from "./repository";
 import type { TravelDetail } from "./types";
 

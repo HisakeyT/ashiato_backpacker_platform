@@ -8,8 +8,10 @@ import {
   Stack,
   TextField,
 } from "@mui/material";
+
 import { FormField } from "../../components/FormField";
-import type { PlanDetails, PlaceSearchState } from "./useTravelPlanForm";
+
+import type { PlaceSearchState, PlanDetails } from "./useTravelPlanForm";
 
 export const PlanDates = ({
   details,

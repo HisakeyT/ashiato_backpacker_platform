@@ -1,12 +1,14 @@
+import { Box, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Box, Typography } from "@mui/material";
-import { useAuth } from "../../app/providers/useAuth";
+
 import { PageBreadcrumbs } from "../../components/PageBreadcrumbs";
+
+import { useAuth } from "../../app/providers/useAuth";
 import { getTravel } from "./repository";
-import type { TravelDetail } from "./types";
 import { TravelDetailHeader } from "./TravelDetailHeader";
 import { TravelPlansSection } from "./TravelPlansSection";
+import type { TravelDetail } from "./types";
 
 export const TravelDetailPage = () => {
   const { token } = useAuth();

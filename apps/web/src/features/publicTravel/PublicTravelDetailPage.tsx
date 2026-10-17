@@ -1,15 +1,17 @@
-import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
 import { Box, Button, Typography } from "@mui/material";
-import { useAuth } from "../../app/providers/useAuth.ts";
-import { useFlash } from "../../app/providers/useFlash.ts";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+
 import { ConfirmDialog } from "../../components/ConfirmDialog";
 import { PageBreadcrumbs } from "../../components/PageBreadcrumbs";
-import { PublicTravelPlanList } from "./PublicTravelPlanList";
-import { getPublicTravel, copyTravel } from "../travel/repository";
+
+import { useAuth } from "../../app/providers/useAuth.ts";
+import { useFlash } from "../../app/providers/useFlash.ts";
+import { copyTravel, getPublicTravel } from "../travel/repository";
 import type { PublicTravel } from "../travel/types";
 import { getPublicTravelPlans } from "../travelPlan/repository";
 import type { TravelPlan } from "../travelPlan/types";
+import { PublicTravelPlanList } from "./PublicTravelPlanList";
 
 const usePublicTravel = (travelId?: string) => {
   const [travel, setTravel] = useState<PublicTravel | null>(null);

@@ -1,6 +1,7 @@
 import { Button, Card, CardActions, CardContent, Typography } from "@mui/material";
-import type { TravelPlan } from "./types";
+
 import { formatPeriod } from "./format";
+import type { TravelPlan } from "./types";
 
 type TravelPlanCardProps = {
   plan: TravelPlan;

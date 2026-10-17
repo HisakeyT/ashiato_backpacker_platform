@@ -1,5 +1,6 @@
-import { Link as RouterLink } from "react-router-dom";
 import { Card, CardActionArea, CardContent, Typography } from "@mui/material";
+import { Link as RouterLink } from "react-router-dom";
+
 import type { PublicTravel } from "../travel/types";
 
 type Props = {

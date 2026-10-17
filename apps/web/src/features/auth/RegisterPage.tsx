@@ -1,9 +1,11 @@
+import { Alert, Box, Button, Link, TextField, Typography } from "@mui/material";
 import { type FormEvent, useState } from "react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
-import { Link, Alert, Box, Button, TextField, Typography } from "@mui/material";
+
+import { PageContainer } from "../../components/layout/PageContainer";
+
 import { useFlash } from "../../app/providers/useFlash";
 import { ApiError } from "../../lib/apiFetch";
-import { PageContainer } from "../../components/layout/PageContainer";
 import { register } from "./repository";
 
 const registrationError = (error: unknown): string => {
