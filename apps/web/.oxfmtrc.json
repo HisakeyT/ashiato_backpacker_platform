@@ -1,4 +1,18 @@
 {
   "$schema": "./node_modules/oxfmt/configuration_schema.json",
-  "printWidth": 100
+  "printWidth": 100,
+  "sortImports": {
+    "customGroups": [
+      {
+        "groupName": "shared-components",
+        "elementNamePattern": ["**/components/**"]
+      }
+    ],
+    "groups": [
+      "builtin",
+      "external",
+      "shared-components",
+      ["internal", "subpath", "parent", "sibling", "index", "style", "unknown"]
+    ]
+  }
 }

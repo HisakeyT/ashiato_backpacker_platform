@@ -13,6 +13,7 @@
     "react/only-export-components": ["warn", { "allowConstantExport": true }],
     "react/react-in-jsx-scope": "off",
     "import/no-unassigned-import": "error",
+    "sort-imports": ["error", { "ignoreDeclarationSort": true }],
     "max-lines-per-function": "error",
     "max-statements": "error",
     "max-params": "error",
