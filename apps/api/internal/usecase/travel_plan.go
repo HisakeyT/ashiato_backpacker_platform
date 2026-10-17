@@ -40,9 +40,6 @@ type CreateTravelPlanInput struct {
 func (uc *TravelPlanUsecase) CreateTravelPlan(userID, travelID uint, input CreateTravelPlanInput) (*model.TravelPlan, error) {
 	travelData, err := uc.travelRepository.FindByID(travelID)
 	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, model.ErrTravelNotFound
-		}
 		return nil, err
 	}
 
@@ -89,9 +86,6 @@ type UpdateTravelPlanInput struct {
 func (uc *TravelPlanUsecase) UpdateTravelPlan(userID, travelID, travelPlanID uint, input UpdateTravelPlanInput) (*model.TravelPlan, error) {
 	travelData, err := uc.travelRepository.FindByID(travelID)
 	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, model.ErrTravelNotFound
-		}
 		return nil, err
 	}
 
@@ -139,9 +133,6 @@ func validatePlanDates(start time.Time, end *time.Time) error {
 func (uc *TravelPlanUsecase) GetTravelPlans(userID, travelID uint) ([]model.TravelPlan, error) {
 	travelData, err := uc.travelRepository.FindByID(travelID)
 	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, model.ErrTravelNotFound
-		}
 		return nil, err
 	}
 
@@ -160,9 +151,6 @@ func (uc *TravelPlanUsecase) GetTravelPlans(userID, travelID uint) ([]model.Trav
 func (uc *TravelPlanUsecase) DeleteTravelPlan(userID, travelID, travelPlanID uint) error {
 	travelData, err := uc.travelRepository.FindByID(travelID)
 	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return model.ErrTravelNotFound
-		}
 		return err
 	}
 
@@ -215,9 +203,6 @@ func applyTravelPlanUpdates(travelPlan *model.TravelPlan, input UpdateTravelPlan
 func (uc *TravelPlanUsecase) GetPublicTravelPlan(travelID uint) ([]model.TravelPlan, error) {
 	travelData, err := uc.travelRepository.FindByID(travelID)
 	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, model.ErrTravelNotFound
-		}
 		return nil, err
 	}
 

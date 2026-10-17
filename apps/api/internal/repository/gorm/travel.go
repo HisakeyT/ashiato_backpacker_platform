@@ -25,6 +25,9 @@ func (r *TravelRepository) FindByID(id uint) (*model.Travel, error) {
 	var travel model.Travel
 
 	if err := r.db.First(&travel, id).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, model.ErrTravelNotFound
+		}
 		return nil, err
 	}
 
@@ -77,11 +80,13 @@ func (r *TravelRepository) FindPublicByID(id uint) (*model.PublicTravel, error) 
 		Where("travels.is_public = ? AND travels.id = ?", true, id).
 		Limit(1).
 		Scan(&publicTravel)
+
 	if result.Error != nil {
 		return nil, result.Error
 	}
+
 	if result.RowsAffected == 0 {
-		return nil, gorm.ErrRecordNotFound
+		return nil, model.ErrTravelNotFound
 	}
 
 	return &publicTravel, nil

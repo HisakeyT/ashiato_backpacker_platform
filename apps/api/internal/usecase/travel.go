@@ -1,8 +1,6 @@
 package usecase
 
 import (
-	"errors"
-	"gorm.io/gorm"
 	"time"
 
 	"github.com/HisakeyT/backpacker-platform/internal/model"
@@ -76,9 +74,6 @@ func (u *TravelUsecase) GetTravels(userID uint) ([]*model.Travel, error) {
 func (u *TravelUsecase) GetTravel(userID uint, travelID uint) (*model.TravelDetail, error) {
 	travel, err := u.repository.FindByID(travelID)
 	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, model.ErrTravelNotFound
-		}
 		return nil, err
 	}
 
@@ -108,9 +103,6 @@ type UpdateTravelInput struct {
 func (u *TravelUsecase) UpdateTravel(userID uint, travelID uint, input UpdateTravelInput) (*model.Travel, error) {
 	travel, err := u.repository.FindByID(travelID)
 	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, model.ErrTravelNotFound
-		}
 		return nil, err
 	}
 
@@ -152,10 +144,6 @@ func applyUpdate(travel *model.Travel, input UpdateTravelInput) {
 func (u *TravelUsecase) DeleteTravel(userID uint, travelID uint) error {
 	travel, err := u.repository.FindByID(travelID)
 	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return model.ErrTravelNotFound
-		}
-
 		return err
 	}
 
