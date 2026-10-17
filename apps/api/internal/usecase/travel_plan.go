@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"strings"
 	"time"
 
 	"github.com/HisakeyT/backpacker-platform/internal/model"
@@ -52,6 +53,9 @@ func (uc *TravelPlanUsecase) CreateTravelPlan(userID, travelID uint, input Creat
 	input.Location.Normalize()
 
 	if err := input.Location.Validate(); err != nil {
+		return nil, err
+	}
+	if err := validatePlanText(input.Place, input.Content); err != nil {
 		return nil, err
 	}
 
@@ -110,6 +114,9 @@ func (uc *TravelPlanUsecase) UpdateTravelPlan(userID, travelID, travelPlanID uin
 	if err := travelPlan.Location.Validate(); err != nil {
 		return nil, err
 	}
+	if err := validatePlanText(travelPlan.Place, travelPlan.Content); err != nil {
+		return nil, err
+	}
 
 	if err := uc.travelPlanRepository.Update(travelPlan); err != nil {
 		return nil, err
@@ -123,6 +130,13 @@ func validatePlanDates(start time.Time, end *time.Time) error {
 		return nil
 	}
 	return validateDateRange(start, *end)
+}
+
+func validatePlanText(place, content string) error {
+	if strings.TrimSpace(place) == "" || strings.TrimSpace(content) == "" {
+		return model.ErrInvalidTravelPlanText
+	}
+	return nil
 }
 
 func (uc *TravelPlanUsecase) GetTravelPlans(userID, travelID uint) ([]model.TravelPlan, error) {

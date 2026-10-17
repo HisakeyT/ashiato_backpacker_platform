@@ -18,6 +18,7 @@ var errorStatuses = []errorStatus{
 	{model.ErrInvalidDateRange, http.StatusBadRequest},
 	{model.ErrPasswordMismatch, http.StatusBadRequest},
 	{model.ErrInvalidCoordinates, http.StatusBadRequest},
+	{model.ErrInvalidTravelPlanText, http.StatusBadRequest},
 	{model.ErrTravelPlanNotBelongToTravel, http.StatusBadRequest},
 
 	// 401

@@ -208,6 +208,8 @@ func TestUsecase_UpdateTravelPlan(t *testing.T) {
 				travelPlanRepository: &model.TravelPlan{
 					ID:       travelPlanID,
 					TravelID: travelID,
+					Place:    place,
+					Content:  content,
 				},
 				updateErr: updateError,
 				wantErr:   updateError,

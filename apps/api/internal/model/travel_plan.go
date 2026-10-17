@@ -8,6 +8,7 @@ import (
 var (
 	ErrTravelPlanNotFound          = errors.New("travel plan not found")
 	ErrTravelPlanNotBelongToTravel = errors.New("travel plan does not belong to the specified travel")
+	ErrInvalidTravelPlanText       = errors.New("place and content must not be empty")
 )
 
 type TravelPlan struct {
