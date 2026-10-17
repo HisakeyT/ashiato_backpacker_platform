@@ -12,6 +12,10 @@
     "react/rules-of-hooks": "error",
     "react/only-export-components": ["warn", { "allowConstantExport": true }],
     "react/react-in-jsx-scope": "off",
-    "import/no-unassigned-import": "error"
+    "import/no-unassigned-import": "error",
+    "max-lines-per-function": "error",
+    "max-statements": "error",
+    "max-params": "error",
+    "max-lines": "error"
   }
 }
