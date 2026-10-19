@@ -20,23 +20,6 @@ class MapErrorBoundary extends Component<{ children: ReactNode }, { failed: bool
   }
 }
 
-export const TravelMap = ({ plans }: { plans: TravelPlan[] }) => {
-  const { located, missing } = useMemo(() => mapPlans(plans), [plans]);
-  const listId = useId();
-  return (
-    <Box component="section" aria-label="旅の地図" sx={{ mt: 4 }}>
-      <Typography variant="h5" component="h2" sx={{ mb: 1 }}>
-        旅の地図
-      </Typography>
-      <Button component="a" href={`#${listId}`}>
-        プラン一覧へ進む
-      </Button>
-      <MapContent located={located} missing={missing} />
-      <Box id={listId} tabIndex={-1} aria-label="プラン一覧の開始" />
-    </Box>
-  );
-};
-
 const MapContent = ({ located, missing }: ReturnType<typeof mapPlans>) => (
   <>
     {located.length ? (
@@ -77,3 +60,20 @@ const MissingPlans = ({ missing }: { missing: TravelPlan[] }) => (
     )}
   </>
 );
+
+export const TravelMap = ({ plans }: { plans: TravelPlan[] }) => {
+  const { located, missing } = useMemo(() => mapPlans(plans), [plans]);
+  const listId = useId();
+  return (
+    <Box component="section" aria-label="旅の地図" sx={{ mt: 4 }}>
+      <Typography variant="h5" component="h2" sx={{ mb: 1 }}>
+        旅の地図
+      </Typography>
+      <Button component="a" href={`#${listId}`}>
+        プラン一覧へ進む
+      </Button>
+      <MapContent located={located} missing={missing} />
+      <Box id={listId} tabIndex={-1} aria-label="プラン一覧の開始" />
+    </Box>
+  );
+};

@@ -8,6 +8,38 @@ import "leaflet/dist/leaflet.css";
 import "./travelMap.css";
 import { type MapPlan, groupMapPlans } from "./mapPlans";
 
+const addMarker = (map: L.Map, group: MapPlan[]) => {
+  const label = group.map((item) => item.number).join("・");
+  const marker = L.marker(group[0].position, {
+    icon: L.divIcon({
+      className: "travel-map-pin",
+      html: `<span>${label}</span>`,
+      iconSize: [44, 44],
+      iconAnchor: [22, 22],
+    }),
+    title: group.map((item) => `${item.number}. ${item.plan.place}`).join("、"),
+    keyboard: false,
+  }).addTo(map);
+  const element = marker.getElement();
+  element?.setAttribute("role", "img");
+  element?.setAttribute("aria-label", marker.options.title ?? "訪問地点");
+};
+
+const populateMap = (map: L.Map, located: MapPlan[], onTileError: () => void) => {
+  L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 19,
+    attribution:
+      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+  })
+    .on("tileerror", onTileError)
+    .addTo(map);
+  for (const group of groupMapPlans(located)) addMarker(map, group);
+  const positions = located.map((item) => item.position);
+  if (positions.length > 1)
+    L.polyline(positions, { color: "#1565c0", weight: 3, dashArray: "8 6" }).addTo(map);
+  map.fitBounds(L.latLngBounds(positions), { padding: [32, 32], maxZoom: 12 });
+};
+
 export default function TravelMapCanvas({ located }: { located: MapPlan[] }) {
   const container = useRef<HTMLDivElement>(null);
   const [tileError, setTileError] = useState(false);
@@ -44,35 +76,3 @@ export default function TravelMapCanvas({ located }: { located: MapPlan[] }) {
     </>
   );
 }
-
-const addMarker = (map: L.Map, group: MapPlan[]) => {
-  const label = group.map((item) => item.number).join("・");
-  const marker = L.marker(group[0].position, {
-    icon: L.divIcon({
-      className: "travel-map-pin",
-      html: `<span>${label}</span>`,
-      iconSize: [44, 44],
-      iconAnchor: [22, 22],
-    }),
-    title: group.map((item) => `${item.number}. ${item.plan.place}`).join("、"),
-    keyboard: false,
-  }).addTo(map);
-  const element = marker.getElement();
-  element?.setAttribute("role", "img");
-  element?.setAttribute("aria-label", marker.options.title ?? "訪問地点");
-};
-
-const populateMap = (map: L.Map, located: MapPlan[], onTileError: () => void) => {
-  L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    maxZoom: 19,
-    attribution:
-      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-  })
-    .on("tileerror", onTileError)
-    .addTo(map);
-  for (const group of groupMapPlans(located)) addMarker(map, group);
-  const positions = located.map((item) => item.position);
-  if (positions.length > 1)
-    L.polyline(positions, { color: "#1565c0", weight: 3, dashArray: "8 6" }).addTo(map);
-  map.fitBounds(L.latLngBounds(positions), { padding: [32, 32], maxZoom: 12 });
-};
