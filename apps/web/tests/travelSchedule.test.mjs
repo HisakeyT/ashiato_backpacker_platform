@@ -21,6 +21,6 @@ test("recorded sorts by dates", () => {
 
 test("undated plans and published modes have clear labels", () => {
   assert.equal(formatPeriod(null, null), "日付未定");
-  assert.equal(scheduleLabel("planning"), "旅行前の計画");
-  assert.equal(scheduleLabel("recorded"), "旅行後の記録");
+  assert.equal(scheduleLabel("planning"), "計画");
+  assert.equal(scheduleLabel("recorded"), "記録");
 });
