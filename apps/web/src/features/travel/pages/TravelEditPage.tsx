@@ -2,13 +2,13 @@ import { Box, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { PageBreadcrumbs } from "../../components/PageBreadcrumbs";
+import { PageBreadcrumbs } from "../../../components/PageBreadcrumbs";
 
-import { useAuth } from "../../app/providers/useAuth";
-import { useFlash } from "../../app/providers/useFlash";
-import { getTravel, updateTravel } from "./repository";
-import { TravelForm } from "./TravelForm";
-import type { Travel, UpdateTravelInput } from "./types";
+import { useAuth } from "../../../app/providers/useAuth";
+import { useFlash } from "../../../app/providers/useFlash";
+import { getTravel, updateTravel } from "../repository";
+import { TravelForm } from "../TravelForm";
+import type { Travel, UpdateTravelInput } from "../types";
 
 const useTravelForEdit = (token: string | null, travelId: string | undefined) => {
   const [travel, setTravel] = useState<Travel | null>(null);
