@@ -8,6 +8,7 @@ import { PageBreadcrumbs } from "../../components/PageBreadcrumbs";
 import { useAuth } from "../../app/providers/useAuth.ts";
 import { useFlash } from "../../app/providers/useFlash.ts";
 import { copyTravel, getPublicTravel } from "../travel/repository";
+import { scheduleLabel } from "../travel/scheduleLabel";
 import type { PublicTravel } from "../travel/types";
 import { getPublicTravelPlans } from "../travelPlan/repository";
 import type { TravelPlan } from "../travelPlan/types";
@@ -115,11 +116,7 @@ const PublicTravelHeader = ({ travel }: { travel: PublicTravel }) => (
       >
         {travel.title}
       </Typography>
-      <Chip
-        size="small"
-        label={travel.scheduleMode === "planning" ? "旅行前の計画" : "旅行後の記録"}
-        sx={{ mb: 1 }}
-      />
+      <Chip size="small" label={scheduleLabel(travel.scheduleMode)} sx={{ mb: 1 }} />
       <Typography color="text.secondary" gutterBottom>
         {travel.startDate} 〜 {travel.endDate}
       </Typography>
