@@ -13,16 +13,18 @@ type TravelPlanDialogProps = {
   defaultDate?: string;
   startDate: string;
   endDate: string;
+  mode: "planning" | "recorded";
   plan?: TravelPlan | null;
   onClose: () => void;
   onSaved: (result: "created" | "updated") => void;
 };
 
 const toPlanInput = (value: TravelPlanFormValue) => {
-  const { endDate, country, state, city, latitude, longitude, ...rest } = value;
+  const { startDate, endDate, country, state, city, latitude, longitude, ...rest } = value;
   return {
     ...rest,
-    ...(endDate ? { endDate } : {}),
+    startDate: startDate || null,
+    endDate: endDate || null,
     ...(country ? { country } : {}),
     ...(state ? { state } : {}),
     ...(city ? { city } : {}),
@@ -33,7 +35,7 @@ const toPlanInput = (value: TravelPlanFormValue) => {
 const initialFormValue = (plan?: TravelPlan | null): TravelPlanFormValue | undefined =>
   plan
     ? {
-        startDate: plan.startDate,
+        startDate: plan.startDate ?? "",
         endDate: plan.endDate ?? "",
         place: plan.place,
         country: plan.country ?? "",
@@ -57,6 +59,7 @@ const DialogView = ({
   defaultDate,
   startDate,
   endDate,
+  mode,
   error,
   isSubmitting,
   onClose,
@@ -72,9 +75,10 @@ const DialogView = ({
   >
     <TravelPlanForm
       initialValue={initialFormValue(plan)}
-      defaultDate={defaultDate ?? startDate}
+      defaultDate={defaultDate ?? (mode === "recorded" ? startDate : "")}
       minDate={startDate}
       maxDate={endDate}
+      mode={mode}
       submitLabel={plan ? "保存する" : "追加する"}
       error={error}
       isSubmitting={isSubmitting}

@@ -8,9 +8,11 @@ type TravelPlanListProps = {
   plans: TravelPlan[];
   onEdit: (plan: TravelPlan) => void;
   onDelete: (plan: TravelPlan) => void;
+  mode: "planning" | "recorded";
+  onMove?: (plan: TravelPlan, target: number) => void;
 };
 
-export const TravelPlanList = ({ plans, onEdit, onDelete }: TravelPlanListProps) => {
+export const TravelPlanList = ({ plans, onEdit, onDelete, mode, onMove }: TravelPlanListProps) => {
   if (plans.length === 0) {
     return <Typography color="text.secondary">まだ予定がありません</Typography>;
   }
@@ -21,12 +23,20 @@ export const TravelPlanList = ({ plans, onEdit, onDelete }: TravelPlanListProps)
       sx={{
         display: "grid",
         gap: 2,
-        justifyContent: "center",
-        gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 220px), 1fr))",
+        gridTemplateColumns:
+          mode === "planning" ? "1fr" : "repeat(auto-fill, minmax(min(100%, 220px), 1fr))",
       }}
     >
-      {sortPlans(plans).map((plan) => (
-        <TravelPlanCard key={plan.id} plan={plan} onEdit={onEdit} onDelete={onDelete} />
+      {sortPlans(plans, mode).map((plan, index) => (
+        <TravelPlanCard
+          key={plan.id}
+          plan={plan}
+          onEdit={onEdit}
+          onDelete={onDelete}
+          position={mode === "planning" ? index : undefined}
+          total={mode === "planning" ? plans.length : undefined}
+          onMove={onMove}
+        />
       ))}
     </Box>
   );

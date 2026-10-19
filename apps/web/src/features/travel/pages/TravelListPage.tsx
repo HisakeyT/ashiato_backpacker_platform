@@ -2,10 +2,10 @@ import { Box, Button, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
 
-import { useAuth } from "../../app/providers/useAuth";
-import { getTravels } from "./repository";
-import { TravelCard } from "./TravelCard";
-import type { Travel } from "./types";
+import { useAuth } from "../../../app/providers/useAuth";
+import { getTravels } from "../repository";
+import { TravelCard } from "../TravelCard";
+import type { Travel } from "../types";
 
 const TravelListHeader = ({ nickname }: { nickname?: string }) => (
   <Box
