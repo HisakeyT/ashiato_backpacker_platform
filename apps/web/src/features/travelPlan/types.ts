@@ -1,7 +1,7 @@
 export type TravelPlan = {
   id: number;
   travelId: number;
-  startDate: string;
+  startDate: string | null;
   endDate: string | null; // NULL は startDate と同日
   place: string;
   country: string | null;
@@ -16,8 +16,8 @@ export type TravelPlan = {
 };
 
 export type CreateTravelPlanInput = {
-  startDate: string; // YYYY-MM-DD
-  endDate?: string; // YYYY-MM-DD。省略可(省略 = 同日)
+  startDate: string | null; // YYYY-MM-DD or undetermined
+  endDate?: string | null; // YYYY-MM-DD。省略可(省略 = 同日)
   place: string;
   country?: string;
   state?: string;
@@ -29,8 +29,8 @@ export type CreateTravelPlanInput = {
 };
 
 export type UpdateTravelPlanInput = {
-  startDate?: string; // YYYY-MM-DD
-  endDate?: string; // YYYY-MM-DD
+  startDate?: string | null; // YYYY-MM-DD
+  endDate?: string | null; // YYYY-MM-DD
   place?: string;
   country?: string;
   state?: string;
