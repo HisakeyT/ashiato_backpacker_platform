@@ -5,12 +5,12 @@ import { ConfirmDialog } from "../../components/ConfirmDialog";
 
 import { useAuth } from "../../app/providers/useAuth";
 import { useFlash } from "../../app/providers/useFlash";
-import { deleteTravelPlan, getTravelPlans, reorderTravelPlans } from "../travelPlan/repository";
-import { sortPlans } from "../travelPlan/sortPlans";
-import { TravelPlanDialog } from "../travelPlan/TravelPlanDialog";
-import { TravelPlanList } from "../travelPlan/TravelPlanList";
-import type { TravelPlan } from "../travelPlan/types";
-import type { TravelDetail } from "./types";
+import type { TravelDetail } from "../travel/types";
+import { deleteTravelPlan, getTravelPlans, reorderTravelPlans } from "./repository";
+import { sortPlans } from "./sortPlans";
+import { TravelPlanDialog } from "./TravelPlanDialog";
+import { TravelPlanList } from "./TravelPlanList";
+import type { TravelPlan } from "./types";
 
 const usePlanData = (travelId: number) => {
   const { token } = useAuth();

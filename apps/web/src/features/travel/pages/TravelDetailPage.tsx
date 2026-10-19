@@ -6,9 +6,9 @@ import { PageBreadcrumbs } from "../../../components/PageBreadcrumbs";
 
 import { useAuth } from "../../../app/providers/useAuth";
 import { getTravelPlans } from "../../travelPlan/repository";
+import { TravelPlansSection } from "../../travelPlan/TravelPlansSection";
 import { getTravel, updateTravel } from "../repository";
 import { TravelDetailHeader } from "../TravelDetailHeader";
-import { TravelPlansSection } from "../TravelPlansSection";
 import type { TravelDetail } from "../types";
 
 const genericModeError = "状態の切り替えに失敗しました。もう一度お試しください。";
