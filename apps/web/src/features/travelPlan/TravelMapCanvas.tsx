@@ -8,7 +8,13 @@ import "leaflet/dist/leaflet.css";
 import "./travelMap.css";
 import { type MapPlan, groupMapPlans } from "./mapPlans";
 
-export default function TravelMapCanvas({ located }: { located: MapPlan[] }) {
+export default function TravelMapCanvas({
+  located,
+  onSelect,
+}: {
+  located: MapPlan[];
+  onSelect: (ids: number[]) => void;
+}) {
   const container = useRef<HTMLDivElement>(null);
   const [tileError, setTileError] = useState(false);
   useEffect(() => {
@@ -16,7 +22,7 @@ export default function TravelMapCanvas({ located }: { located: MapPlan[] }) {
     const map = L.map(container.current, { scrollWheelZoom: false });
     const observer = new ResizeObserver(() => map.invalidateSize());
     try {
-      populateMap(map, located, () => setTileError(true));
+      populateMap(map, located, { onSelect, onTileError: () => setTileError(true) });
       observer.observe(container.current);
     } catch (error) {
       observer.disconnect();
@@ -27,12 +33,12 @@ export default function TravelMapCanvas({ located }: { located: MapPlan[] }) {
       observer.disconnect();
       map.remove();
     };
-  }, [located]);
+  }, [located, onSelect]);
   return (
     <>
       {tileError && (
         <Alert severity="warning">
-          背景地図を読み込めませんでした。プランの情報は下の一覧から確認できます。
+          背景地図を読み込めませんでした。プランの詳細は下のボタンと一覧から確認できます。
         </Alert>
       )}
       <Box
@@ -45,7 +51,7 @@ export default function TravelMapCanvas({ located }: { located: MapPlan[] }) {
   );
 }
 
-const addMarker = (map: L.Map, group: MapPlan[]) => {
+const addMarker = (map: L.Map, group: MapPlan[], onSelect: (ids: number[]) => void) => {
   const label = group.map((item) => item.number).join("・");
   const marker = L.marker(group[0].position, {
     icon: L.divIcon({
@@ -55,14 +61,25 @@ const addMarker = (map: L.Map, group: MapPlan[]) => {
       iconAnchor: [22, 22],
     }),
     title: group.map((item) => `${item.number}. ${item.plan.place}`).join("、"),
-    keyboard: false,
+    keyboard: true,
   }).addTo(map);
+  const select = () => onSelect(group.map((item) => item.plan.id));
+  marker.on("click", select);
   const element = marker.getElement();
-  element?.setAttribute("role", "img");
-  element?.setAttribute("aria-label", marker.options.title ?? "訪問地点");
+  element?.setAttribute("aria-label", `${marker.options.title} の詳細を表示`);
+  element?.addEventListener("keydown", (event) => {
+    if (event.key === " ") {
+      event.preventDefault();
+      select();
+    }
+  });
 };
 
-const populateMap = (map: L.Map, located: MapPlan[], onTileError: () => void) => {
+const populateMap = (
+  map: L.Map,
+  located: MapPlan[],
+  { onSelect, onTileError }: { onSelect: (ids: number[]) => void; onTileError: () => void },
+) => {
   L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
     maxZoom: 19,
     attribution:
@@ -70,7 +87,7 @@ const populateMap = (map: L.Map, located: MapPlan[], onTileError: () => void) =>
   })
     .on("tileerror", onTileError)
     .addTo(map);
-  for (const group of groupMapPlans(located)) addMarker(map, group);
+  for (const group of groupMapPlans(located)) addMarker(map, group, onSelect);
   const positions = located.map((item) => item.position);
   if (positions.length > 1)
     L.polyline(positions, { color: "#1565c0", weight: 3, dashArray: "8 6" }).addTo(map);

@@ -1,6 +1,7 @@
 import { Alert, Box, Button, Typography } from "@mui/material";
-import { Component, type ReactNode, Suspense, lazy, useId, useMemo } from "react";
+import { Component, type ReactNode, Suspense, lazy, useId, useMemo, useState } from "react";
 
+import { MapPlanDetails } from "./MapPlanDetails";
 import { mapPlans } from "./mapPlans";
 import type { TravelPlan } from "./types";
 
@@ -22,6 +23,9 @@ class MapErrorBoundary extends Component<{ children: ReactNode }, { failed: bool
 
 export const TravelMap = ({ plans }: { plans: TravelPlan[] }) => {
   const { located, missing } = useMemo(() => mapPlans(plans), [plans]);
+  const [selectedIds, setSelectedIds] = useState<number[]>([]);
+  const selected = located.filter(({ plan }) => selectedIds.includes(plan.id));
+  const titleId = useId();
   const listId = useId();
   return (
     <Box component="section" aria-label="旅の地図" sx={{ mt: 4 }}>
@@ -31,13 +35,18 @@ export const TravelMap = ({ plans }: { plans: TravelPlan[] }) => {
       <Button component="a" href={`#${listId}`}>
         プラン一覧へ進む
       </Button>
-      <MapContent located={located} missing={missing} />
+      <MapContent located={located} missing={missing} onSelect={setSelectedIds} />
+      <MapPlanDetails selected={selected} titleId={titleId} onClose={() => setSelectedIds([])} />
       <Box id={listId} tabIndex={-1} aria-label="プラン一覧の開始" />
     </Box>
   );
 };
 
-const MapContent = ({ located, missing }: ReturnType<typeof mapPlans>) => (
+const MapContent = ({
+  located,
+  missing,
+  onSelect,
+}: ReturnType<typeof mapPlans> & { onSelect: (ids: number[]) => void }) => (
   <>
     {located.length ? (
       <>
@@ -46,9 +55,24 @@ const MapContent = ({ located, missing }: ReturnType<typeof mapPlans>) => (
         </Typography>
         <MapErrorBoundary>
           <Suspense fallback={<Typography component="output">地図を読み込んでいます…</Typography>}>
-            <Canvas located={located} />
+            <Canvas located={located} onSelect={onSelect} />
           </Suspense>
         </MapErrorBoundary>
+        <Box
+          sx={{ display: "flex", gap: 1, flexWrap: "wrap", mt: 1 }}
+          aria-label="地図のプラン詳細"
+        >
+          {located.map(({ plan, number }) => (
+            <Button
+              key={plan.id}
+              size="small"
+              onClick={() => onSelect([plan.id])}
+              sx={{ overflowWrap: "anywhere" }}
+            >
+              {number}. {plan.place}
+            </Button>
+          ))}
+        </Box>
       </>
     ) : (
       <Alert severity="info">
