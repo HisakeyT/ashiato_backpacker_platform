@@ -33,7 +33,7 @@ func TestTravelPlanOutsideTravelDatesResponse(t *testing.T) {
 				return &model.Travel{ID: 1, UserID: 1, StartDate: date(1), EndDate: date(3)}, nil
 			}}
 			planRepository := &mock.MockTravelPlanRepository{FindByIDFunc: func(uint) (*model.TravelPlan, error) {
-				return &model.TravelPlan{ID: 2, TravelID: 1, StartDate: date(2), Place: "Kyoto", Content: "Visit"}, nil
+				return &model.TravelPlan{ID: 2, TravelID: 1, StartDate: planDate(date(2)), Place: "Kyoto", Content: "Visit"}, nil
 			}}
 			handler := NewTravelPlanHandler(usecase.NewTravelPlanUsecase(travelRepository, planRepository))
 			router := gin.New()

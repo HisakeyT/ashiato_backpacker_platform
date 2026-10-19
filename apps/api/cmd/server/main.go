@@ -60,6 +60,7 @@ func main() {
 	r.GET("/travels/public/:travel_id", travelHandler.GetPublicTravel)
 
 	protected.POST("/travels/:travel_id/plans", travelPlanHandler.CreateTravelPlan)
+	protected.PUT("/travels/:travel_id/plans/order", travelPlanHandler.ReorderTravelPlans)
 	protected.PATCH("/travels/:travel_id/plans/:travel_plan_id", travelPlanHandler.UpdateTravelPlan)
 	protected.GET("/travels/:travel_id/plans", travelPlanHandler.GetTravelPlans)
 	protected.DELETE("/travels/:travel_id/plans/:travel_plan_id", travelPlanHandler.DeleteTravelPlan)

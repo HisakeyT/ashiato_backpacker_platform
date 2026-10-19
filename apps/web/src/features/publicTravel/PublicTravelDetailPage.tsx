@@ -1,4 +1,4 @@
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Chip, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -115,6 +115,11 @@ const PublicTravelHeader = ({ travel }: { travel: PublicTravel }) => (
       >
         {travel.title}
       </Typography>
+      <Chip
+        size="small"
+        label={travel.scheduleMode === "planning" ? "旅行前の計画" : "旅行後の記録"}
+        sx={{ mb: 1 }}
+      />
       <Typography color="text.secondary" gutterBottom>
         {travel.startDate} 〜 {travel.endDate}
       </Typography>
@@ -145,7 +150,7 @@ export const PublicTravelDetailPage = () => {
       {plansError ? (
         <Typography color="error">{plansError}</Typography>
       ) : (
-        <PublicTravelPlanList plans={plans} />
+        <PublicTravelPlanList plans={plans} mode={travel.scheduleMode} />
       )}
     </Box>
   );

@@ -18,7 +18,7 @@ func TestUsecase_CreateTravelPlan(t *testing.T) {
 		travelID := uint(10)
 
 		input := CreateTravelPlanInput{
-			StartDate: time.Date(2026, 10, 1, 0, 0, 0, 0, time.UTC),
+			StartDate: planDate(time.Date(2026, 10, 1, 0, 0, 0, 0, time.UTC)),
 			Place:     "バンコク",
 			Content:   "ワット・ポーを観光",
 			SortOrder: 1,
@@ -59,7 +59,7 @@ func TestUsecase_CreateTravelPlan(t *testing.T) {
 			t.Errorf("TravelID = %d, want %d", travelPlan.TravelID, travelID)
 		}
 
-		if !travelPlan.StartDate.Equal(input.StartDate) {
+		if travelPlan.StartDate == nil || !travelPlan.StartDate.Equal(*input.StartDate) {
 			t.Errorf("StartDate = %v, want %v", travelPlan.StartDate, input.StartDate)
 		}
 
@@ -126,7 +126,7 @@ func TestUsecase_CreateTravelPlan_Invalid(t *testing.T) {
 			)
 
 			input := CreateTravelPlanInput{
-				StartDate: time.Date(2026, 10, 1, 0, 0, 0, 0, time.UTC),
+				StartDate: planDate(time.Date(2026, 10, 1, 0, 0, 0, 0, time.UTC)),
 				Place:     "バンコク",
 				Content:   "観光",
 				SortOrder: 1,
@@ -221,9 +221,9 @@ func TestUsecase_CreateTravelPlan_Location(t *testing.T) {
 				1,
 				10,
 				CreateTravelPlanInput{
-					StartDate: time.Date(
+					StartDate: planDate(time.Date(
 						2026, 10, 1, 0, 0, 0, 0, time.UTC,
-					),
+					)),
 					Place:    "京都",
 					Content:  "観光",
 					Location: tt.location,

@@ -14,22 +14,24 @@ type RegisterRequest struct {
 
 // travel
 type CreateTravelRequest struct {
-	Title     string `json:"title" binding:"required"`
-	StartDate string `json:"start_date" binding:"required"`
-	EndDate   string `json:"end_date" binding:"required"`
-	IsPublic  bool   `json:"is_public"`
+	Title        string              `json:"title" binding:"required"`
+	StartDate    string              `json:"start_date" binding:"required"`
+	EndDate      string              `json:"end_date" binding:"required"`
+	IsPublic     bool                `json:"is_public"`
+	ScheduleMode *model.ScheduleMode `json:"schedule_mode"`
 }
 
 type UpdateTravelRequest struct {
-	Title     *string `json:"title"`
-	StartDate *string `json:"start_date"`
-	EndDate   *string `json:"end_date"`
-	IsPublic  *bool   `json:"is_public"`
+	Title        *string             `json:"title"`
+	StartDate    *string             `json:"start_date"`
+	EndDate      *string             `json:"end_date"`
+	IsPublic     *bool               `json:"is_public"`
+	ScheduleMode *model.ScheduleMode `json:"schedule_mode"`
 }
 
 // travel_plan
 type CreateTravelPlanRequest struct {
-	StartDate string   `json:"start_date" binding:"required"`
+	StartDate *string  `json:"start_date"`
 	EndDate   *string  `json:"end_date"`
 	Place     string   `json:"place" binding:"required"`
 	Country   *string  `json:"country"`

@@ -97,6 +97,11 @@ export const TravelDetailHeader = ({ travel }: { travel: TravelDetail }) => (
       {travel.startDate} 〜 {travel.endDate}
     </Typography>
     <Chip
+      sx={{ mr: 1 }}
+      size="small"
+      label={travel.scheduleMode === "planning" ? "旅行前の計画" : "旅行後の記録"}
+    />
+    <Chip
       size="small"
       label={travel.isPublic ? "公開" : "非公開"}
       color={travel.isPublic ? "primary" : "default"}

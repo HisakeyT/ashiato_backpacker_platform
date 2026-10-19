@@ -21,6 +21,12 @@ var errorStatuses = []errorStatus{
 	{model.ErrInvalidCoordinates, http.StatusBadRequest},
 	{model.ErrInvalidTravelPlanText, http.StatusBadRequest},
 	{model.ErrTravelPlanNotBelongToTravel, http.StatusBadRequest},
+	{model.ErrInvalidScheduleMode, http.StatusBadRequest},
+	{model.ErrPlanStartDateRequired, http.StatusBadRequest},
+	{model.ErrTravelPlanStartDateRequired, http.StatusBadRequest},
+	{model.ErrTravelPlanEndWithoutStart, http.StatusBadRequest},
+	{model.ErrInvalidTravelPlanOrder, http.StatusBadRequest},
+	{model.ErrTravelPlanOrderOnlyPlanning, http.StatusBadRequest},
 
 	// 401
 	{model.ErrInvalidCredentials, http.StatusUnauthorized},

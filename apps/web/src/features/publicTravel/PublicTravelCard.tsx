@@ -1,4 +1,4 @@
-import { Card, CardActionArea, CardContent, Typography } from "@mui/material";
+import { Card, CardActionArea, CardContent, Chip, Typography } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 
 import type { PublicTravel } from "../travel/types";
@@ -16,6 +16,11 @@ export const PublicTravelCard = ({ publicTravel }: Props) => {
           <Typography variant="h6" component="h2" sx={{ wordBreak: "break-word" }}>
             {publicTravel.title}
           </Typography>
+          <Chip
+            size="small"
+            label={publicTravel.scheduleMode === "planning" ? "旅行前の計画" : "旅行後の記録"}
+            sx={{ mb: 1 }}
+          />
           <Typography variant="body2" color="text.secondary">
             {formatPeriod(publicTravel.startDate, publicTravel.endDate)}
           </Typography>

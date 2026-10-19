@@ -3,6 +3,7 @@ package handler
 import (
 	"net/http"
 
+	"github.com/HisakeyT/backpacker-platform/internal/model"
 	"github.com/HisakeyT/backpacker-platform/internal/usecase"
 	"github.com/gin-gonic/gin"
 )
@@ -44,10 +45,18 @@ func (h *TravelHandler) CreateTravel(c *gin.Context) {
 	}
 
 	input := usecase.CreateTravelInput{
-		Title:     req.Title,
-		StartDate: startDate,
-		EndDate:   endDate,
-		IsPublic:  req.IsPublic,
+		Title:        req.Title,
+		StartDate:    startDate,
+		EndDate:      endDate,
+		IsPublic:     req.IsPublic,
+		ScheduleMode: model.ScheduleModePlanning,
+	}
+	if req.ScheduleMode != nil {
+		if !req.ScheduleMode.Valid() {
+			responseUsecaseError(c, model.ErrInvalidScheduleMode)
+			return
+		}
+		input.ScheduleMode = *req.ScheduleMode
 	}
 
 	travel, err := h.travelUsecase.CreateTravel(userID, input)
@@ -128,10 +137,11 @@ func (h *TravelHandler) UpdateTravel(c *gin.Context) {
 	}
 
 	input := usecase.UpdateTravelInput{
-		Title:     updateReq.Title,
-		StartDate: startDate,
-		EndDate:   endDate,
-		IsPublic:  updateReq.IsPublic,
+		Title:        updateReq.Title,
+		StartDate:    startDate,
+		EndDate:      endDate,
+		IsPublic:     updateReq.IsPublic,
+		ScheduleMode: updateReq.ScheduleMode,
 	}
 
 	travel, err := h.travelUsecase.UpdateTravel(userID, travelID, input)
