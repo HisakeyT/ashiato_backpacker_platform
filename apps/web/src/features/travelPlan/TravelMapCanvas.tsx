@@ -1,6 +1,7 @@
 import { Alert, Box } from "@mui/material";
 import L from "leaflet";
 import { useEffect, useRef, useState } from "react";
+
 import "leaflet/dist/leaflet.css";
 import "./travelMap.css";
 import { type MapPlan, groupMapPlans } from "./mapPlans";
