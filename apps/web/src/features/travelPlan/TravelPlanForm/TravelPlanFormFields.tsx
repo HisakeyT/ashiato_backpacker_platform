@@ -9,7 +9,7 @@ import {
   TextField,
 } from "@mui/material";
 
-import { FormField } from "../../components/FormField";
+import { FormField } from "../../../components/FormField";
 
 import type { PlaceSearchState, PlanDetails } from "./useTravelPlanForm";
 

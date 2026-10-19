@@ -10,6 +10,7 @@ import { useFlash } from "../../app/providers/useFlash.ts";
 import { copyTravel, getPublicTravel } from "../travel/repository";
 import { scheduleLabel } from "../travel/scheduleLabel";
 import type { PublicTravel } from "../travel/types";
+import { TravelMap } from "../travelPlan/map/TravelMap";
 import { getPublicTravelPlans } from "../travelPlan/repository";
 import type { TravelPlan } from "../travelPlan/types";
 import { PublicTravelPlanList } from "./PublicTravelPlanList";
@@ -141,6 +142,7 @@ export const PublicTravelDetailPage = () => {
         items={[{ label: "みんなの旅行記", to: "/public/travels" }, { label: travel.title }]}
       />
       <PublicTravelHeader travel={travel} />
+      {!plansError && <TravelMap key={travel.id} plans={plans} />}
       <Typography variant="h5" component="h2" sx={{ mt: 4, mb: 2 }}>
         旅のプラン
       </Typography>
