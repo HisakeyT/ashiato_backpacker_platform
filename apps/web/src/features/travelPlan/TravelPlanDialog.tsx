@@ -35,16 +35,16 @@ const toPlanInput = (value: TravelPlanFormValue) => {
 const initialFormValue = (plan?: TravelPlan | null): TravelPlanFormValue | undefined =>
   plan
     ? {
-        startDate: plan.startDate ?? "",
-        endDate: plan.endDate ?? "",
-        place: plan.place,
-        country: plan.country ?? "",
-        state: plan.state ?? "",
-        city: plan.city ?? "",
-        latitude: plan.latitude,
-        longitude: plan.longitude,
-        content: plan.content,
-      }
+      startDate: plan.startDate ?? "",
+      endDate: plan.endDate ?? "",
+      place: plan.place,
+      country: plan.country ?? "",
+      state: plan.state ?? "",
+      city: plan.city ?? "",
+      latitude: plan.latitude,
+      longitude: plan.longitude,
+      content: plan.content,
+    }
     : undefined;
 
 type DialogViewProps = TravelPlanDialogProps & {
