@@ -1,50 +1,17 @@
 import { Box, Button, Typography } from "@mui/material";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 
 import { ConfirmDialog } from "../../components/ConfirmDialog";
 
-import { useAuth } from "../../app/providers/useAuth";
 import { useFlash } from "../../app/providers/useFlash";
 import type { TravelDetail } from "../travel/types";
-import { deleteTravelPlan, getTravelPlans, reorderTravelPlans } from "./repository";
-import { sortPlans } from "./sortPlans";
 import { TravelMap } from "./TravelMap";
 import { TravelPlanDialog } from "./TravelPlanDialog";
 import { TravelPlanList } from "./TravelPlanList";
 import type { TravelPlan } from "./types";
-
-const usePlanData = (travelId: number) => {
-  const { token } = useAuth();
-  const [plans, setPlans] = useState<TravelPlan[]>([]);
-  const [plansError, setPlansError] = useState<string | null>(null);
-  useEffect(() => {
-    if (!token) return;
-    let cancelled = false;
-    void getTravelPlans(token, travelId).then(
-      (nextPlans) => {
-        if (cancelled) return;
-        setPlans(nextPlans);
-        setPlansError(null);
-      },
-      () => {
-        if (!cancelled) setPlansError("予定の取得に失敗しました");
-      },
-    );
-    return () => {
-      cancelled = true;
-    };
-  }, [token, travelId]);
-  const refreshPlans = async () => {
-    if (!token) return;
-    try {
-      setPlans(await getTravelPlans(token, travelId));
-      setPlansError(null);
-    } catch {
-      setPlansError("予定の取得に失敗しました");
-    }
-  };
-  return { plans, setPlans, plansError, refreshPlans };
-};
+import { usePlanData } from "./usePlanData";
+import { usePlanDeletion } from "./usePlanDeletion";
+import { usePlanOrder } from "./usePlanOrder";
 
 const usePlanEditor = (refreshPlans: () => Promise<void>) => {
   const { showFlash } = useFlash();
@@ -55,35 +22,6 @@ const usePlanEditor = (refreshPlans: () => Promise<void>) => {
     showFlash(result === "created" ? "プランを追加しました" : "プランを更新しました");
   };
   return { isOpen, setIsOpen, editingPlan, setEditingPlan, handleSaved };
-};
-
-const usePlanDeletion = (travelId: number, refreshPlans: () => Promise<void>) => {
-  const { token } = useAuth();
-  const { showFlash } = useFlash();
-  const [deletingPlan, setDeletingPlan] = useState<TravelPlan | null>(null);
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const handleClose = () => {
-    if (isDeleting) return;
-    setError(null);
-    setDeletingPlan(null);
-  };
-  const handleConfirm = async () => {
-    if (!token || !deletingPlan) return;
-    setIsDeleting(true);
-    setError(null);
-    try {
-      await deleteTravelPlan(token, travelId, deletingPlan.id);
-      setDeletingPlan(null);
-      void refreshPlans();
-      showFlash("プランを削除しました");
-    } catch {
-      setError("プランの削除に失敗しました");
-    } finally {
-      setIsDeleting(false);
-    }
-  };
-  return { deletingPlan, setDeletingPlan, isDeleting, error, handleClose, handleConfirm };
 };
 
 const PlanSectionHeader = ({ onAdd }: { onAdd: () => void }) => (
@@ -157,68 +95,6 @@ const PlanDeleteDialog = ({ deletion }: { deletion: ReturnType<typeof usePlanDel
       onConfirm={deletion.handleConfirm}
     />
   );
-
-const movePlan = (plans: TravelPlan[], plan: TravelPlan, target: number): TravelPlan[] => {
-  const next = [...plans];
-  next.splice(
-    next.findIndex((item) => item.id === plan.id),
-    1,
-  );
-  next.splice(target, 0, plan);
-  return next.map((item, index) => ({ ...item, sortOrder: index + 1 }));
-};
-
-const focusMovedPlan = (plan: TravelPlan) => {
-  requestAnimationFrame(() => document.getElementById(`plan-card-${plan.id}`)?.focus());
-};
-
-const showMovedPlan = ({
-  plan,
-  target,
-  next,
-  setPlans,
-  showFlash,
-}: {
-  plan: TravelPlan;
-  target: number;
-  next: TravelPlan[];
-  setPlans: (plans: TravelPlan[]) => void;
-  showFlash: (message: string) => void;
-}) => {
-  setPlans(next);
-  showFlash(`${plan.place}を${target + 1}番目に移動しました`);
-  focusMovedPlan(plan);
-};
-
-const usePlanOrder = (
-  travelId: number,
-  plans: TravelPlan[],
-  setPlans: (plans: TravelPlan[]) => void,
-) => {
-  const { token } = useAuth();
-  const { showFlash } = useFlash();
-  const busy = useRef(false);
-  const move = async (plan: TravelPlan, target: number) => {
-    if (!token || busy.current) return;
-    busy.current = true;
-    const before = sortPlans(plans, "planning");
-    const next = movePlan(before, plan, target);
-    showMovedPlan({ plan, target, next, setPlans, showFlash });
-    try {
-      await reorderTravelPlans(
-        token,
-        travelId,
-        next.map((item) => item.id),
-      );
-    } catch {
-      setPlans(before);
-      showFlash("並べ替えに失敗しました。元の順序に戻しました", "error");
-    } finally {
-      busy.current = false;
-    }
-  };
-  return { move };
-};
 
 const defaultPlanDate = (travel: TravelDetail, plans: TravelPlan[]): string => {
   if (travel.scheduleMode === "planning") return "";
