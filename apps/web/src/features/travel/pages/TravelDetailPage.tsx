@@ -2,14 +2,14 @@ import { Alert, Box, Button, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
-import { PageBreadcrumbs } from "../../components/PageBreadcrumbs";
+import { PageBreadcrumbs } from "../../../components/PageBreadcrumbs";
 
-import { useAuth } from "../../app/providers/useAuth";
-import { getTravelPlans } from "../travelPlan/repository";
-import { getTravel, updateTravel } from "./repository";
-import { TravelDetailHeader } from "./TravelDetailHeader";
-import { TravelPlansSection } from "./TravelPlansSection";
-import type { TravelDetail } from "./types";
+import { useAuth } from "../../../app/providers/useAuth";
+import { getTravelPlans } from "../../travelPlan/repository";
+import { getTravel, updateTravel } from "../repository";
+import { TravelDetailHeader } from "../TravelDetailHeader";
+import { TravelPlansSection } from "../TravelPlansSection";
+import type { TravelDetail } from "../types";
 
 const genericModeError = "状態の切り替えに失敗しました。もう一度お試しください。";
 
@@ -73,7 +73,7 @@ const ModeControl = ({
   return (
     <Box sx={{ mt: 2 }}>
       <Button variant="outlined" disabled={busy} onClick={() => void changeMode()}>
-        {travel.scheduleMode === "planning" ? "旅行後の記録に切り替える" : "旅行前の計画に戻す"}
+        {travel.scheduleMode === "planning" ? "記録に切り替える" : "計画に戻す"}
       </Button>
       {error && (
         <Alert severity="error" sx={{ mt: 1 }}>
