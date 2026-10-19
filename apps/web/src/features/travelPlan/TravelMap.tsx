@@ -20,6 +20,25 @@ class MapErrorBoundary extends Component<{ children: ReactNode }, { failed: bool
   }
 }
 
+const MissingPlans = ({ missing }: { missing: TravelPlan[] }) => (
+  <>
+    {missing.length > 0 && (
+      <Alert severity="info" sx={{ mt: 2 }}>
+        位置情報がない、または不正なプラン {missing.length}
+        件は地図に表示していません。プラン一覧では引き続き確認できます。
+        <Box component="details" sx={{ overflowWrap: "anywhere" }}>
+          <summary>対象のプランを見る</summary>
+          <ul>
+            {missing.map((plan) => (
+              <li key={plan.id}>{plan.place}</li>
+            ))}
+          </ul>
+        </Box>
+      </Alert>
+    )}
+  </>
+);
+
 const MapContent = ({ located, missing }: ReturnType<typeof mapPlans>) => (
   <>
     {located.length ? (
@@ -39,25 +58,6 @@ const MapContent = ({ located, missing }: ReturnType<typeof mapPlans>) => (
       </Alert>
     )}
     <MissingPlans missing={missing} />
-  </>
-);
-
-const MissingPlans = ({ missing }: { missing: TravelPlan[] }) => (
-  <>
-    {missing.length > 0 && (
-      <Alert severity="info" sx={{ mt: 2 }}>
-        位置情報がない、または不正なプラン {missing.length}
-        件は地図に表示していません。プラン一覧では引き続き確認できます。
-        <Box component="details" sx={{ overflowWrap: "anywhere" }}>
-          <summary>対象のプランを見る</summary>
-          <ul>
-            {missing.map((plan) => (
-              <li key={plan.id}>{plan.place}</li>
-            ))}
-          </ul>
-        </Box>
-      </Alert>
-    )}
   </>
 );
 
