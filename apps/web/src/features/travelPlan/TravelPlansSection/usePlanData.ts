@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 
-import { useAuth } from "../../app/providers/useAuth";
-import { getTravelPlans } from "./repository";
-import type { TravelPlan } from "./types";
+import { useAuth } from "../../../app/providers/useAuth";
+import { getTravelPlans } from "../repository";
+import type { TravelPlan } from "../types";
 
 export const usePlanData = (travelId: number) => {
   const { token } = useAuth();

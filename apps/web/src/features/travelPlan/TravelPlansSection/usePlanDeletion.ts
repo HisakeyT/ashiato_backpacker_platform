@@ -1,9 +1,9 @@
 import { useState } from "react";
 
-import { useAuth } from "../../app/providers/useAuth";
-import { useFlash } from "../../app/providers/useFlash";
-import { deleteTravelPlan } from "./repository";
-import type { TravelPlan } from "./types";
+import { useAuth } from "../../../app/providers/useAuth";
+import { useFlash } from "../../../app/providers/useFlash";
+import { deleteTravelPlan } from "../repository";
+import type { TravelPlan } from "../types";
 
 export const usePlanDeletion = (travelId: number, refreshPlans: () => Promise<void>) => {
   const { token } = useAuth();

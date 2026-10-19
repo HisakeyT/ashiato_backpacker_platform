@@ -1,10 +1,10 @@
 import { useRef } from "react";
 
-import { useAuth } from "../../app/providers/useAuth";
-import { useFlash } from "../../app/providers/useFlash";
-import { reorderTravelPlans } from "./repository";
-import { sortPlans } from "./sortPlans";
-import type { TravelPlan } from "./types";
+import { useAuth } from "../../../app/providers/useAuth";
+import { useFlash } from "../../../app/providers/useFlash";
+import { reorderTravelPlans } from "../repository";
+import { sortPlans } from "../sortPlans";
+import type { TravelPlan } from "../types";
 
 const movePlan = (plans: TravelPlan[], plan: TravelPlan, target: number): TravelPlan[] => {
   const next = [...plans];

@@ -4,7 +4,7 @@ import { BaseDialog } from "../../components/BaseDialog";
 
 import { useAuth } from "../../app/providers/useAuth";
 import { createTravelPlan, updateTravelPlan } from "./repository";
-import { TravelPlanForm, type TravelPlanFormValue } from "./TravelPlanForm";
+import { TravelPlanForm, type TravelPlanFormValue } from "./TravelPlanForm/TravelPlanForm";
 import type { TravelPlan } from "./types";
 
 type TravelPlanDialogProps = {

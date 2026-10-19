@@ -1,14 +1,14 @@
 import { Box, Button, Typography } from "@mui/material";
 import { useState } from "react";
 
-import { ConfirmDialog } from "../../components/ConfirmDialog";
+import { ConfirmDialog } from "../../../components/ConfirmDialog";
 
-import { useFlash } from "../../app/providers/useFlash";
-import type { TravelDetail } from "../travel/types";
-import { TravelMap } from "./map/TravelMap";
-import { TravelPlanDialog } from "./TravelPlanDialog";
-import { TravelPlanList } from "./TravelPlanList";
-import type { TravelPlan } from "./types";
+import { useFlash } from "../../../app/providers/useFlash";
+import type { TravelDetail } from "../../travel/types";
+import { TravelMap } from "../map/TravelMap";
+import { TravelPlanDialog } from "../TravelPlanDialog";
+import { TravelPlanList } from "../TravelPlanList";
+import type { TravelPlan } from "../types";
 import { usePlanData } from "./usePlanData";
 import { usePlanDeletion } from "./usePlanDeletion";
 import { usePlanOrder } from "./usePlanOrder";
