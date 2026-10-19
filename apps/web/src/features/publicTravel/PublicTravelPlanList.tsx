@@ -6,9 +6,10 @@ import { PublicTravelPlanCard } from "./PublicTravelPlanCard";
 
 type Props = {
   plans: TravelPlan[];
+  mode: "planning" | "recorded";
 };
 
-export const PublicTravelPlanList = ({ plans }: Props) => {
+export const PublicTravelPlanList = ({ plans, mode }: Props) => {
   if (plans.length === 0) {
     return <Typography color="text.secondary">まだ予定がありません</Typography>;
   }
@@ -23,7 +24,7 @@ export const PublicTravelPlanList = ({ plans }: Props) => {
         gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 220px), 1fr))",
       }}
     >
-      {sortPlans(plans).map((plan) => (
+      {sortPlans(plans, mode).map((plan) => (
         <PublicTravelPlanCard key={plan.id} plan={plan} />
       ))}
     </Box>

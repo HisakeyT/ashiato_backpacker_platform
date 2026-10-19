@@ -7,6 +7,7 @@ import { ConfirmDialog } from "../../components/ConfirmDialog";
 import { useAuth } from "../../app/providers/useAuth";
 import { useFlash } from "../../app/providers/useFlash";
 import { deleteTravel } from "./repository";
+import { scheduleLabel } from "./scheduleLabel";
 import type { TravelDetail } from "./types";
 
 const DeleteTravelButton = ({ travel }: { travel: TravelDetail }) => {
@@ -96,6 +97,7 @@ export const TravelDetailHeader = ({ travel }: { travel: TravelDetail }) => (
     <Typography color="text.secondary" gutterBottom>
       {travel.startDate} 〜 {travel.endDate}
     </Typography>
+    <Chip sx={{ mr: 1 }} size="small" label={scheduleLabel(travel.scheduleMode)} />
     <Chip
       size="small"
       label={travel.isPublic ? "公開" : "非公開"}

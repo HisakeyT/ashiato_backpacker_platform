@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
+import { scheduleLabel } from "../src/features/travel/scheduleLabel.ts";
 import { sortPlans } from "../src/features/travelPlan/sortPlans.ts";
 import { formatPeriod } from "../src/features/travelPlan/format.ts";
 
@@ -18,6 +19,8 @@ test("recorded sorts by dates", () => {
   assert.deepEqual(sortPlans(plans.filter((plan) => plan.startDate), "recorded").map((plan) => plan.id), [3, 1]);
 });
 
-test("undated plans have a clear label", () => {
+test("undated plans and published modes have clear labels", () => {
   assert.equal(formatPeriod(null, null), "日付未定");
+  assert.equal(scheduleLabel("planning"), "旅行前の計画");
+  assert.equal(scheduleLabel("recorded"), "旅行後の記録");
 });
