@@ -8,6 +8,7 @@ import { useFlash } from "../../app/providers/useFlash";
 import type { TravelDetail } from "../travel/types";
 import { deleteTravelPlan, getTravelPlans, reorderTravelPlans } from "./repository";
 import { sortPlans } from "./sortPlans";
+import { TravelMap } from "./TravelMap";
 import { TravelPlanDialog } from "./TravelPlanDialog";
 import { TravelPlanList } from "./TravelPlanList";
 import type { TravelPlan } from "./types";
@@ -236,6 +237,7 @@ export const TravelPlansSection = ({ travel }: { travel: TravelDetail }) => {
 
   return (
     <>
+      {!plansError && <TravelMap plans={plans} />}
       <PlanSectionHeader onAdd={() => editor.setIsOpen(true)} />
       {plansError ? (
         <Typography color="error">{plansError}</Typography>

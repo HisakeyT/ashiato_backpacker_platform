@@ -1,0 +1,21 @@
+.travel-map-pin {
+  background: #1565c0;
+  border: 2px solid white;
+  border-radius: 50%;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  box-shadow: 0 2px 6px #0006;
+}
+.travel-map-pin span {
+  max-width: 40px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.travel-map-pin:focus-visible {
+  outline: 3px solid #111;
+  outline-offset: 3px;
+}
