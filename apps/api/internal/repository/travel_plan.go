@@ -10,4 +10,5 @@ type TravelPlanRepository interface {
 	Delete(id uint) error
 	FindByID(id uint) (*model.TravelPlan, error)
 	FindByTravelID(travelID uint) ([]model.TravelPlan, error)
+	Reorder(travelID uint, ids []uint) error
 }

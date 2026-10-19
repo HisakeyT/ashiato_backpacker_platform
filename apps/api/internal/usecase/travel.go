@@ -18,23 +18,31 @@ func NewTravelUsecase(repository repository.TravelRepository) *TravelUsecase {
 }
 
 type CreateTravelInput struct {
-	Title     string
-	StartDate time.Time
-	EndDate   time.Time
-	IsPublic  bool
+	Title        string
+	StartDate    time.Time
+	EndDate      time.Time
+	IsPublic     bool
+	ScheduleMode model.ScheduleMode
 }
 
 func (u *TravelUsecase) CreateTravel(userID uint, input CreateTravelInput) (*model.Travel, error) {
+	if input.ScheduleMode == "" {
+		input.ScheduleMode = model.ScheduleModePlanning
+	}
+	if !input.ScheduleMode.Valid() {
+		return nil, model.ErrInvalidScheduleMode
+	}
 	if err := validateDateRange(input.StartDate, input.EndDate); err != nil {
 		return nil, err
 	}
 
 	travel := &model.Travel{
-		UserID:    userID,
-		Title:     input.Title,
-		StartDate: input.StartDate,
-		EndDate:   input.EndDate,
-		IsPublic:  input.IsPublic,
+		UserID:       userID,
+		Title:        input.Title,
+		StartDate:    input.StartDate,
+		EndDate:      input.EndDate,
+		IsPublic:     input.IsPublic,
+		ScheduleMode: input.ScheduleMode,
 	}
 
 	if err := u.repository.Create(travel); err != nil {
@@ -94,10 +102,11 @@ func (u *TravelUsecase) GetTravel(userID uint, travelID uint) (*model.TravelDeta
 }
 
 type UpdateTravelInput struct {
-	Title     *string    `json:"title"`
-	StartDate *time.Time `json:"start_date"`
-	EndDate   *time.Time `json:"end_date"`
-	IsPublic  *bool      `json:"is_public"`
+	Title        *string             `json:"title"`
+	StartDate    *time.Time          `json:"start_date"`
+	EndDate      *time.Time          `json:"end_date"`
+	IsPublic     *bool               `json:"is_public"`
+	ScheduleMode *model.ScheduleMode `json:"schedule_mode"`
 }
 
 func (u *TravelUsecase) UpdateTravel(userID uint, travelID uint, input UpdateTravelInput) (*model.Travel, error) {
@@ -108,6 +117,22 @@ func (u *TravelUsecase) UpdateTravel(userID uint, travelID uint, input UpdateTra
 
 	if travel.UserID != userID {
 		return nil, model.ErrUserNotAuthorized
+	}
+	if input.ScheduleMode != nil {
+		if !input.ScheduleMode.Valid() {
+			return nil, model.ErrInvalidScheduleMode
+		}
+		if *input.ScheduleMode == model.ScheduleModeRecorded && travel.ScheduleMode != model.ScheduleModeRecorded {
+			plans, err := u.repository.FindByIDWithPlans(travelID)
+			if err != nil {
+				return nil, err
+			}
+			for _, plan := range plans.Plans {
+				if plan.StartDate == nil {
+					return nil, model.ErrPlanStartDateRequired
+				}
+			}
+		}
 	}
 
 	applyUpdate(travel, input)
@@ -138,6 +163,9 @@ func applyUpdate(travel *model.Travel, input UpdateTravelInput) {
 
 	if input.IsPublic != nil {
 		travel.IsPublic = *input.IsPublic
+	}
+	if input.ScheduleMode != nil {
+		travel.ScheduleMode = *input.ScheduleMode
 	}
 }
 

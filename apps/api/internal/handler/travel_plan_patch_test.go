@@ -29,12 +29,14 @@ func TestHandler_UpdateTravelPlan_PatchFields(t *testing.T) {
 		name       string
 		body       string
 		wantStatus int
+		wantStart  bool
 		wantEnd    bool
 	}{
-		{"null clears optional fields", `{"end_date":null,"state":null}`, http.StatusOK, false},
-		{"omitted optional fields are cleared", `{}`, http.StatusOK, false},
-		{"unpaired coordinate is rejected", `{"latitude":35}`, http.StatusBadRequest, false},
-		{"location values replace prior values", `{"city":"Kyoto"}`, http.StatusOK, false},
+		{"null clears optional fields", `{"end_date":null,"state":null}`, http.StatusOK, true, false},
+		{"omitted date fields are preserved", `{}`, http.StatusOK, true, true},
+		{"null clears both dates in planning", `{"start_date":null,"end_date":null}`, http.StatusOK, false, false},
+		{"unpaired coordinate is rejected", `{"latitude":35}`, http.StatusBadRequest, true, false},
+		{"location values replace prior values", `{"city":"Kyoto"}`, http.StatusOK, true, true},
 	}
 
 	for _, test := range tests {
@@ -43,7 +45,7 @@ func TestHandler_UpdateTravelPlan_PatchFields(t *testing.T) {
 			planRepository := &mock.MockTravelPlanRepository{
 				FindByIDFunc: func(id uint) (*model.TravelPlan, error) {
 					return &model.TravelPlan{
-						ID: 2, TravelID: 1, StartDate: startDate, EndDate: &endDate,
+						ID: 2, TravelID: 1, StartDate: &startDate, EndDate: &endDate,
 						Place: "place", Content: "content",
 						Location: model.Location{Country: &country, State: &state, City: &city, Latitude: &latitude, Longitude: &longitude},
 					}, nil
@@ -77,7 +79,8 @@ func TestHandler_UpdateTravelPlan_PatchFields(t *testing.T) {
 			if saved == nil {
 				t.Fatal("plan was not saved")
 			}
-			if (saved.EndDate != nil) != test.wantEnd || saved.Location.Country != nil ||
+			if (saved.StartDate != nil) != test.wantStart ||
+				(saved.EndDate != nil) != test.wantEnd || saved.Location.Country != nil ||
 				saved.Location.State != nil || saved.Location.Latitude != nil || saved.Location.Longitude != nil {
 				t.Fatalf("unexpected saved plan: %+v", saved)
 			}
@@ -92,7 +95,8 @@ func TestHandler_UpdateTravelPlan_PatchFields(t *testing.T) {
 			if err := json.Unmarshal(recorder.Body.Bytes(), &response); err != nil {
 				t.Fatal(err)
 			}
-			if !reflect.DeepEqual(response.City, saved.Location.City) || (response.EndDate != nil) != test.wantEnd {
+			if !reflect.DeepEqual(response.City, saved.Location.City) ||
+				(response.StartDate != nil) != test.wantStart || (response.EndDate != nil) != test.wantEnd {
 				t.Fatalf("unexpected response: %+v", response)
 			}
 		})

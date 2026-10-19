@@ -10,6 +10,14 @@ type MockTravelPlanRepository struct {
 	DeleteFunc         func(id uint) error
 	FindByIDFunc       func(id uint) (*model.TravelPlan, error)
 	FindByTravelIDFunc func(travelID uint) ([]model.TravelPlan, error)
+	ReorderFunc        func(travelID uint, ids []uint) error
+}
+
+func (m *MockTravelPlanRepository) Reorder(travelID uint, ids []uint) error {
+	if m.ReorderFunc != nil {
+		return m.ReorderFunc(travelID, ids)
+	}
+	return nil
 }
 
 func (m *MockTravelPlanRepository) Create(travelPlan *model.TravelPlan) error {

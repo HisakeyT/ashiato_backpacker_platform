@@ -12,15 +12,16 @@ func TestTravel_Copy(t *testing.T) {
 
 	newSource := func() *Travel {
 		return &Travel{
-			ID:        10,
-			UserID:    1,
-			Title:     "京都旅行",
-			IsPublic:  true,
-			StartDate: start,
-			EndDate:   end,
+			ID:           10,
+			UserID:       1,
+			Title:        "京都旅行",
+			IsPublic:     true,
+			ScheduleMode: ScheduleModeRecorded,
+			StartDate:    start,
+			EndDate:      end,
 			Plans: []TravelPlan{
-				{ID: 100, TravelID: 10, StartDate: start, EndDate: &planEnd, Place: "清水寺", Content: "朝イチ", SortOrder: 1},
-				{ID: 101, TravelID: 10, StartDate: end, EndDate: nil, Place: "伏見稲荷", Content: "夕方", SortOrder: 2},
+				{ID: 100, TravelID: 10, StartDate: &start, EndDate: &planEnd, Place: "清水寺", Content: "朝イチ", SortOrder: 1},
+				{ID: 101, TravelID: 10, StartDate: &end, EndDate: nil, Place: "伏見稲荷", Content: "夕方", SortOrder: 2},
 			},
 		}
 	}
@@ -37,6 +38,9 @@ func TestTravel_Copy(t *testing.T) {
 		}
 		if got.IsPublic {
 			t.Error("IsPublic = true, want false")
+		}
+		if got.ScheduleMode != ScheduleModePlanning {
+			t.Errorf("ScheduleMode = %q, want planning", got.ScheduleMode)
 		}
 		if got.Title != src.Title ||
 			!got.StartDate.Equal(src.StartDate) ||
@@ -70,7 +74,7 @@ func TestTravel_Copy(t *testing.T) {
 			}
 			s := src.Plans[i]
 			if p.Place != s.Place || p.Content != s.Content || p.SortOrder != s.SortOrder ||
-				p.Location != s.Location || !p.StartDate.Equal(s.StartDate) {
+				p.Location != s.Location || p.StartDate == nil || !p.StartDate.Equal(*s.StartDate) {
 				t.Errorf("Plans[%d] fields differ: got %+v, src %+v", i, p, s)
 			}
 		}
@@ -88,6 +92,21 @@ func TestTravel_Copy(t *testing.T) {
 		}
 		if got.Plans[1].EndDate != nil {
 			t.Errorf("Plans[1].EndDate = %v, want nil", got.Plans[1].EndDate)
+		}
+	})
+
+	t.Run("開始日未定を保ち、開始日を深くコピーする", func(t *testing.T) {
+		src := newSource()
+		src.Plans[1].StartDate = nil
+		got := src.Copy(2)
+		if got.Plans[1].StartDate != nil {
+			t.Fatalf("undated plan gained date: %v", got.Plans[1].StartDate)
+		}
+		if got.Plans[0].StartDate == nil || !got.Plans[0].StartDate.Equal(start) {
+			t.Fatalf("dated plan lost date: %v", got.Plans[0].StartDate)
+		}
+		if got.Plans[0].StartDate == src.Plans[0].StartDate {
+			t.Fatal("start date pointer is shared")
 		}
 	})
 

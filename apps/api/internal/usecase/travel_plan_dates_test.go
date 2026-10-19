@@ -40,7 +40,7 @@ func TestTravelPlanDatesWithinTravel(t *testing.T) {
 					travelRepository := &mock.MockTravelRepository{FindByIDFunc: func(uint) (*model.Travel, error) { return travel, nil }}
 					planRepository := &mock.MockTravelPlanRepository{
 						FindByIDFunc: func(uint) (*model.TravelPlan, error) {
-							return &model.TravelPlan{ID: 2, TravelID: 1, StartDate: date(1), Place: "place", Content: "content"}, nil
+							return &model.TravelPlan{ID: 2, TravelID: 1, StartDate: datePtr(1), Place: "place", Content: "content"}, nil
 						},
 						CreateFunc: func(*model.TravelPlan) error { written = true; return nil },
 						UpdateFunc: func(*model.TravelPlan) error { written = true; return nil },
@@ -48,7 +48,7 @@ func TestTravelPlanDatesWithinTravel(t *testing.T) {
 					uc := NewTravelPlanUsecase(travelRepository, planRepository)
 					var err error
 					if operation == "create" {
-						_, err = uc.CreateTravelPlan(1, 1, CreateTravelPlanInput{StartDate: date(tt.start), EndDate: end, Place: "place", Content: "content"})
+						_, err = uc.CreateTravelPlan(1, 1, CreateTravelPlanInput{StartDate: datePtr(tt.start), EndDate: end, Place: "place", Content: "content"})
 					} else {
 						_, err = uc.UpdateTravelPlan(1, 1, 2, UpdateTravelPlanInput{StartDate: datePtr(tt.start), EndDate: end, EndDateSet: true})
 					}
