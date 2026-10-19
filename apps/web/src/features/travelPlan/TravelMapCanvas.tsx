@@ -1,10 +1,7 @@
 import { Alert, Box } from "@mui/material";
 import L from "leaflet";
 import { useEffect, useRef, useState } from "react";
-
-// oxlint-disable-next-line import/no-unassigned-import -- Leaflet requires its stylesheet.
 import "leaflet/dist/leaflet.css";
-// oxlint-disable-next-line import/no-unassigned-import -- Numbered marker styles.
 import "./travelMap.css";
 import { type MapPlan, groupMapPlans } from "./mapPlans";
 
