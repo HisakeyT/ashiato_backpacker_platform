@@ -5,18 +5,6 @@ export const getTravelPlans = async (token: string, travelId: number): Promise<T
   return apiFetch<TravelPlan[]>(`/api/travels/${travelId}/plans`, { token, method: "GET" });
 };
 
-export const reorderTravelPlans = async (
-  token: string,
-  travelId: number,
-  planIds: number[],
-): Promise<void> => {
-  await apiFetch<void>(`/api/travels/${travelId}/plans/order`, {
-    token,
-    method: "PUT",
-    body: { planIds },
-  });
-};
-
 export const createTravelPlan = async (
   token: string,
   travelId: number,

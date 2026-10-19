@@ -27,7 +27,6 @@ type TravelPlanFormProps = {
   defaultDate?: string;
   minDate?: string;
   maxDate?: string;
-  mode: "planning" | "recorded";
   submitLabel: string;
   error: string | null;
   isSubmitting: boolean;
@@ -52,7 +51,6 @@ export const TravelPlanForm = ({
   defaultDate,
   minDate,
   maxDate,
-  mode,
   submitLabel,
   error,
   isSubmitting,
@@ -70,7 +68,7 @@ export const TravelPlanForm = ({
     <Box className="TravelPlanForm" component="form" onSubmit={handleSubmit}>
       <Stack spacing={3}>
         {error && <Alert severity="error">{error}</Alert>}
-        <PlanDates details={details} minDate={minDate} maxDate={maxDate} mode={mode} />
+        <PlanDates details={details} minDate={minDate} maxDate={maxDate} />
         <PlanPlace details={details} search={search} />
         <PlanLocation details={details} />
         <PlanContent details={details} />

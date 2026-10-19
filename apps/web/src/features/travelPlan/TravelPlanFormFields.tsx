@@ -17,28 +17,19 @@ export const PlanDates = ({
   details,
   minDate,
   maxDate,
-  mode,
 }: {
   details: PlanDetails;
   minDate?: string;
   maxDate?: string;
-  mode: "planning" | "recorded";
 }) => (
   <>
-    <FormField
-      label={mode === "planning" ? "開始日（任意）" : "開始日"}
-      htmlFor="plan-start-date"
-      required={mode === "recorded"}
-    >
+    <FormField label="開始日" htmlFor="plan-start-date" required>
       <TextField
         id="plan-start-date"
         type="date"
         value={details.startDate}
-        onChange={(e) => {
-          details.setStartDate(e.target.value);
-          if (!e.target.value) details.setEndDate("");
-        }}
-        required={mode === "recorded"}
+        onChange={(e) => details.setStartDate(e.target.value)}
+        required
         fullWidth
         slotProps={{ htmlInput: { min: minDate, max: maxDate } }}
       />
@@ -49,7 +40,6 @@ export const PlanDates = ({
         type="date"
         value={details.endDate}
         onChange={(e) => details.setEndDate(e.target.value)}
-        disabled={!details.startDate}
         fullWidth
         slotProps={{ htmlInput: { min: details.startDate || minDate, max: maxDate } }}
       />

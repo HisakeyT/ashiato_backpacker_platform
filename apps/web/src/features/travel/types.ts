@@ -5,7 +5,6 @@ export type Travel = {
   startDate: string;
   endDate: string;
   isPublic: boolean;
-  scheduleMode: "planning" | "recorded";
   createdAt: string;
   updatedAt: string;
 };
@@ -30,6 +29,4 @@ export type CreateTravelInput = {
   isPublic: boolean;
 };
 
-export type UpdateTravelInput = Partial<CreateTravelInput> & {
-  scheduleMode?: Travel["scheduleMode"];
-};
+export type UpdateTravelInput = CreateTravelInput;
