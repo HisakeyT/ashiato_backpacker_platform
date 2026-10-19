@@ -35,7 +35,7 @@ func TestHandler_UpdateTravelPlan(t *testing.T) {
 					return &model.TravelPlan{
 						ID:        1,
 						TravelID:  1,
-						StartDate: time.Date(2026, 10, 1, 0, 0, 0, 0, time.UTC),
+						StartDate: planDate(time.Date(2026, 10, 1, 0, 0, 0, 0, time.UTC)),
 						Place:     "バンコク",
 						Content:   "ワット・ポー",
 						SortOrder: 1,
@@ -57,7 +57,7 @@ func TestHandler_UpdateTravelPlan(t *testing.T) {
 					return &model.TravelPlan{
 						ID:        1,
 						TravelID:  1,
-						StartDate: time.Date(2026, 10, 1, 0, 0, 0, 0, time.UTC),
+						StartDate: planDate(time.Date(2026, 10, 1, 0, 0, 0, 0, time.UTC)),
 						Place:     "バンコク",
 						Content:   "ワット・ポー",
 						SortOrder: 1,
@@ -79,7 +79,7 @@ func TestHandler_UpdateTravelPlan(t *testing.T) {
 					return &model.TravelPlan{
 						ID:        1,
 						TravelID:  1,
-						StartDate: time.Date(2026, 10, 1, 0, 0, 0, 0, time.UTC),
+						StartDate: planDate(time.Date(2026, 10, 1, 0, 0, 0, 0, time.UTC)),
 						Place:     "バンコク",
 						Content:   "ワット・ポー",
 						SortOrder: 1,
@@ -101,7 +101,7 @@ func TestHandler_UpdateTravelPlan(t *testing.T) {
 					return &model.TravelPlan{
 						ID:        1,
 						TravelID:  1,
-						StartDate: time.Date(2026, 10, 1, 0, 0, 0, 0, time.UTC),
+						StartDate: planDate(time.Date(2026, 10, 1, 0, 0, 0, 0, time.UTC)),
 						Place:     "バンコク",
 						Content:   "ワット・ポー",
 						SortOrder: 1,

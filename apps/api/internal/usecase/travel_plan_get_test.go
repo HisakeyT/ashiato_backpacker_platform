@@ -25,7 +25,7 @@ func TestUsecase_GetTravelPlans(t *testing.T) {
 					{
 						ID:        1,
 						TravelID:  travelID,
-						StartDate: time.Date(2026, 10, 1, 0, 0, 0, 0, time.UTC),
+						StartDate: planDate(time.Date(2026, 10, 1, 0, 0, 0, 0, time.UTC)),
 						Place:     "バンコク",
 						Content:   "ワット・ポーを観光",
 						SortOrder: 1,
@@ -33,7 +33,7 @@ func TestUsecase_GetTravelPlans(t *testing.T) {
 					{
 						ID:        2,
 						TravelID:  travelID,
-						StartDate: time.Date(2026, 10, 2, 0, 0, 0, 0, time.UTC),
+						StartDate: planDate(time.Date(2026, 10, 2, 0, 0, 0, 0, time.UTC)),
 						Place:     "バンコク",
 						Content:   "王宮を観光",
 						SortOrder: 2,

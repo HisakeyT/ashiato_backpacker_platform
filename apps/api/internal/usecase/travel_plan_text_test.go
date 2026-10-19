@@ -22,7 +22,7 @@ func TestTravelPlanTextValidation(t *testing.T) {
 				}
 				planRepository := &mock.MockTravelPlanRepository{
 					FindByIDFunc: func(id uint) (*model.TravelPlan, error) {
-						return &model.TravelPlan{ID: 2, TravelID: 1, StartDate: startDate, Place: "place", Content: "content"}, nil
+						return &model.TravelPlan{ID: 2, TravelID: 1, StartDate: &startDate, Place: "place", Content: "content"}, nil
 					},
 					CreateFunc: func(plan *model.TravelPlan) error { written = true; return nil },
 					UpdateFunc: func(plan *model.TravelPlan) error { written = true; return nil },
@@ -36,7 +36,7 @@ func TestTravelPlanTextValidation(t *testing.T) {
 				}
 				var err error
 				if operation == "create" {
-					_, err = useCase.CreateTravelPlan(1, 1, CreateTravelPlanInput{StartDate: startDate, Place: place, Content: content})
+					_, err = useCase.CreateTravelPlan(1, 1, CreateTravelPlanInput{StartDate: &startDate, Place: place, Content: content})
 				} else {
 					_, err = useCase.UpdateTravelPlan(1, 1, 2, UpdateTravelPlanInput{Place: &place, Content: &content})
 				}

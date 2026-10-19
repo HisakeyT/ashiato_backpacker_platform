@@ -28,7 +28,7 @@ func NewTravelPlanUsecase(
 }
 
 type CreateTravelPlanInput struct {
-	StartDate time.Time
+	StartDate *time.Time
 	EndDate   *time.Time
 	Place     string
 	Location  model.Location
@@ -77,13 +77,14 @@ func (uc *TravelPlanUsecase) CreateTravelPlan(userID, travelID uint, input Creat
 }
 
 type UpdateTravelPlanInput struct {
-	StartDate  *time.Time
-	EndDate    *time.Time
-	EndDateSet bool
-	Place      *string
-	Location   *model.Location
-	Content    *string
-	SortOrder  *int
+	StartDate    *time.Time
+	StartDateSet bool
+	EndDate      *time.Time
+	EndDateSet   bool
+	Place        *string
+	Location     *model.Location
+	Content      *string
+	SortOrder    *int
 }
 
 func (uc *TravelPlanUsecase) UpdateTravelPlan(userID, travelID, travelPlanID uint, input UpdateTravelPlanInput) (*model.TravelPlan, error) {
@@ -125,12 +126,21 @@ func (uc *TravelPlanUsecase) UpdateTravelPlan(userID, travelID, travelPlanID uin
 	return travelPlan, nil
 }
 
-func validatePlanDates(start time.Time, end *time.Time, travel *model.Travel) error {
-	lastDay := start
+func validatePlanDates(start *time.Time, end *time.Time, travel *model.Travel) error {
+	if start == nil {
+		if end != nil {
+			return model.ErrTravelPlanEndWithoutStart
+		}
+		if travel.ScheduleMode == model.ScheduleModeRecorded {
+			return model.ErrTravelPlanStartDateRequired
+		}
+		return nil
+	}
+	lastDay := *start
 	if end != nil {
 		lastDay = *end
 	}
-	if err := validateDateRange(start, lastDay); err != nil {
+	if err := validateDateRange(*start, lastDay); err != nil {
 		return err
 	}
 	if start.Before(travel.StartDate) || lastDay.After(travel.EndDate) {
@@ -187,8 +197,8 @@ func (uc *TravelPlanUsecase) DeleteTravelPlan(userID, travelID, travelPlanID uin
 }
 
 func applyTravelPlanUpdates(travelPlan *model.TravelPlan, input UpdateTravelPlanInput) {
-	if input.StartDate != nil {
-		travelPlan.StartDate = *input.StartDate
+	if input.StartDateSet || input.StartDate != nil {
+		travelPlan.StartDate = input.StartDate
 	}
 
 	if input.EndDateSet || input.EndDate != nil {
@@ -229,4 +239,18 @@ func (uc *TravelPlanUsecase) GetPublicTravelPlan(travelID uint) ([]model.TravelP
 	}
 
 	return travelPlans, nil
+}
+
+func (uc *TravelPlanUsecase) ReorderTravelPlans(userID, travelID uint, ids []uint) error {
+	travel, err := uc.travelRepository.FindByID(travelID)
+	if err != nil {
+		return err
+	}
+	if travel.UserID != userID {
+		return model.ErrUserNotAuthorized
+	}
+	if travel.ScheduleMode != model.ScheduleModePlanning {
+		return model.ErrTravelPlanOrderOnlyPlanning
+	}
+	return uc.travelPlanRepository.Reorder(travelID, ids)
 }

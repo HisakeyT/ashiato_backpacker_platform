@@ -21,38 +21,41 @@ type LoginResponse struct {
 // travel
 // TravelResponse は自分の旅行の基本情報。
 type TravelResponse struct {
-	ID        uint      `json:"id"`
-	UserID    uint      `json:"user_id"`
-	Title     string    `json:"title"`
-	StartDate string    `json:"start_date"`
-	EndDate   string    `json:"end_date"`
-	IsPublic  bool      `json:"is_public"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	ID           uint               `json:"id"`
+	UserID       uint               `json:"user_id"`
+	Title        string             `json:"title"`
+	StartDate    string             `json:"start_date"`
+	EndDate      string             `json:"end_date"`
+	IsPublic     bool               `json:"is_public"`
+	ScheduleMode model.ScheduleMode `json:"schedule_mode"`
+	CreatedAt    time.Time          `json:"created_at"`
+	UpdatedAt    time.Time          `json:"updated_at"`
 }
 
 func toTravelResponse(t *model.Travel) TravelResponse {
 	return TravelResponse{
-		ID:        t.ID,
-		UserID:    t.UserID,
-		Title:     t.Title,
-		StartDate: t.StartDate.Format(dateLayout),
-		EndDate:   t.EndDate.Format(dateLayout),
-		IsPublic:  t.IsPublic,
-		CreatedAt: t.CreatedAt,
-		UpdatedAt: t.UpdatedAt,
+		ID:           t.ID,
+		UserID:       t.UserID,
+		Title:        t.Title,
+		StartDate:    t.StartDate.Format(dateLayout),
+		EndDate:      t.EndDate.Format(dateLayout),
+		IsPublic:     t.IsPublic,
+		ScheduleMode: t.ScheduleMode,
+		CreatedAt:    t.CreatedAt,
+		UpdatedAt:    t.UpdatedAt,
 	}
 }
 
 // PublicTravelResponse は公開旅行の一覧・詳細用。user_id は出さず、投稿者名を返す。
 type PublicTravelResponse struct {
-	ID             uint      `json:"id"`
-	Title          string    `json:"title"`
-	StartDate      string    `json:"start_date"`
-	EndDate        string    `json:"end_date"`
-	AuthorNickname string    `json:"author_nickname"`
-	CreatedAt      time.Time `json:"created_at"`
-	UpdatedAt      time.Time `json:"updated_at"`
+	ID             uint               `json:"id"`
+	Title          string             `json:"title"`
+	StartDate      string             `json:"start_date"`
+	EndDate        string             `json:"end_date"`
+	AuthorNickname string             `json:"author_nickname"`
+	ScheduleMode   model.ScheduleMode `json:"schedule_mode"`
+	CreatedAt      time.Time          `json:"created_at"`
+	UpdatedAt      time.Time          `json:"updated_at"`
 }
 
 func toPublicTravelResponse(t *model.PublicTravel) PublicTravelResponse {
@@ -62,6 +65,7 @@ func toPublicTravelResponse(t *model.PublicTravel) PublicTravelResponse {
 		StartDate:      t.StartDate.Format(dateLayout),
 		EndDate:        t.EndDate.Format(dateLayout),
 		AuthorNickname: t.AuthorNickname,
+		ScheduleMode:   t.ScheduleMode,
 		CreatedAt:      t.CreatedAt,
 		UpdatedAt:      t.UpdatedAt,
 	}
@@ -99,7 +103,7 @@ func toTravelDetailResponse(detail *model.TravelDetail) TravelDetailResponse {
 type TravelPlanResponse struct {
 	ID        uint      `json:"id"`
 	TravelID  uint      `json:"travel_id"`
-	StartDate string    `json:"start_date"`
+	StartDate *string   `json:"start_date"`
 	EndDate   *string   `json:"end_date"`
 	Place     string    `json:"place"`
 	Country   *string   `json:"country"`
@@ -114,6 +118,11 @@ type TravelPlanResponse struct {
 }
 
 func toTravelPlanResponse(p model.TravelPlan) TravelPlanResponse {
+	var startDate *string
+	if p.StartDate != nil {
+		formatted := p.StartDate.Format(dateLayout)
+		startDate = &formatted
+	}
 	var endDate *string
 	if p.EndDate != nil {
 		formattedEndDate := p.EndDate.Format(dateLayout)
@@ -123,7 +132,7 @@ func toTravelPlanResponse(p model.TravelPlan) TravelPlanResponse {
 	return TravelPlanResponse{
 		ID:        p.ID,
 		TravelID:  p.TravelID,
-		StartDate: p.StartDate.Format(dateLayout),
+		StartDate: startDate,
 		EndDate:   endDate,
 		Place:     p.Place,
 		Country:   p.Location.Country,

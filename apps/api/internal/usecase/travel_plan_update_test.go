@@ -41,7 +41,7 @@ func TestUsecase_UpdateTravelPlan(t *testing.T) {
 				want: &model.TravelPlan{
 					ID:        travelPlanID,
 					TravelID:  travelID,
-					StartDate: newDate,
+					StartDate: &newDate,
 					Place:     place,
 					Content:   content,
 					SortOrder: sortOrder,
@@ -55,7 +55,7 @@ func TestUsecase_UpdateTravelPlan(t *testing.T) {
 				want: &model.TravelPlan{
 					ID:        travelPlanID,
 					TravelID:  travelID,
-					StartDate: date,
+					StartDate: &date,
 					Place:     newPlace,
 					Content:   content,
 					SortOrder: sortOrder,
@@ -69,7 +69,7 @@ func TestUsecase_UpdateTravelPlan(t *testing.T) {
 				want: &model.TravelPlan{
 					ID:        travelPlanID,
 					TravelID:  travelID,
-					StartDate: date,
+					StartDate: &date,
 					Place:     place,
 					Content:   newContent,
 					SortOrder: sortOrder,
@@ -83,7 +83,7 @@ func TestUsecase_UpdateTravelPlan(t *testing.T) {
 				want: &model.TravelPlan{
 					ID:        travelPlanID,
 					TravelID:  travelID,
-					StartDate: date,
+					StartDate: &date,
 					Place:     place,
 					Content:   content,
 					SortOrder: newSortOrder,
@@ -98,7 +98,7 @@ func TestUsecase_UpdateTravelPlan(t *testing.T) {
 						return &model.TravelPlan{
 							ID:        travelPlanID,
 							TravelID:  travelID,
-							StartDate: date,
+							StartDate: &date,
 							Place:     place,
 							Content:   content,
 							SortOrder: sortOrder,
@@ -304,7 +304,7 @@ func TestUsecase_UpdateTravelPlan_InvalidLocation(t *testing.T) {
 					return &model.TravelPlan{
 						ID:        20,
 						TravelID:  10,
-						StartDate: time.Date(2026, 10, 1, 0, 0, 0, 0, time.UTC),
+						StartDate: planDate(time.Date(2026, 10, 1, 0, 0, 0, 0, time.UTC)),
 					}, nil
 				},
 				UpdateFunc: func(plan *model.TravelPlan) error {
