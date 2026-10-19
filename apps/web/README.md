@@ -33,3 +33,23 @@ docker compose run --rm web npm run lint -- --fix-dangerously
 ```
 
 修正後は `docker compose run --rm web npm run lint`、`docker compose run --rm web npm run format:check`、`docker compose run --rm web npm run build` を実行します。
+
+## 旅行詳細の地図
+
+自分の旅行・公開旅行で `TravelMap` を共用し、取得済みの Plan だけを表示します。
+地図用の API 呼び出しや認証は追加していません。表示順は `sort_order, id` で、
+番号には位置情報のない Plan も含みます。同じ座標はピンをまとめ、番号で識別します。
+位置情報のない Plan の名前は地図の近くの案内から確認できます。
+
+Leaflet 1.9.4（BSD-2-Clause）を遅延読み込みしています。
+背景は OpenStreetMap Standard タイルです。帰属表示を維持し、通常のブラウザの
+Referer・HTTP キャッシュを利用します。事前取得・オフラインダウンロードはしません。
+本番の Referrer-Policy でクロスオリジンの Referer を完全に無効化しないでください。
+タイルに可用性保証はないため、背景の取得失敗時もプラン一覧を利用できます。
+アクセス規模が増えた場合はタイル提供元を見直してください。
+
+- Leaflet ライセンス: https://github.com/Leaflet/Leaflet/blob/v1.9.4/LICENSE
+- タイル利用条件: https://operations.osmfoundation.org/policies/tiles/
+- 地図データの帰属: https://www.openstreetmap.org/copyright
+
+確認コマンド: `npm test`、`npm run lint`、`npm run build`。
