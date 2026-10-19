@@ -5,7 +5,7 @@ import { ConfirmDialog } from "../../components/ConfirmDialog";
 
 import { useFlash } from "../../app/providers/useFlash";
 import type { TravelDetail } from "../travel/types";
-import { TravelMap } from "./TravelMap";
+import { TravelMap } from "./map/TravelMap";
 import { TravelPlanDialog } from "./TravelPlanDialog";
 import { TravelPlanList } from "./TravelPlanList";
 import type { TravelPlan } from "./types";

@@ -1,11 +1,13 @@
 import { Alert, Box, Button, Typography } from "@mui/material";
 import { Component, type ReactNode, Suspense, lazy, useId, useMemo } from "react";
 
+import type { TravelPlan } from "../types";
 import { mapPlans } from "./mapPlans";
-import type { TravelPlan } from "./types";
 
+// Leaflet を使う Canvas は、座標のあるプランを実際に描画するときだけ読み込む。
 const Canvas = lazy(() => import("./TravelMapCanvas"));
 
+/** 地図の読み込みや描画に失敗したとき、プラン一覧へ誘導する表示に切り替える。 */
 class MapErrorBoundary extends Component<{ children: ReactNode }, { failed: boolean }> {
   state = { failed: false };
   static getDerivedStateFromError() {
@@ -63,6 +65,7 @@ const MapContent = ({ located, missing }: ReturnType<typeof mapPlans>) => (
 
 export const TravelMap = ({ plans }: { plans: TravelPlan[] }) => {
   const { located, missing } = useMemo(() => mapPlans(plans), [plans]);
+  // ボタンの移動先は地図の直後。ここから続くページ内のプラン一覧へ進める。
   const listId = useId();
   return (
     <Box component="section" aria-label="旅の地図" sx={{ mt: 4 }}>

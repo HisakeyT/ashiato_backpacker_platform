@@ -10,8 +10,8 @@ import { useFlash } from "../../app/providers/useFlash.ts";
 import { copyTravel, getPublicTravel } from "../travel/repository";
 import { scheduleLabel } from "../travel/scheduleLabel";
 import type { PublicTravel } from "../travel/types";
+import { TravelMap } from "../travelPlan/map/TravelMap";
 import { getPublicTravelPlans } from "../travelPlan/repository";
-import { TravelMap } from "../travelPlan/TravelMap";
 import type { TravelPlan } from "../travelPlan/types";
 import { PublicTravelPlanList } from "./PublicTravelPlanList";
 
