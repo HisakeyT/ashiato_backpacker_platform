@@ -5,12 +5,12 @@ import { ConfirmDialog } from "../../components/ConfirmDialog";
 
 import { useAuth } from "../../app/providers/useAuth";
 import { useFlash } from "../../app/providers/useFlash";
-import type { TravelDetail } from "../travel/types";
-import { deleteTravelPlan, getTravelPlans, reorderTravelPlans } from "./repository";
-import { sortPlans } from "./sortPlans";
-import { TravelPlanDialog } from "./TravelPlanDialog";
-import { TravelPlanList } from "./TravelPlanList";
-import type { TravelPlan } from "./types";
+import { deleteTravelPlan, getTravelPlans, reorderTravelPlans } from "../travelPlan/repository";
+import { sortPlans } from "../travelPlan/sortPlans";
+import { TravelPlanDialog } from "../travelPlan/TravelPlanDialog";
+import { TravelPlanList } from "../travelPlan/TravelPlanList";
+import type { TravelPlan } from "../travelPlan/types";
+import type { TravelDetail } from "./types";
 
 const usePlanData = (travelId: number) => {
   const { token } = useAuth();
@@ -176,16 +176,16 @@ const showMovedPlan = ({
   target,
   next,
   setPlans,
-  showFlash,
+  setMessage,
 }: {
   plan: TravelPlan;
   target: number;
   next: TravelPlan[];
   setPlans: (plans: TravelPlan[]) => void;
-  showFlash: (message: string) => void;
+  setMessage: (message: string) => void;
 }) => {
   setPlans(next);
-  showFlash(`${plan.place}を${target + 1}番目に移動しました`);
+  setMessage(`${plan.place}を${target + 1}番目に移動しました`);
   focusMovedPlan(plan);
 };
 
@@ -195,14 +195,14 @@ const usePlanOrder = (
   setPlans: (plans: TravelPlan[]) => void,
 ) => {
   const { token } = useAuth();
-  const { showFlash } = useFlash();
+  const [message, setMessage] = useState("");
   const busy = useRef(false);
   const move = async (plan: TravelPlan, target: number) => {
     if (!token || busy.current) return;
     busy.current = true;
     const before = sortPlans(plans, "planning");
     const next = movePlan(before, plan, target);
-    showMovedPlan({ plan, target, next, setPlans, showFlash });
+    showMovedPlan({ plan, target, next, setPlans, setMessage });
     try {
       await reorderTravelPlans(
         token,
@@ -211,12 +211,12 @@ const usePlanOrder = (
       );
     } catch {
       setPlans(before);
-      showFlash("並べ替えに失敗しました。元の順序に戻しました", "error");
+      setMessage("並べ替えに失敗しました。元の順序に戻しました");
     } finally {
       busy.current = false;
     }
   };
-  return { move };
+  return { message, move };
 };
 
 const defaultPlanDate = (travel: TravelDetail, plans: TravelPlan[]): string => {
@@ -237,6 +237,9 @@ export const TravelPlansSection = ({ travel }: { travel: TravelDetail }) => {
   return (
     <>
       <PlanSectionHeader onAdd={() => editor.setIsOpen(true)} />
+      <Box component="output" aria-live="polite" sx={{ display: "block", color: "text.secondary" }}>
+        {order.message}
+      </Box>
       {plansError ? (
         <Typography color="error">{plansError}</Typography>
       ) : (

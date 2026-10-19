@@ -5,10 +5,10 @@ import { RegisterPage } from "../features/auth/RegisterPage";
 import { HomePage } from "../features/home/HomePage";
 import { PublicTravelDetailPage } from "../features/publicTravel/PublicTravelDetailPage";
 import { PublicTravelListPage } from "../features/publicTravel/PublicTravelListPage";
-import { TravelCreatePage } from "../features/travel/pages/TravelCreatePage";
-import { TravelDetailPage } from "../features/travel/pages/TravelDetailPage";
-import { TravelEditPage } from "../features/travel/pages/TravelEditPage";
-import { TravelListPage } from "../features/travel/pages/TravelListPage";
+import { TravelCreatePage } from "../features/travel/TravelCreatePage";
+import { TravelDetailPage } from "../features/travel/TravelDetailPage";
+import { TravelEditPage } from "../features/travel/TravelEditPage";
+import { TravelListPage } from "../features/travel/TravelListPage";
 import { AppLayout } from "./AppLayout";
 import { RequireAuth } from "./RequireAuth";
 
