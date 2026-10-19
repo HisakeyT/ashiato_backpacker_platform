@@ -1,12 +1,14 @@
 import { Alert, Box, Button, Typography } from "@mui/material";
 import { Component, type ReactNode, Suspense, lazy, useId, useMemo, useState } from "react";
 
-import { MapPlanDetails } from "./MapPlanDetails";
+import { MapPlanDetails } from "../MapPlanDetails";
+import type { TravelPlan } from "../types";
 import { mapPlans } from "./mapPlans";
-import type { TravelPlan } from "./types";
 
+// Leaflet を使う Canvas は、座標のあるプランを実際に描画するときだけ読み込む。
 const Canvas = lazy(() => import("./TravelMapCanvas"));
 
+/** 地図の読み込みや描画に失敗したとき、プラン一覧へ誘導する表示に切り替える。 */
 class MapErrorBoundary extends Component<{ children: ReactNode }, { failed: boolean }> {
   state = { failed: false };
   static getDerivedStateFromError() {
@@ -21,26 +23,24 @@ class MapErrorBoundary extends Component<{ children: ReactNode }, { failed: bool
   }
 }
 
-export const TravelMap = ({ plans }: { plans: TravelPlan[] }) => {
-  const { located, missing } = useMemo(() => mapPlans(plans), [plans]);
-  const [selectedIds, setSelectedIds] = useState<number[]>([]);
-  const selected = located.filter(({ plan }) => selectedIds.includes(plan.id));
-  const titleId = useId();
-  const listId = useId();
-  return (
-    <Box component="section" aria-label="旅の地図" sx={{ mt: 4 }}>
-      <Typography variant="h5" component="h2" sx={{ mb: 1 }}>
-        旅の地図
-      </Typography>
-      <Button component="a" href={`#${listId}`}>
-        プラン一覧へ進む
-      </Button>
-      <MapContent located={located} missing={missing} onSelect={setSelectedIds} />
-      <MapPlanDetails selected={selected} titleId={titleId} onClose={() => setSelectedIds([])} />
-      <Box id={listId} tabIndex={-1} aria-label="プラン一覧の開始" />
-    </Box>
-  );
-};
+const MissingPlans = ({ missing }: { missing: TravelPlan[] }) => (
+  <>
+    {missing.length > 0 && (
+      <Alert severity="info" sx={{ mt: 2 }}>
+        位置情報がない、または不正なプラン {missing.length}
+        件は地図に表示していません。プラン一覧では引き続き確認できます。
+        <Box component="details" sx={{ overflowWrap: "anywhere" }}>
+          <summary>対象のプランを見る</summary>
+          <ul>
+            {missing.map((plan) => (
+              <li key={plan.id}>{plan.place}</li>
+            ))}
+          </ul>
+        </Box>
+      </Alert>
+    )}
+  </>
+);
 
 const MapContent = ({
   located,
@@ -83,21 +83,24 @@ const MapContent = ({
   </>
 );
 
-const MissingPlans = ({ missing }: { missing: TravelPlan[] }) => (
-  <>
-    {missing.length > 0 && (
-      <Alert severity="info" sx={{ mt: 2 }}>
-        位置情報がない、または不正なプラン {missing.length}
-        件は地図に表示していません。プラン一覧では引き続き確認できます。
-        <Box component="details" sx={{ overflowWrap: "anywhere" }}>
-          <summary>対象のプランを見る</summary>
-          <ul>
-            {missing.map((plan) => (
-              <li key={plan.id}>{plan.place}</li>
-            ))}
-          </ul>
-        </Box>
-      </Alert>
-    )}
-  </>
-);
+export const TravelMap = ({ plans }: { plans: TravelPlan[] }) => {
+  const { located, missing } = useMemo(() => mapPlans(plans), [plans]);
+  const [selectedIds, setSelectedIds] = useState<number[]>([]);
+  const selected = located.filter(({ plan }) => selectedIds.includes(plan.id));
+  const titleId = useId();
+  // ボタンの移動先は地図の直後。ここから続くページ内のプラン一覧へ進める。
+  const listId = useId();
+  return (
+    <Box component="section" aria-label="旅の地図" sx={{ mt: 4 }}>
+      <Typography variant="h5" component="h2" sx={{ mb: 1 }}>
+        旅の地図
+      </Typography>
+      <Button component="a" href={`#${listId}`}>
+        プラン一覧へ進む
+      </Button>
+      <MapContent located={located} missing={missing} onSelect={setSelectedIds} />
+      <MapPlanDetails selected={selected} titleId={titleId} onClose={() => setSelectedIds([])} />
+      <Box id={listId} tabIndex={-1} aria-label="プラン一覧の開始" />
+    </Box>
+  );
+};

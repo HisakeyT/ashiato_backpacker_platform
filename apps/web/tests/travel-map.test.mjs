@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { groupMapPlans, mapPlans } from "../src/features/travelPlan/mapPlans.ts";
+import { groupMapPlans, mapPlans } from "../src/features/travelPlan/map/mapPlans.ts";
 const makePlan = (id, sortOrder, [latitude, longitude]) => ({ id, sortOrder, latitude, longitude });
 
 test("sorts by manual order then ID, leaves input intact and preserves zero coordinates", () => {

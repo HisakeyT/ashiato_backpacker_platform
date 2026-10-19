@@ -12,7 +12,7 @@
     "react/rules-of-hooks": "error",
     "react/only-export-components": ["warn", { "allowConstantExport": true }],
     "react/react-in-jsx-scope": "off",
-    "import/no-unassigned-import": "error",
+    "import/no-unassigned-import": ["error", { "allow": ["**/*.css"] }],
     "sort-imports": ["error", { "ignoreDeclarationSort": true }],
     "func-style": ["error", "declaration", { "allowArrowFunctions": true }],
     "prefer-arrow-callback": "error",

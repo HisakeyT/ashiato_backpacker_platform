@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 
 import { formatPeriod } from "./format";
-import type { MapPlan } from "./mapPlans";
+import type { MapPlan } from "./map/mapPlans";
 
 export const MapPlanDetails = ({
   selected,

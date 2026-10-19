@@ -6,7 +6,7 @@ import { PageBreadcrumbs } from "../../../components/PageBreadcrumbs";
 
 import { useAuth } from "../../../app/providers/useAuth";
 import { getTravelPlans } from "../../travelPlan/repository";
-import { TravelPlansSection } from "../../travelPlan/TravelPlansSection";
+import { TravelPlansSection } from "../../travelPlan/TravelPlansSection/TravelPlansSection";
 import { getTravel, updateTravel } from "../repository";
 import { TravelDetailHeader } from "../TravelDetailHeader";
 import type { TravelDetail } from "../types";
