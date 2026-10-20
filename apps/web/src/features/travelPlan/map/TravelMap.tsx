@@ -50,14 +50,14 @@ const MapContent = ({
   <>
     {located.length ? (
       <>
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-          番号は登録した訪問順です。線は地点を直線で結んだもので、実際の道路・交通経路ではありません。位置情報のないプランは飛ばして結びます。
-        </Typography>
         <MapErrorBoundary>
           <Suspense fallback={<Typography component="output">地図を読み込んでいます…</Typography>}>
             <Canvas located={located} onSelect={onSelect} />
           </Suspense>
         </MapErrorBoundary>
+        <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+          番号は登録した訪問順です。線は地点を直線で結んだもので、実際の道路・交通経路ではありません。位置情報のないプランは飛ばして結びます。
+        </Typography>
         <Box
           sx={{ display: "flex", gap: 1, flexWrap: "wrap", mt: 1 }}
           aria-label="地図のプラン詳細"
@@ -95,10 +95,10 @@ export const TravelMap = ({ plans }: { plans: TravelPlan[] }) => {
       <Typography variant="h5" component="h2" sx={{ mb: 1 }}>
         旅の地図
       </Typography>
-      <Button component="a" href={`#${listId}`}>
+      <MapContent located={located} missing={missing} onSelect={setSelectedIds} />
+      <Button component="a" href={`#${listId}`} sx={{ mt: 1 }}>
         プラン一覧へ進む
       </Button>
-      <MapContent located={located} missing={missing} onSelect={setSelectedIds} />
       <MapPlanDialog selected={selected} titleId={titleId} onClose={() => setSelectedIds([])} />
       <Box id={listId} tabIndex={-1} aria-label="プラン一覧の開始" />
     </Box>

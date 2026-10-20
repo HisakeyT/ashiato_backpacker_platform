@@ -1,3 +1,4 @@
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Card, CardContent, Typography } from "@mui/material";
 
 import { formatPeriod } from "../travelPlan/format";
@@ -10,19 +11,24 @@ type PublicTravelPlanCardProps = {
 export const PublicTravelPlanCard = ({ plan }: PublicTravelPlanCardProps) => {
   return (
     <Card
+      component="details"
       className="TravelPlanCard"
-      sx={{ height: "100%", display: "flex", flexDirection: "column" }}
+      sx={{ "&[open] .plan-expand-icon": { transform: "rotate(180deg)" } }}
     >
-      <CardContent sx={{ flexGrow: 1 }}>
-        <Typography variant="caption" color="text.secondary">
-          {formatPeriod(plan.startDate, plan.endDate)}
-        </Typography>
-        <Typography variant="h6" gutterBottom>
+      <CardContent
+        component="summary"
+        sx={{ cursor: "pointer", display: "flex", alignItems: "center", gap: 2, flexWrap: "wrap" }}
+      >
+        <Typography variant="body1" sx={{ flexGrow: 1, overflowWrap: "anywhere" }}>
           {plan.place}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          {plan.content}
+          {formatPeriod(plan.startDate, plan.endDate)}
         </Typography>
+        <ExpandMoreIcon className="plan-expand-icon" color="action" />
+      </CardContent>
+      <CardContent sx={{ pt: 0, whiteSpace: "pre-wrap", overflowWrap: "anywhere" }}>
+        {plan.content}
       </CardContent>
     </Card>
   );
