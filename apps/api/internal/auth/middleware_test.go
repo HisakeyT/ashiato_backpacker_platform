@@ -5,8 +5,48 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/HisakeyT/backpacker-platform/internal/model"
 	"github.com/gin-gonic/gin"
 )
+
+type versionOneLookup struct{}
+
+func (versionOneLookup) FindByID(id uint) (*model.User, error) {
+	return &model.User{ID: id, AuthVersion: 1}, nil
+}
+
+type versionLookup struct{ versions map[uint]uint }
+
+func (v versionLookup) FindByID(id uint) (*model.User, error) {
+	return &model.User{ID: id, AuthVersion: v.versions[id]}, nil
+}
+
+func TestAuthMiddlewareRejectsOldGenerationOnlyForChangedUser(t *testing.T) {
+	manager := NewJWTManager("test-secret")
+	first, err := manager.GenerateToken(1, 1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	second, err := manager.GenerateToken(2, 1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	router := gin.New()
+	router.Use(AuthMiddleware(manager, versionLookup{versions: map[uint]uint{1: 2, 2: 1}}))
+	router.GET("/test", func(c *gin.Context) { c.Status(http.StatusOK) })
+	for _, tc := range []struct {
+		token string
+		want  int
+	}{{first, http.StatusUnauthorized}, {second, http.StatusOK}} {
+		request := httptest.NewRequest(http.MethodGet, "/test", nil)
+		request.Header.Set("Authorization", "Bearer "+tc.token)
+		response := httptest.NewRecorder()
+		router.ServeHTTP(response, request)
+		if response.Code != tc.want {
+			t.Fatalf("status = %d, want %d", response.Code, tc.want)
+		}
+	}
+}
 
 func TestAuthMiddleware_ValidToken(t *testing.T) {
 	userID := uint(123)
@@ -18,7 +58,7 @@ func TestAuthMiddleware_ValidToken(t *testing.T) {
 
 	r := gin.New()
 
-	r.Use(AuthMiddleware(jwtManager))
+	r.Use(AuthMiddleware(jwtManager, versionOneLookup{}))
 
 	r.GET("/test", func(c *gin.Context) {
 		getUserID, exists := c.Get("userID")
@@ -128,7 +168,7 @@ func newTestJWTManager(t *testing.T) *JWTManager {
 func generateTestToken(t *testing.T, jwtManager *JWTManager, userID uint) string {
 	t.Helper()
 
-	token, err := jwtManager.GenerateToken(userID)
+	token, err := jwtManager.GenerateToken(userID, 1)
 	if err != nil {
 		t.Fatalf("failed to generate token: %v", err)
 	}
@@ -139,7 +179,7 @@ func generateTestToken(t *testing.T, jwtManager *JWTManager, userID uint) string
 func newTestRouter(t *testing.T, jwtManager *JWTManager) *gin.Engine {
 	r := gin.New()
 
-	r.Use(AuthMiddleware(jwtManager))
+	r.Use(AuthMiddleware(jwtManager, versionOneLookup{}))
 
 	r.GET("/test", func(c *gin.Context) {
 		c.Status(http.StatusOK)

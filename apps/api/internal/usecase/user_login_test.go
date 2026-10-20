@@ -16,7 +16,7 @@ type stubTokenGenerator struct {
 	err    error
 }
 
-func (generator *stubTokenGenerator) GenerateToken(userID uint) (string, error) {
+func (generator *stubTokenGenerator) GenerateToken(userID, _ uint) (string, error) {
 	generator.userID = userID
 	return "test-token", generator.err
 }
@@ -28,7 +28,7 @@ func TestLogin_UsesTokenGenerator(t *testing.T) {
 	}
 	repository := &mock.MockUserRepository{
 		FindByEmailFunc: func(email string) (*model.User, error) {
-			return &model.User{ID: 42, PasswordHash: string(hash)}, nil
+			return &model.User{ID: 42, AuthVersion: 1, PasswordHash: string(hash)}, nil
 		},
 	}
 	generator := &stubTokenGenerator{}
@@ -59,6 +59,7 @@ func TestLogin_Success(t *testing.T) {
 		FindByEmailFunc: func(email string) (*model.User, error) {
 			return &model.User{
 				ID:           1,
+				AuthVersion:  1,
 				Nickname:     "Taro",
 				Email:        "test@example.com",
 				PasswordHash: string(hashedPassword),

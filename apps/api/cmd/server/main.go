@@ -48,7 +48,7 @@ func main() {
 	r.POST("/login", userHandler.Login)
 
 	protected := r.Group("")
-	protected.Use(auth.AuthMiddleware(jwtManager))
+	protected.Use(auth.AuthMiddleware(jwtManager, userRepository))
 
 	protected.GET("/users/me", userHandler.Me)
 	protected.PATCH("/users/me", userHandler.UpdateMe)

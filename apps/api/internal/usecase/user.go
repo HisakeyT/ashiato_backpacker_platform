@@ -14,7 +14,7 @@ type UserUsecase struct {
 }
 
 type TokenGenerator interface {
-	GenerateToken(userID uint) (string, error)
+	GenerateToken(userID, authVersion uint) (string, error)
 }
 
 func NewUserUsecase(repository repository.UserRepository, tokenGenerator TokenGenerator) *UserUsecase {
@@ -57,6 +57,7 @@ func (u *UserUsecase) Register(input RegisterInput) (*model.User, error) {
 		Nickname:     input.Nickname,
 		Email:        input.Email,
 		PasswordHash: string(passwordHash),
+		AuthVersion:  1,
 	}
 
 	if err := u.repository.Create(user); err != nil {
@@ -91,7 +92,7 @@ func (u *UserUsecase) Login(input LoginInput) (*LoginOutput, error) {
 		return nil, model.ErrInvalidCredentials
 	}
 
-	token, err := u.tokenGenerator.GenerateToken(user.ID)
+	token, err := u.tokenGenerator.GenerateToken(user.ID, user.AuthVersion)
 	if err != nil {
 		return nil, err
 	}
