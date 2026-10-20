@@ -21,6 +21,12 @@ type fakeRepository struct {
 	err  error
 }
 
+type versionOneUserLookup struct{}
+
+func (versionOneUserLookup) FindByID(id uint) (*model.User, error) {
+	return &model.User{ID: id, AuthVersion: 1}, nil
+}
+
 func (f *fakeRepository) Create(user *model.User) error {
 	return nil
 }
@@ -137,6 +143,7 @@ func TestHandler_Login(t *testing.T) {
 			repository: &fakeRepository{
 				user: &model.User{
 					ID:           1,
+					AuthVersion:  1,
 					Nickname:     nickName,
 					Email:        email,
 					PasswordHash: string(passwordHash),
@@ -257,10 +264,10 @@ func TestHandler_Me(t *testing.T) {
 	useCase := usecase.NewUserUsecase(repository, jwtManager)
 	handler := NewHandler(useCase)
 
-	router.Use(auth.AuthMiddleware(jwtManager))
+	router.Use(auth.AuthMiddleware(jwtManager, versionOneUserLookup{}))
 	router.GET("/users/me", handler.Me)
 
-	token, err := jwtManager.GenerateToken(123)
+	token, err := jwtManager.GenerateToken(123, 1)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -314,10 +321,10 @@ func TestHandler_Me_UserNotFound(t *testing.T) {
 	handler := NewHandler(useCase)
 
 	router := gin.New()
-	router.Use(auth.AuthMiddleware(jwtManager))
+	router.Use(auth.AuthMiddleware(jwtManager, versionOneUserLookup{}))
 	router.GET("/users/me", handler.Me)
 
-	token, err := jwtManager.GenerateToken(123)
+	token, err := jwtManager.GenerateToken(123, 1)
 	if err != nil {
 		t.Fatal(err)
 	}
