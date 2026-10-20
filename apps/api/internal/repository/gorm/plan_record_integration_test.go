@@ -56,6 +56,24 @@ func TestPlanRecordTablesAndCascade(t *testing.T) {
 			t.Fatalf("%s find = %+v, err = %v", kind, found, err)
 		}
 	}
+	travelRepo := NewTravelRepository(tx)
+	source, err := travelRepo.FindByIDWithPlans(travel.ID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	copy := source.Copy(user.ID)
+	if err := travelRepo.CreateWithPlans(copy); err != nil {
+		t.Fatal(err)
+	}
+	if len(copy.Plans) != 1 || copy.Plans[0].ID == plan.ID {
+		t.Fatalf("copied plans = %+v", copy.Plans)
+	}
+	for _, kind := range []model.RecordKind{model.RecordSightseeing, model.RecordStay, model.RecordMeal, model.RecordOther} {
+		list, err := repo.List(kind, copy.Plans[0].ID)
+		if err != nil || len(list) != 0 {
+			t.Fatalf("%s copied list = %+v, err = %v", kind, list, err)
+		}
+	}
 	if err := tx.Delete(&plan).Error; err != nil {
 		t.Fatal(err)
 	}
