@@ -25,8 +25,14 @@ export const TravelPlanList = ({ plans, onEdit, onDelete, mode }: TravelPlanList
         gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 260px), 1fr))",
       }}
     >
-      {sortPlans(plans, mode).map((plan) => (
-        <TravelPlanCard key={plan.id} plan={plan} onEdit={onEdit} onDelete={onDelete} />
+      {sortPlans(plans, mode).map((plan, index) => (
+        <TravelPlanCard
+          key={plan.id}
+          plan={plan}
+          onEdit={onEdit}
+          onDelete={onDelete}
+          orderNumber={mode === "planning" ? index + 1 : undefined}
+        />
       ))}
     </Box>
   );
