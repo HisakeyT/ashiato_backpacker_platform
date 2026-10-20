@@ -142,14 +142,14 @@ export const PublicTravelDetailPage = () => {
         items={[{ label: "みんなの旅行記", to: "/public/travels" }, { label: travel.title }]}
       />
       <PublicTravelHeader travel={travel} />
-      {!plansError && <TravelMap key={travel.id} plans={plans} />}
+      {!plansError && <TravelMap key={travel.id} plans={plans} travelId={travel.id} publicView />}
       <Typography variant="h5" component="h2" sx={{ mt: 4, mb: 2 }}>
         旅のプラン
       </Typography>
       {plansError ? (
         <Typography color="error">{plansError}</Typography>
       ) : (
-        <PublicTravelPlanList plans={plans} mode={travel.scheduleMode} />
+        <PublicTravelPlanList plans={plans} mode={travel.scheduleMode} travelId={travel.id} />
       )}
     </Box>
   );

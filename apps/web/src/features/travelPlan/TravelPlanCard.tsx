@@ -1,5 +1,6 @@
 import { Box, Button, Card, CardActions, CardContent, Chip, Typography } from "@mui/material";
 
+import { PlanRecords } from "../planRecord/PlanRecords";
 import { formatPeriod } from "./format";
 import type { TravelPlan } from "./types";
 
@@ -8,9 +9,17 @@ type TravelPlanCardProps = {
   onEdit: (plan: TravelPlan) => void;
   onDelete: (plan: TravelPlan) => void;
   orderNumber?: number;
+  travelId: number;
 };
 
-export const TravelPlanCard = ({ plan, onEdit, onDelete, orderNumber }: TravelPlanCardProps) => {
+// eslint-disable-next-line eslint/max-lines-per-function
+export const TravelPlanCard = ({
+  plan,
+  onEdit,
+  onDelete,
+  orderNumber,
+  travelId,
+}: TravelPlanCardProps) => {
   return (
     <Card
       className="TravelPlanCard"
@@ -44,6 +53,7 @@ export const TravelPlanCard = ({ plan, onEdit, onDelete, orderNumber }: TravelPl
         <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: "pre-wrap" }}>
           {plan.content}
         </Typography>
+        <PlanRecords travelId={travelId} planId={plan.id} publicView={false} />
       </CardContent>
       <CardActions sx={{ flexWrap: "wrap", justifyContent: "flex-end" }}>
         <Button size="small" onClick={() => onEdit(plan)}>
