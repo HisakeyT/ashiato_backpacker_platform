@@ -40,6 +40,9 @@ export const apiFetch = async <T>(path: string, options: ApiFetchOptions): Promi
   });
 
   if (!response.ok) {
+    if (response.status === 401 && options.token) {
+      window.dispatchEvent(new Event("auth:unauthorized"));
+    }
     throw new ApiError(method, path, response.status);
   }
 
