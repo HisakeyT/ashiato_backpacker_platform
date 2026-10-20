@@ -1,3 +1,4 @@
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Button, Card, CardActions, CardContent, Menu, MenuItem, Typography } from "@mui/material";
 import { useState } from "react";
 
@@ -69,26 +70,31 @@ export const TravelPlanCard = ({
 }: TravelPlanCardProps) => {
   return (
     <Card
+      component="details"
       id={`plan-card-${plan.id}`}
       tabIndex={-1}
       className="TravelPlanCard"
-      sx={{ display: "flex", flexDirection: "column" }}
+      sx={{ "&[open] .plan-expand-icon": { transform: "rotate(180deg)" } }}
     >
-      <CardContent sx={{ flexGrow: 1 }}>
-        <Typography variant="caption" color="text.secondary">
-          {formatPeriod(plan.startDate, plan.endDate)}
-        </Typography>
-        <Typography variant="h6" gutterBottom>
+      <CardContent
+        component="summary"
+        sx={{ cursor: "pointer", display: "flex", alignItems: "center", gap: 2, flexWrap: "wrap" }}
+      >
+        <Typography variant="body1" sx={{ flexGrow: 1, overflowWrap: "anywhere" }}>
           {plan.place}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          {plan.content}
+          {formatPeriod(plan.startDate, plan.endDate)}
         </Typography>
         {position !== undefined && total !== undefined && (
           <Typography variant="caption" color="text.secondary">
             {position + 1} / {total}
           </Typography>
         )}
+        <ExpandMoreIcon className="plan-expand-icon" color="action" />
+      </CardContent>
+      <CardContent sx={{ pt: 0, whiteSpace: "pre-wrap", overflowWrap: "anywhere" }}>
+        {plan.content}
       </CardContent>
       <CardActions sx={{ flexWrap: "wrap", justifyContent: "flex-end" }}>
         {position !== undefined && total !== undefined && onMove && (

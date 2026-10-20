@@ -23,8 +23,7 @@ export const TravelPlanList = ({ plans, onEdit, onDelete, mode, onMove }: Travel
       sx={{
         display: "grid",
         gap: 2,
-        gridTemplateColumns:
-          mode === "planning" ? "1fr" : "repeat(auto-fill, minmax(min(100%, 220px), 1fr))",
+        gridTemplateColumns: "1fr",
       }}
     >
       {sortPlans(plans, mode).map((plan, index) => (

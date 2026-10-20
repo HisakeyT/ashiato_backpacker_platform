@@ -20,8 +20,7 @@ export const PublicTravelPlanList = ({ plans, mode }: Props) => {
       sx={{
         display: "grid",
         gap: 2,
-        justifyContent: "center",
-        gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 220px), 1fr))",
+        gridTemplateColumns: "1fr",
       }}
     >
       {sortPlans(plans, mode).map((plan) => (
