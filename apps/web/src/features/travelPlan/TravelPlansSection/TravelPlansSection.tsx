@@ -125,10 +125,8 @@ export const TravelPlansSection = ({ travel }: { travel: TravelDetail }) => {
       {isOrdering && travel.scheduleMode === "planning" ? (
         <PlanOrderEditor
           plans={plans}
-          isSaving={order.isSaving}
-          error={plansError}
-          onMove={order.move}
-          onDone={() => {
+          onSave={order.save}
+          onClose={() => {
             setIsOrdering(false);
             requestAnimationFrame(() => document.getElementById("plan-order-button")?.focus());
           }}

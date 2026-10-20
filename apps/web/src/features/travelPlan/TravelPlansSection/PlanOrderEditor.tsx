@@ -1,8 +1,9 @@
-import { Box, Button, Menu, MenuItem, Paper, Typography } from "@mui/material";
+import { Alert, Box, Button, Menu, MenuItem, Paper, Typography } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 
 import { sortPlans } from "../sortPlans";
 import type { TravelPlan } from "../types";
+import { movePlan } from "./planOrderChanges";
 
 type MoveProps = {
   plan: TravelPlan;
@@ -39,10 +40,10 @@ const PlanMoveControls = ({ plan, position, total, isSaving, onMove }: MoveProps
         移動
       </Button>
       <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={() => setMenuAnchor(null)}>
-        <MenuItem disabled={position === 0} onClick={() => jump(0)}>
+        <MenuItem disabled={isSaving || position === 0} onClick={() => jump(0)}>
           先頭へ移動
         </MenuItem>
-        <MenuItem disabled={position === total - 1} onClick={() => jump(total - 1)}>
+        <MenuItem disabled={isSaving || position === total - 1} onClick={() => jump(total - 1)}>
           末尾へ移動
         </MenuItem>
       </Menu>
@@ -52,14 +53,78 @@ const PlanMoveControls = ({ plan, position, total, isSaving, onMove }: MoveProps
 
 type Props = {
   plans: TravelPlan[];
-  isSaving: boolean;
-  error: string | null;
-  onMove: (plan: TravelPlan, target: number) => void;
-  onDone: () => void;
+  onSave: (ordered: TravelPlan[]) => Promise<void>;
+  onClose: () => void;
 };
 
-export const PlanOrderEditor = ({ plans, isSaving, error, onMove, onDone }: Props) => {
+const useDraftOrder = ({ plans, onSave, onClose }: Props) => {
+  const busy = useRef(false);
+  const [ordered, setOrdered] = useState(() => sortPlans(plans, "planning"));
+  const [isSaving, setIsSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [announcement, setAnnouncement] = useState("");
+
+  const handleMove = (plan: TravelPlan, target: number) => {
+    if (busy.current) return;
+    setOrdered((current) => movePlan(current, plan, target));
+    setError(null);
+    setAnnouncement(`${plan.place}を${target + 1}番目に移動しました。まだ保存されていません。`);
+    requestAnimationFrame(() => document.getElementById(`plan-card-${plan.id}`)?.focus());
+  };
+
+  const handleDone = async () => {
+    if (busy.current) return;
+    busy.current = true;
+    setIsSaving(true);
+    setError(null);
+    try {
+      await onSave(ordered);
+      onClose();
+    } catch {
+      setError("順序の保存に失敗しました。もう一度お試しください。");
+    } finally {
+      busy.current = false;
+      setIsSaving(false);
+    }
+  };
+
+  return { ordered, isSaving, error, announcement, handleMove, handleDone };
+};
+
+type RowsProps = {
+  ordered: TravelPlan[];
+  isSaving: boolean;
+  onMove: (plan: TravelPlan, target: number) => void;
+};
+
+const PlanOrderRows = ({ ordered, isSaving, onMove }: RowsProps) => (
+  <Box sx={{ display: "grid", gap: 1 }}>
+    {ordered.map((plan, position) => (
+      <Paper
+        key={plan.id}
+        id={`plan-card-${plan.id}`}
+        tabIndex={-1}
+        sx={{ p: 1.5, display: "flex", alignItems: "center", flexWrap: "wrap", gap: 1 }}
+      >
+        <Typography color="text.secondary" sx={{ minWidth: 48 }}>
+          {position + 1} / {ordered.length}
+        </Typography>
+        <Typography sx={{ flexGrow: 1, overflowWrap: "anywhere" }}>{plan.place}</Typography>
+        <PlanMoveControls
+          plan={plan}
+          position={position}
+          total={ordered.length}
+          isSaving={isSaving}
+          onMove={onMove}
+        />
+      </Paper>
+    ))}
+  </Box>
+);
+
+export const PlanOrderEditor = (props: Props) => {
   const headingRef = useRef<HTMLHeadingElement>(null);
+  const { ordered, isSaving, error, announcement, handleMove, handleDone } = useDraftOrder(props);
   useEffect(() => headingRef.current?.focus(), []);
 
   return (
@@ -68,39 +133,29 @@ export const PlanOrderEditor = ({ plans, isSaving, error, onMove, onDone }: Prop
         <Typography component="h2" variant="h5" ref={headingRef} tabIndex={-1}>
           プランの順序を変更
         </Typography>
-        <Button variant="contained" disabled={isSaving} onClick={onDone}>
-          完了
-        </Button>
+        <Box sx={{ display: "flex", gap: 1 }}>
+          <Button disabled={isSaving} onClick={props.onClose}>
+            キャンセル
+          </Button>
+          <Button variant="contained" disabled={isSaving} onClick={handleDone}>
+            {isSaving ? "保存中…" : "完了"}
+          </Button>
+        </Box>
       </Box>
       <Typography color="text.secondary" sx={{ mt: 1, mb: 2 }}>
-        変更するたびに自動保存されます。
+        並び替えた後、「完了」を押すと保存されます。
       </Typography>
-      {error ? (
-        <Typography color="error">{error}</Typography>
-      ) : (
-        <Box sx={{ display: "grid", gap: 1 }}>
-          {sortPlans(plans, "planning").map((plan, position) => (
-            <Paper
-              key={plan.id}
-              id={`plan-card-${plan.id}`}
-              tabIndex={-1}
-              sx={{ p: 1.5, display: "flex", alignItems: "center", flexWrap: "wrap", gap: 1 }}
-            >
-              <Typography color="text.secondary" sx={{ minWidth: 48 }}>
-                {position + 1} / {plans.length}
-              </Typography>
-              <Typography sx={{ flexGrow: 1, overflowWrap: "anywhere" }}>{plan.place}</Typography>
-              <PlanMoveControls
-                plan={plan}
-                position={position}
-                total={plans.length}
-                isSaving={isSaving}
-                onMove={onMove}
-              />
-            </Paper>
-          ))}
-        </Box>
+      {error && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {error}
+        </Alert>
       )}
+      {announcement && (
+        <Typography component="output" sx={{ display: "block", mb: 2 }}>
+          {announcement}
+        </Typography>
+      )}
+      <PlanOrderRows ordered={ordered} isSaving={isSaving} onMove={handleMove} />
     </Box>
   );
 };
