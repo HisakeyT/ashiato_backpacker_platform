@@ -8,6 +8,7 @@ type Props = {
   open: boolean;
   onClose: () => void;
   title: ReactNode;
+  titleId?: string;
   children: ReactNode;
   actions?: ReactNode;
   busy?: boolean; // 処理中は背景クリック・Esc で閉じない
@@ -19,6 +20,7 @@ export const BaseDialog = ({
   open,
   onClose,
   title,
+  titleId,
   children,
   actions,
   busy = false,
@@ -28,11 +30,14 @@ export const BaseDialog = ({
     className={className}
     open={open}
     onClose={busy ? undefined : onClose}
+    aria-labelledby={titleId}
     fullWidth
     maxWidth={maxWidth}
   >
-    <DialogTitle>{title}</DialogTitle>
-    <DialogContent>{children}</DialogContent>
+    <DialogTitle id={titleId}>{title}</DialogTitle>
+    <DialogContent dividers sx={{ borderBottom: 0 }}>
+      {children}
+    </DialogContent>
     {actions && <DialogActions>{actions}</DialogActions>}
   </Dialog>
 );

@@ -6,8 +6,8 @@ import "leaflet/dist/leaflet.css";
 import "./travelMap.css";
 import { type MapPlan, groupMapPlans } from "./mapPlans";
 
-/** 同じ座標の訪問番号を一つのピンに表示し、プラン名をピンの説明に設定する。 */
-const addMarker = (map: L.Map, group: MapPlan[]) => {
+/** 同じ座標の訪問番号を一つのピンに表示し、選択時にプラン詳細を開く。 */
+const addMarker = (map: L.Map, group: MapPlan[], onSelect: (ids: number[]) => void) => {
   const label = group.map((item) => item.number).join("・");
   const marker = L.marker(group[0].position, {
     icon: L.divIcon({
@@ -17,17 +17,27 @@ const addMarker = (map: L.Map, group: MapPlan[]) => {
       iconAnchor: [22, 22],
     }),
     title: group.map((item) => `${item.number}. ${item.plan.place}`).join("、"),
-    // 地図上のピンは操作対象にせず、プランの詳細は下の一覧から確認できる。
-    keyboard: false,
+    keyboard: true,
   }).addTo(map);
 
+  const select = () => onSelect(group.map((item) => item.plan.id));
+  marker.on("click", select);
   const element = marker.getElement();
-  element?.setAttribute("role", "img");
-  element?.setAttribute("aria-label", marker.options.title ?? "訪問地点");
+  element?.setAttribute("aria-label", `${marker.options.title} の詳細を表示`);
+  element?.addEventListener("keydown", (event) => {
+    if (event.key === " ") {
+      event.preventDefault();
+      select();
+    }
+  });
 };
 
 /** 背景タイル、ピン、訪問順の直線を追加し、全地点が入る表示範囲に合わせる。 */
-const populateMap = (map: L.Map, located: MapPlan[], onTileError: () => void) => {
+const populateMap = (
+  map: L.Map,
+  located: MapPlan[],
+  { onSelect, onTileError }: { onSelect: (ids: number[]) => void; onTileError: () => void },
+) => {
   L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
     maxZoom: 19,
     attribution:
@@ -36,7 +46,7 @@ const populateMap = (map: L.Map, located: MapPlan[], onTileError: () => void) =>
     .on("tileerror", onTileError)
     .addTo(map);
 
-  for (const group of groupMapPlans(located)) addMarker(map, group);
+  for (const group of groupMapPlans(located)) addMarker(map, group, onSelect);
 
   const positions = located.map((item) => item.position);
   // 座標のないプランは線から除く。線は実際の移動経路ではなく地点間の直線。
@@ -47,7 +57,13 @@ const populateMap = (map: L.Map, located: MapPlan[], onTileError: () => void) =>
 };
 
 /** Leaflet の地図を DOM に作成し、再描画・破棄に合わせて関連リソースを管理する。 */
-export default function TravelMapCanvas({ located }: { located: MapPlan[] }) {
+export default function TravelMapCanvas({
+  located,
+  onSelect,
+}: {
+  located: MapPlan[];
+  onSelect: (ids: number[]) => void;
+}) {
   const container = useRef<HTMLDivElement>(null);
   const [tileError, setTileError] = useState(false);
 
@@ -58,7 +74,7 @@ export default function TravelMapCanvas({ located }: { located: MapPlan[] }) {
     // コンテナのサイズが変わったとき、Leaflet に表示領域を再計算させる。
     const observer = new ResizeObserver(() => map.invalidateSize());
     try {
-      populateMap(map, located, () => setTileError(true));
+      populateMap(map, located, { onSelect, onTileError: () => setTileError(true) });
       observer.observe(container.current);
     } catch (error) {
       // 初期化途中で失敗しても、作成済みの監視と地図を残さない。
@@ -71,13 +87,13 @@ export default function TravelMapCanvas({ located }: { located: MapPlan[] }) {
       observer.disconnect();
       map.remove();
     };
-  }, [located]);
+  }, [located, onSelect]);
 
   return (
     <>
       {tileError && (
         <Alert severity="warning">
-          背景地図を読み込めませんでした。プランの情報は下の一覧から確認できます。
+          背景地図を読み込めませんでした。プランの詳細は下のボタンと一覧から確認できます。
         </Alert>
       )}
       <Box
