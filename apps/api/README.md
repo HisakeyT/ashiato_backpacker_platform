@@ -21,6 +21,10 @@ docker compose exec api sh -c 'goose -dir /app/db/migrations mysql "$DB_USER:$DB
 
 API は `http://localhost:8080` で待ち受けます。`/health` で起動状態を確認できます。開発中は Air が Go ファイルの変更を検知して再ビルドします。
 
+## 認証トークンの移行
+
+`auth_version` を追加するマイグレーションを API の更新前に適用してください。JWT の標準 `exp` と認証世代を必須にしたため、更新前に発行したトークンは使えなくなり、利用者は再ログインが必要です。新しいトークンの有効期間は発行から24時間です。
+
 ## コードの確認と修正
 
 以下のコマンドは `apps/api` で実行します。最初に `mise install` で Go と golangci-lint を用意してください。
