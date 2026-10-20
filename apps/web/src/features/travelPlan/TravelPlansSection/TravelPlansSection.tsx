@@ -9,6 +9,7 @@ import { TravelMap } from "../map/TravelMap";
 import { TravelPlanDialog } from "../TravelPlanDialog";
 import { TravelPlanList } from "../TravelPlanList";
 import type { TravelPlan } from "../types";
+import { PlanOrderEditor } from "./PlanOrderEditor";
 import { usePlanData } from "./usePlanData";
 import { usePlanDeletion } from "./usePlanDeletion";
 import { usePlanOrder } from "./usePlanOrder";
@@ -24,7 +25,7 @@ const usePlanEditor = (refreshPlans: () => Promise<void>) => {
   return { isOpen, setIsOpen, editingPlan, setEditingPlan, handleSaved };
 };
 
-const PlanSectionHeader = ({ onAdd }: { onAdd: () => void }) => (
+const PlanSectionHeader = ({ onAdd, onOrder }: { onAdd: () => void; onOrder?: () => void }) => (
   <Box
     sx={{
       display: "flex",
@@ -39,9 +40,12 @@ const PlanSectionHeader = ({ onAdd }: { onAdd: () => void }) => (
     <Typography variant="h5" component="h2">
       旅のプラン
     </Typography>
-    <Button variant="contained" onClick={onAdd}>
-      プランを追加
-    </Button>
+    <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
+      {onOrder && <Button onClick={onOrder}>順序を変更</Button>}
+      <Button variant="contained" onClick={onAdd}>
+        プランを追加
+      </Button>
+    </Box>
   </Box>
 );
 
@@ -105,6 +109,7 @@ const defaultPlanDate = (travel: TravelDetail, plans: TravelPlan[]): string => {
 };
 
 export const TravelPlansSection = ({ travel }: { travel: TravelDetail }) => {
+  const [isOrdering, setIsOrdering] = useState(false);
   const { plans, setPlans, plansError, refreshPlans } = usePlanData(travel.id);
   const editor = usePlanEditor(refreshPlans);
   const deletion = usePlanDeletion(travel.id, refreshPlans);
@@ -113,18 +118,36 @@ export const TravelPlansSection = ({ travel }: { travel: TravelDetail }) => {
 
   return (
     <>
-      {!plansError && <TravelMap plans={plans} />}
-      <PlanSectionHeader onAdd={() => editor.setIsOpen(true)} />
-      {plansError ? (
-        <Typography color="error">{plansError}</Typography>
-      ) : (
-        <TravelPlanList
+      {isOrdering && travel.scheduleMode === "planning" ? (
+        <PlanOrderEditor
           plans={plans}
-          onEdit={editor.setEditingPlan}
-          onDelete={deletion.setDeletingPlan}
-          mode={travel.scheduleMode}
-          onMove={travel.scheduleMode === "planning" ? order.move : undefined}
+          isSaving={order.isSaving}
+          error={plansError}
+          onMove={order.move}
+          onDone={() => setIsOrdering(false)}
         />
+      ) : (
+        <>
+          {!plansError && <TravelMap plans={plans} />}
+          <PlanSectionHeader
+            onAdd={() => editor.setIsOpen(true)}
+            onOrder={
+              travel.scheduleMode === "planning" && plans.length > 1
+                ? () => setIsOrdering(true)
+                : undefined
+            }
+          />
+          {plansError ? (
+            <Typography color="error">{plansError}</Typography>
+          ) : (
+            <TravelPlanList
+              plans={plans}
+              onEdit={editor.setEditingPlan}
+              onDelete={deletion.setDeletingPlan}
+              mode={travel.scheduleMode}
+            />
+          )}
+        </>
       )}
       <PlanEditorDialogs travel={travel} defaultDate={defaultDate} editor={editor} />
       <PlanDeleteDialog deletion={deletion} />

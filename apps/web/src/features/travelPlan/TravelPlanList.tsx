@@ -9,10 +9,9 @@ type TravelPlanListProps = {
   onEdit: (plan: TravelPlan) => void;
   onDelete: (plan: TravelPlan) => void;
   mode: "planning" | "recorded";
-  onMove?: (plan: TravelPlan, target: number) => void;
 };
 
-export const TravelPlanList = ({ plans, onEdit, onDelete, mode, onMove }: TravelPlanListProps) => {
+export const TravelPlanList = ({ plans, onEdit, onDelete, mode }: TravelPlanListProps) => {
   if (plans.length === 0) {
     return <Typography color="text.secondary">まだ予定がありません</Typography>;
   }
@@ -35,7 +34,6 @@ export const TravelPlanList = ({ plans, onEdit, onDelete, mode, onMove }: Travel
           onDelete={onDelete}
           position={mode === "planning" ? index : undefined}
           total={mode === "planning" ? plans.length : undefined}
-          onMove={onMove}
         />
       ))}
     </Box>

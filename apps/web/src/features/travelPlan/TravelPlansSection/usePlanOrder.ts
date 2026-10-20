@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 import { useAuth } from "../../../app/providers/useAuth";
 import { useFlash } from "../../../app/providers/useFlash";
@@ -18,6 +18,15 @@ const movePlan = (plans: TravelPlan[], plan: TravelPlan, target: number): Travel
 
 const focusMovedPlan = (plan: TravelPlan) => {
   requestAnimationFrame(() => document.getElementById(`plan-card-${plan.id}`)?.focus());
+};
+
+const setMoveBusy = (
+  busy: { current: boolean },
+  setIsSaving: (value: boolean) => void,
+  value: boolean,
+) => {
+  busy.current = value;
+  setIsSaving(value);
 };
 
 const showMovedPlan = ({
@@ -46,9 +55,10 @@ export const usePlanOrder = (
   const { token } = useAuth();
   const { showFlash } = useFlash();
   const busy = useRef(false);
+  const [isSaving, setIsSaving] = useState(false);
   const move = async (plan: TravelPlan, target: number) => {
     if (!token || busy.current) return;
-    busy.current = true;
+    setMoveBusy(busy, setIsSaving, true);
     const before = sortPlans(plans, "planning");
     const next = movePlan(before, plan, target);
     showMovedPlan({ plan, target, next, setPlans, showFlash });
@@ -62,8 +72,8 @@ export const usePlanOrder = (
       setPlans(before);
       showFlash("並べ替えに失敗しました。元の順序に戻しました", "error");
     } finally {
-      busy.current = false;
+      setMoveBusy(busy, setIsSaving, false);
     }
   };
-  return { move };
+  return { move, isSaving };
 };
