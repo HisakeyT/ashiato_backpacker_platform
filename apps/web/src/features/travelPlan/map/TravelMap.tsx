@@ -83,7 +83,15 @@ const MapContent = ({
   </>
 );
 
-export const TravelMap = ({ plans }: { plans: TravelPlan[] }) => {
+export const TravelMap = ({
+  plans,
+  travelId,
+  publicView,
+}: {
+  plans: TravelPlan[];
+  travelId: number;
+  publicView: boolean;
+}) => {
   const { located, missing } = useMemo(() => mapPlans(plans), [plans]);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const selected = located.filter(({ plan }) => selectedIds.includes(plan.id));
@@ -99,7 +107,13 @@ export const TravelMap = ({ plans }: { plans: TravelPlan[] }) => {
       <Button component="a" href={`#${listId}`} sx={{ mt: 1 }}>
         プラン一覧へ進む
       </Button>
-      <MapPlanDialog selected={selected} titleId={titleId} onClose={() => setSelectedIds([])} />
+      <MapPlanDialog
+        selected={selected}
+        titleId={titleId}
+        onClose={() => setSelectedIds([])}
+        travelId={travelId}
+        publicView={publicView}
+      />
       <Box id={listId} tabIndex={-1} aria-label="プラン一覧の開始" />
     </Box>
   );

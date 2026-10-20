@@ -9,9 +9,16 @@ type TravelPlanListProps = {
   onEdit: (plan: TravelPlan) => void;
   onDelete: (plan: TravelPlan) => void;
   mode: "planning" | "recorded";
+  travelId: number;
 };
 
-export const TravelPlanList = ({ plans, onEdit, onDelete, mode }: TravelPlanListProps) => {
+export const TravelPlanList = ({
+  plans,
+  onEdit,
+  onDelete,
+  mode,
+  travelId,
+}: TravelPlanListProps) => {
   if (plans.length === 0) {
     return <Typography color="text.secondary">まだ予定がありません</Typography>;
   }
@@ -29,6 +36,7 @@ export const TravelPlanList = ({ plans, onEdit, onDelete, mode }: TravelPlanList
         <TravelPlanCard
           key={plan.id}
           plan={plan}
+          travelId={travelId}
           onEdit={onEdit}
           onDelete={onDelete}
           orderNumber={mode === "planning" ? index + 1 : undefined}

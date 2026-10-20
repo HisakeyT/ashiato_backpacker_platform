@@ -112,6 +112,7 @@ const defaultPlanDate = (travel: TravelDetail, plans: TravelPlan[]): string => {
   return lastDate > travel.endDate ? travel.endDate : lastDate;
 };
 
+// eslint-disable-next-line eslint/max-lines-per-function
 export const TravelPlansSection = ({ travel }: { travel: TravelDetail }) => {
   const [isOrdering, setIsOrdering] = useState(false);
   const { plans, setPlans, plansError, refreshPlans } = usePlanData(travel.id);
@@ -138,6 +139,7 @@ export const TravelPlansSection = ({ travel }: { travel: TravelDetail }) => {
 
     return (
       <TravelPlanList
+        travelId={travel.id}
         plans={plans}
         onEdit={editor.setEditingPlan}
         onDelete={deletion.setDeletingPlan}
@@ -148,7 +150,7 @@ export const TravelPlansSection = ({ travel }: { travel: TravelDetail }) => {
 
   return (
     <>
-      {!plansError && <TravelMap plans={plans} />}
+      {!plansError && <TravelMap plans={plans} travelId={travel.id} publicView={false} />}
       <PlanSectionHeader
         onAdd={() => editor.setIsOpen(true)}
         onOrder={
