@@ -22,19 +22,11 @@ export const TravelPlanList = ({ plans, onEdit, onDelete, mode }: TravelPlanList
       sx={{
         display: "grid",
         gap: 2,
-        gridTemplateColumns:
-          mode === "planning" ? "1fr" : "repeat(auto-fill, minmax(min(100%, 220px), 1fr))",
+        gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 260px), 1fr))",
       }}
     >
-      {sortPlans(plans, mode).map((plan, index) => (
-        <TravelPlanCard
-          key={plan.id}
-          plan={plan}
-          onEdit={onEdit}
-          onDelete={onDelete}
-          position={mode === "planning" ? index : undefined}
-          total={mode === "planning" ? plans.length : undefined}
-        />
+      {sortPlans(plans, mode).map((plan) => (
+        <TravelPlanCard key={plan.id} plan={plan} onEdit={onEdit} onDelete={onDelete} />
       ))}
     </Box>
   );
