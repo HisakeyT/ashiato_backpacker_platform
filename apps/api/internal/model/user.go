@@ -18,6 +18,7 @@ type User struct {
 	Nickname     string
 	Email        string
 	PasswordHash string
+	AuthVersion  uint `gorm:"not null;default:1"`
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
 }

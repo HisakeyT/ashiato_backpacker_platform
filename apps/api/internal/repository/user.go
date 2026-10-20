@@ -10,3 +10,8 @@ type UserRepository interface {
 	FindByEmail(email string) (*model.User, error)
 	Update(user *model.User) error
 }
+
+// AuthVersionRepository is used by credential updates inside their transaction.
+type AuthVersionRepository interface {
+	BumpAuthVersion(id uint) error
+}
