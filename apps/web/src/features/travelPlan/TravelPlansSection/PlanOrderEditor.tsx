@@ -1,6 +1,7 @@
-import { Alert, Box, Button, Menu, MenuItem, Paper, Typography } from "@mui/material";
+import { Box, Button, Menu, MenuItem, Paper, Typography } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 
+import { useFlash } from "../../../app/providers/useFlash";
 import { sortPlans } from "../sortPlans";
 import type { TravelPlan } from "../types";
 import { movePlan } from "./planOrderChanges";
@@ -58,17 +59,15 @@ type Props = {
 };
 
 const useDraftOrder = ({ plans, onSave, onClose }: Props) => {
+  const { showFlash } = useFlash();
   const busy = useRef(false);
   const [ordered, setOrdered] = useState(() => sortPlans(plans, "planning"));
   const [isSaving, setIsSaving] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [announcement, setAnnouncement] = useState("");
 
   const handleMove = (plan: TravelPlan, target: number) => {
     if (busy.current) return;
     setOrdered((current) => movePlan(current, plan, target));
-    setError(null);
-    setAnnouncement(`${plan.place}を${target + 1}番目に移動しました。まだ保存されていません。`);
+    showFlash(`${plan.place}を${target + 1}番目に移動しました。まだ保存されていません。`, "info");
     requestAnimationFrame(() => document.getElementById(`plan-card-${plan.id}`)?.focus());
   };
 
@@ -76,19 +75,18 @@ const useDraftOrder = ({ plans, onSave, onClose }: Props) => {
     if (busy.current) return;
     busy.current = true;
     setIsSaving(true);
-    setError(null);
     try {
       await onSave(ordered);
       onClose();
     } catch {
-      setError("順序の保存に失敗しました。もう一度お試しください。");
+      showFlash("順序の保存に失敗しました。もう一度お試しください。", "error");
     } finally {
       busy.current = false;
       setIsSaving(false);
     }
   };
 
-  return { ordered, isSaving, error, announcement, handleMove, handleDone };
+  return { ordered, isSaving, handleMove, handleDone };
 };
 
 type RowsProps = {
@@ -124,7 +122,7 @@ const PlanOrderRows = ({ ordered, isSaving, onMove }: RowsProps) => (
 
 export const PlanOrderEditor = (props: Props) => {
   const headingRef = useRef<HTMLHeadingElement>(null);
-  const { ordered, isSaving, error, announcement, handleMove, handleDone } = useDraftOrder(props);
+  const { ordered, isSaving, handleMove, handleDone } = useDraftOrder(props);
   useEffect(() => headingRef.current?.focus(), []);
 
   return (
@@ -145,16 +143,6 @@ export const PlanOrderEditor = (props: Props) => {
       <Typography color="text.secondary" sx={{ mt: 1, mb: 2 }}>
         並び替えた後、「完了」を押すと保存されます。
       </Typography>
-      {error && (
-        <Alert severity="error" sx={{ mb: 2 }}>
-          {error}
-        </Alert>
-      )}
-      {announcement && (
-        <Typography component="output" sx={{ display: "block", mb: 2 }}>
-          {announcement}
-        </Typography>
-      )}
       <PlanOrderRows ordered={ordered} isSaving={isSaving} onMove={handleMove} />
     </Box>
   );
