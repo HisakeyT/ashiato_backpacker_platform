@@ -120,9 +120,9 @@ export const TravelPlansSection = ({ travel }: { travel: TravelDetail }) => {
   const order = usePlanOrder(travel.id, plans, setPlans);
   const defaultDate = defaultPlanDate(travel, plans);
 
-  return (
-    <>
-      {isOrdering && travel.scheduleMode === "planning" ? (
+  const renderPlanContent = () => {
+    if (isOrdering && travel.scheduleMode === "planning") {
+      return (
         <PlanOrderEditor
           plans={plans}
           onSave={order.save}
@@ -131,29 +131,33 @@ export const TravelPlansSection = ({ travel }: { travel: TravelDetail }) => {
             requestAnimationFrame(() => document.getElementById("plan-order-button")?.focus());
           }}
         />
-      ) : (
-        <>
-          {!plansError && <TravelMap plans={plans} />}
-          <PlanSectionHeader
-            onAdd={() => editor.setIsOpen(true)}
-            onOrder={
-              travel.scheduleMode === "planning" && plans.length > 1
-                ? () => setIsOrdering(true)
-                : undefined
-            }
-          />
-          {plansError ? (
-            <Typography color="error">{plansError}</Typography>
-          ) : (
-            <TravelPlanList
-              plans={plans}
-              onEdit={editor.setEditingPlan}
-              onDelete={deletion.setDeletingPlan}
-              mode={travel.scheduleMode}
-            />
-          )}
-        </>
-      )}
+      );
+    }
+
+    if (plansError) return <Typography color="error">{plansError}</Typography>;
+
+    return (
+      <TravelPlanList
+        plans={plans}
+        onEdit={editor.setEditingPlan}
+        onDelete={deletion.setDeletingPlan}
+        mode={travel.scheduleMode}
+      />
+    );
+  };
+
+  return (
+    <>
+      {!plansError && <TravelMap plans={plans} />}
+      <PlanSectionHeader
+        onAdd={() => editor.setIsOpen(true)}
+        onOrder={
+          !isOrdering && travel.scheduleMode === "planning" && plans.length > 1
+            ? () => setIsOrdering(true)
+            : undefined
+        }
+      />
+      {renderPlanContent()}
       <PlanEditorDialogs travel={travel} defaultDate={defaultDate} editor={editor} />
       <PlanDeleteDialog deletion={deletion} />
     </>
