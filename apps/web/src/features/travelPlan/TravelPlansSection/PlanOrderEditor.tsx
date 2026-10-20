@@ -1,5 +1,5 @@
 import { Box, Button, Menu, MenuItem, Paper, Typography } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { sortPlans } from "../sortPlans";
 import type { TravelPlan } from "../types";
@@ -58,44 +58,49 @@ type Props = {
   onDone: () => void;
 };
 
-export const PlanOrderEditor = ({ plans, isSaving, error, onMove, onDone }: Props) => (
-  <Box component="section" aria-label="プランの順序変更" sx={{ mt: 4 }}>
-    <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 2 }}>
-      <Typography component="h2" variant="h5">
-        プランの順序を変更
-      </Typography>
-      <Button variant="contained" disabled={isSaving} onClick={onDone}>
-        完了
-      </Button>
-    </Box>
-    <Typography color="text.secondary" sx={{ mt: 1, mb: 2 }}>
-      変更するたびに自動保存されます。
-    </Typography>
-    {error ? (
-      <Typography color="error">{error}</Typography>
-    ) : (
-      <Box sx={{ display: "grid", gap: 1 }}>
-        {sortPlans(plans, "planning").map((plan, position) => (
-          <Paper
-            key={plan.id}
-            id={`plan-card-${plan.id}`}
-            tabIndex={-1}
-            sx={{ p: 1.5, display: "flex", alignItems: "center", flexWrap: "wrap", gap: 1 }}
-          >
-            <Typography color="text.secondary" sx={{ minWidth: 48 }}>
-              {position + 1} / {plans.length}
-            </Typography>
-            <Typography sx={{ flexGrow: 1, overflowWrap: "anywhere" }}>{plan.place}</Typography>
-            <PlanMoveControls
-              plan={plan}
-              position={position}
-              total={plans.length}
-              isSaving={isSaving}
-              onMove={onMove}
-            />
-          </Paper>
-        ))}
+export const PlanOrderEditor = ({ plans, isSaving, error, onMove, onDone }: Props) => {
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  useEffect(() => headingRef.current?.focus(), []);
+
+  return (
+    <Box component="section" aria-label="プランの順序変更" sx={{ mt: 4 }}>
+      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 2 }}>
+        <Typography component="h2" variant="h5" ref={headingRef} tabIndex={-1}>
+          プランの順序を変更
+        </Typography>
+        <Button variant="contained" disabled={isSaving} onClick={onDone}>
+          完了
+        </Button>
       </Box>
-    )}
-  </Box>
-);
+      <Typography color="text.secondary" sx={{ mt: 1, mb: 2 }}>
+        変更するたびに自動保存されます。
+      </Typography>
+      {error ? (
+        <Typography color="error">{error}</Typography>
+      ) : (
+        <Box sx={{ display: "grid", gap: 1 }}>
+          {sortPlans(plans, "planning").map((plan, position) => (
+            <Paper
+              key={plan.id}
+              id={`plan-card-${plan.id}`}
+              tabIndex={-1}
+              sx={{ p: 1.5, display: "flex", alignItems: "center", flexWrap: "wrap", gap: 1 }}
+            >
+              <Typography color="text.secondary" sx={{ minWidth: 48 }}>
+                {position + 1} / {plans.length}
+              </Typography>
+              <Typography sx={{ flexGrow: 1, overflowWrap: "anywhere" }}>{plan.place}</Typography>
+              <PlanMoveControls
+                plan={plan}
+                position={position}
+                total={plans.length}
+                isSaving={isSaving}
+                onMove={onMove}
+              />
+            </Paper>
+          ))}
+        </Box>
+      )}
+    </Box>
+  );
+};

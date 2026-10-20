@@ -41,7 +41,11 @@ const PlanSectionHeader = ({ onAdd, onOrder }: { onAdd: () => void; onOrder?: ()
       旅のプラン
     </Typography>
     <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
-      {onOrder && <Button onClick={onOrder}>順序を変更</Button>}
+      {onOrder && (
+        <Button id="plan-order-button" onClick={onOrder}>
+          順序を変更
+        </Button>
+      )}
       <Button variant="contained" onClick={onAdd}>
         プランを追加
       </Button>
@@ -124,7 +128,10 @@ export const TravelPlansSection = ({ travel }: { travel: TravelDetail }) => {
           isSaving={order.isSaving}
           error={plansError}
           onMove={order.move}
-          onDone={() => setIsOrdering(false)}
+          onDone={() => {
+            setIsOrdering(false);
+            requestAnimationFrame(() => document.getElementById("plan-order-button")?.focus());
+          }}
         />
       ) : (
         <>
