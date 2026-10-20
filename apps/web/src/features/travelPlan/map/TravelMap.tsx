@@ -1,8 +1,8 @@
 import { Alert, Box, Button, Typography } from "@mui/material";
 import { Component, type ReactNode, Suspense, lazy, useId, useMemo, useState } from "react";
 
-import { MapPlanDetails } from "../MapPlanDetails";
 import type { TravelPlan } from "../types";
+import { MapPlanDialog } from "./MapPlanDialog";
 import { mapPlans } from "./mapPlans";
 
 // Leaflet を使う Canvas は、座標のあるプランを実際に描画するときだけ読み込む。
@@ -99,7 +99,7 @@ export const TravelMap = ({ plans }: { plans: TravelPlan[] }) => {
         プラン一覧へ進む
       </Button>
       <MapContent located={located} missing={missing} onSelect={setSelectedIds} />
-      <MapPlanDetails selected={selected} titleId={titleId} onClose={() => setSelectedIds([])} />
+      <MapPlanDialog selected={selected} titleId={titleId} onClose={() => setSelectedIds([])} />
       <Box id={listId} tabIndex={-1} aria-label="プラン一覧の開始" />
     </Box>
   );
