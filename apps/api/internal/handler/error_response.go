@@ -27,6 +27,7 @@ var errorStatuses = []errorStatus{
 	{model.ErrTravelPlanEndWithoutStart, http.StatusBadRequest},
 	{model.ErrInvalidTravelPlanOrder, http.StatusBadRequest},
 	{model.ErrTravelPlanOrderOnlyPlanning, http.StatusBadRequest},
+	{model.ErrInvalidPlanRecord, http.StatusBadRequest},
 
 	// 401
 	{model.ErrInvalidCredentials, http.StatusUnauthorized},
@@ -37,6 +38,7 @@ var errorStatuses = []errorStatus{
 	// 404
 	{model.ErrTravelNotFound, http.StatusNotFound},
 	{model.ErrTravelPlanNotFound, http.StatusNotFound},
+	{model.ErrPlanRecordNotFound, http.StatusNotFound},
 	{model.ErrUserNotFound, http.StatusNotFound},
 
 	// 409

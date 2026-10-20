@@ -32,6 +32,9 @@ func main() {
 	travelPlanRepository := gormrepo.NewGormPlanRepository(db)
 	travelPlanUsecase := usecase.NewTravelPlanUsecase(travelRepository, travelPlanRepository)
 	travelPlanHandler := handler.NewTravelPlanHandler(travelPlanUsecase)
+	planRecordRepository := gormrepo.NewPlanRecordRepository(db)
+	planRecordUsecase := usecase.NewPlanRecordUsecase(travelRepository, travelPlanRepository, planRecordRepository)
+	planRecordHandler := handler.NewPlanRecordHandler(planRecordUsecase)
 
 	r := gin.Default()
 
@@ -65,6 +68,12 @@ func main() {
 	protected.GET("/travels/:travel_id/plans", travelPlanHandler.GetTravelPlans)
 	protected.DELETE("/travels/:travel_id/plans/:travel_plan_id", travelPlanHandler.DeleteTravelPlan)
 	r.GET("/travels/public/:travel_id/plans", travelPlanHandler.GetPublicTravelPlan)
+
+	protected.GET("/travels/:travel_id/plans/:travel_plan_id/records/:kind", planRecordHandler.List)
+	protected.POST("/travels/:travel_id/plans/:travel_plan_id/records/:kind", planRecordHandler.Create)
+	protected.PATCH("/travels/:travel_id/plans/:travel_plan_id/records/:kind/:record_id", planRecordHandler.Update)
+	protected.DELETE("/travels/:travel_id/plans/:travel_plan_id/records/:kind/:record_id", planRecordHandler.Delete)
+	r.GET("/travels/public/:travel_id/plans/:travel_plan_id/records/:kind", planRecordHandler.ListPublic)
 
 	if err := r.Run(":8080"); err != nil {
 		log.Fatal(err)
